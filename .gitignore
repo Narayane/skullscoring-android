@@ -83,3 +83,14 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+# SkullScoring
+SkullScoring/.idea/workspace.xml
+SkullScoring/.idea/tasks.xml
+SkullScoring/.idea/gradle.xml
+SkullScoring/.idea/dictionaries
+SkullScoring/.idea/libraries
+SkullScoring/gradle
+gradle.properties
+kotlinc.xml
+SkullScoring/.idea/caches
