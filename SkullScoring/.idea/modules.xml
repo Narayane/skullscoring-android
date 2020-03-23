@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Skull Scoring.iml" filepath="$PROJECT_DIR$/Skull Scoring.iml" group="Skull Scoring" />
+      <module fileurl="file://$PROJECT_DIR$/SkullScoring-Skull Scoring.iml" filepath="$PROJECT_DIR$/SkullScoring-Skull Scoring.iml" group="Skull Scoring" />
+      <module fileurl="file://$PROJECT_DIR$/app/SkullScoring-app.iml" filepath="$PROJECT_DIR$/app/SkullScoring-app.iml" group="Skull Scoring/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Skull Scoring/app" />
     </modules>
   </component>

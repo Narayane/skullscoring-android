@@ -21,15 +21,15 @@ import com.sebastienbalard.skullscoring.data.SKDatabase
 import org.koin.dsl.module
 import java.util.concurrent.Executors
 
-val dataTestModule = module {
-    factory {
+val dataTestModule = module(override = true) {
+    single {
         Room.inMemoryDatabaseBuilder(
             get(), SKDatabase::class.java
         ).setTransactionExecutor(Executors.newSingleThreadExecutor()).build()
     }
-    factory { get<SKDatabase>().getGameDao() }
-    factory { get<SKDatabase>().getPlayerDao() }
-    factory { get<SKDatabase>().getTurnDao() }
-    factory { get<SKDatabase>().getGamePlayerJoinDao() }
-    factory { get<SKDatabase>().getTurnPlayerJoinDao() }
+    single { get<SKDatabase>().getGameDao() }
+    single { get<SKDatabase>().getPlayerDao() }
+    single { get<SKDatabase>().getTurnDao() }
+    single { get<SKDatabase>().getGamePlayerJoinDao() }
+    single { get<SKDatabase>().getTurnPlayerJoinDao() }
 }

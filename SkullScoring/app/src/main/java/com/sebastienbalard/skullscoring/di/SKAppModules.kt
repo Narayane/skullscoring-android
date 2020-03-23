@@ -27,15 +27,15 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val dataModule = module {
-    factory {
+    single {
         Room.databaseBuilder(androidContext(), SKDatabase::class.java, BuildConfig.ROOM_DB_NAME)
             .build()
     }
-    factory { get<SKDatabase>().getGameDao() }
-    factory { get<SKDatabase>().getPlayerDao() }
-    factory { get<SKDatabase>().getTurnDao() }
-    factory { get<SKDatabase>().getGamePlayerJoinDao() }
-    factory { get<SKDatabase>().getTurnPlayerJoinDao() }
+    single { get<SKDatabase>().getGameDao() }
+    single { get<SKDatabase>().getPlayerDao() }
+    single { get<SKDatabase>().getTurnDao() }
+    single { get<SKDatabase>().getGamePlayerJoinDao() }
+    single { get<SKDatabase>().getTurnPlayerJoinDao() }
 }
 
 val commonModule = module {

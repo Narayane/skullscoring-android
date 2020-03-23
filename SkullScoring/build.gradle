@@ -7,7 +7,7 @@ buildscript {
     ext.androidx_core_version = '1.2.0'
     ext.kotlinx_coroutines_version = '1.2.1'
     ext.robolectric_version = '4.3.1'
-    ext.koin_version = '2.0.1'
+    ext.koin_version = '2.1.4'
     repositories {
         google()
         jcenter()
