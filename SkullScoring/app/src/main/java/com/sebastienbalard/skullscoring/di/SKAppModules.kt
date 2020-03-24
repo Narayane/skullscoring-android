@@ -25,28 +25,24 @@ import com.sebastienbalard.skullscoring.data.SKDatabase
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
+import org.koin.experimental.builder.single
 
 val dataModule = module {
-    factory {
+    single {
         Room.databaseBuilder(androidContext(), SKDatabase::class.java, BuildConfig.ROOM_DB_NAME)
             .build()
     }
-    factory { get<SKDatabase>().getGameDao() }
-    factory { get<SKDatabase>().getPlayerDao() }
-    factory { get<SKDatabase>().getTurnDao() }
-    factory { get<SKDatabase>().getGamePlayerJoinDao() }
-    factory { get<SKDatabase>().getTurnPlayerJoinDao() }
+    single { get<SKDatabase>().getGameDao() }
+    single { get<SKDatabase>().getPlayerDao() }
+    single { get<SKDatabase>().getTurnDao() }
+    single { get<SKDatabase>().getGamePlayerJoinDao() }
+    single { get<SKDatabase>().getTurnPlayerJoinDao() }
 }
 
 val commonModule = module {
     single { androidApplication() as SKApplication }
-    single {
-        SKGameRepository(
-            get(),
-            get()
-        )
-    }
-    single { SKPlayerRepository(get()) }
+    single<SKGameRepository>()
+    single<SKPlayerRepository>()
 }
 
 val skullScoringApp = listOf(commonModule, dataModule)

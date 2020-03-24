@@ -17,7 +17,10 @@
 package com.sebastienbalard.skullscoring.models
 
 import androidx.annotation.NonNull
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import java.util.*
 
 @Entity(
@@ -25,13 +28,7 @@ import java.util.*
     indices = [Index(value = ["pk_game_id"]), Index(value = ["start_date"], unique = true)]
 )
 data class SKGame(
-    @ColumnInfo(name = "start_date")
-    @NonNull
-    var startDate: Date,
-    @Ignore
-    val players: List<SKPlayer>,
-    @Ignore
-    var turns: List<SKTurn>
+    @ColumnInfo(name = "start_date") @NonNull var startDate: Date
 ) {
 
     @PrimaryKey(autoGenerate = true)
@@ -39,6 +36,22 @@ data class SKGame(
     @NonNull
     var id: Long = 0
 
-    constructor() : this(Date(), mutableListOf(), mutableListOf())
-    constructor(players: List<SKPlayer>) : this(Date(), players, mutableListOf())
+    constructor() : this(Date())
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SKGame
+
+        if (startDate != other.startDate) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return startDate.hashCode()
+    }
+
+
 }

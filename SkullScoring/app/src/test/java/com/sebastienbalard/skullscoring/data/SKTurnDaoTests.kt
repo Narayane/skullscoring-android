@@ -52,7 +52,7 @@ class SKTurnDaoTests : SKBaseDaoTests() {
         turnDao = testDatabase.getTurnDao()
         runBlocking {
             gameDao.getAllCount() shouldBeEqualTo 0
-            val localGame = SKGame(mutableListOf())
+            val localGame = SKGame()
             gameDao.insert(localGame)
             game = gameDao.findByDate(localGame.startDate)
             turnDao.getAllCount() shouldBeEqualTo 0

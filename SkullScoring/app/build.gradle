@@ -69,6 +69,7 @@ dependencies {
 
     // Koin
     implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-ext:$koin_version"
     implementation "org.koin:koin-androidx-scope:$koin_version"
     testImplementation "org.koin:koin-test:$koin_version"
 

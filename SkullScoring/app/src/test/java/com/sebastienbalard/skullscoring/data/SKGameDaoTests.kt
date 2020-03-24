@@ -34,7 +34,7 @@ class SKGameDaoTests : SKBaseDaoTests() {
 
     @Test
     fun testInsert() = runBlocking {
-        val game = SKGame(mutableListOf())
+        val game = SKGame()
         gameDao.insert(game)
         gameDao.getAllCount() shouldBeEqualTo 1
         gameDao.delete(gameDao.findByDate(game.startDate))

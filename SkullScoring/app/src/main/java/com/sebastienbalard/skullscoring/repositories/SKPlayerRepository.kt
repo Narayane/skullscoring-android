@@ -16,15 +16,25 @@
 
 package com.sebastienbalard.skullscoring.repositories
 
+import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
 import com.sebastienbalard.skullscoring.data.SKPlayerDao
+import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKPlayer
 
 class SKPlayerRepository(
-    private val playerDao: SKPlayerDao
+    private val playerDao: SKPlayerDao, private val gamePlayerJoinDao: SKGamePlayerJoinDao
 ) {
 
     suspend fun createPlayer(name: String): SKPlayer {
         playerDao.insert(SKPlayer(name))
         return playerDao.findByName(name)
+    }
+
+    suspend fun deletePlayer(vararg player: SKPlayer) {
+        playerDao.delete(*player)
+    }
+
+    suspend fun findPlayerByGame(game: SKGame): List<SKPlayer> {
+        return gamePlayerJoinDao.findPlayerByGame(game.id)
     }
 }

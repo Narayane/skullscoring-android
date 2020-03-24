@@ -18,18 +18,26 @@ package com.sebastienbalard.skullscoring.di
 
 import androidx.room.Room
 import com.sebastienbalard.skullscoring.data.SKDatabase
+import com.sebastienbalard.skullscoring.repositories.SKGameRepository
+import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
 import org.koin.dsl.module
+import org.koin.experimental.builder.single
 import java.util.concurrent.Executors
 
 val dataTestModule = module {
-    factory {
+    single {
         Room.inMemoryDatabaseBuilder(
             get(), SKDatabase::class.java
         ).setTransactionExecutor(Executors.newSingleThreadExecutor()).build()
     }
-    factory { get<SKDatabase>().getGameDao() }
-    factory { get<SKDatabase>().getPlayerDao() }
-    factory { get<SKDatabase>().getTurnDao() }
-    factory { get<SKDatabase>().getGamePlayerJoinDao() }
-    factory { get<SKDatabase>().getTurnPlayerJoinDao() }
+    single { get<SKDatabase>().getGameDao() }
+    single { get<SKDatabase>().getPlayerDao() }
+    single { get<SKDatabase>().getTurnDao() }
+    single { get<SKDatabase>().getGamePlayerJoinDao() }
+    single { get<SKDatabase>().getTurnPlayerJoinDao() }
+}
+
+val commonTestModule = module {
+    single<SKPlayerRepository>()
+    single<SKGameRepository>()
 }

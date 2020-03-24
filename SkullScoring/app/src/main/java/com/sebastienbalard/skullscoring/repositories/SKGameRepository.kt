@@ -23,14 +23,19 @@ import com.sebastienbalard.skullscoring.models.SKGamePlayerJoin
 import com.sebastienbalard.skullscoring.models.SKPlayer
 
 class SKGameRepository(
-    private val gameDao: SKGameDao,
-    private val gamePlayerDao: SKGamePlayerJoinDao
+    private val gameDao: SKGameDao, private val gamePlayerJoinDao: SKGamePlayerJoinDao
 ) {
 
-    suspend fun createGame(players: List<SKPlayer>) {
+    suspend fun createGame(players: List<SKPlayer>): SKGame {
         val newGame = SKGame()
         gameDao.insert(newGame)
         val savedGame = gameDao.findByDate(newGame.startDate)
-        gamePlayerDao.insert(*players.map { SKGamePlayerJoin(savedGame.id, it.id) }.toTypedArray())
+        gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(savedGame.id, it.id) }
+            .toTypedArray())
+        return savedGame
+    }
+
+    suspend fun deleteGame(game: SKGame) {
+        gameDao.delete(game)
     }
 }
