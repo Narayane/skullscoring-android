@@ -38,12 +38,12 @@ import androidx.room.Index
     indices = [Index(value = ["fk_turn_id"]), Index(value = ["fk_player_id"])]
 )
 data class SKTurnPlayerJoin(
-    @ColumnInfo(name = "fk_turn_id")
-    var gameId: Long,
-    @ColumnInfo(name = "fk_player_id")
-    val playerId: Long,
+    @ColumnInfo(name = "fk_turn_id") var turnId: Long,
+    @ColumnInfo(name = "fk_player_id") val playerId: Long
+) {
     @ColumnInfo(name = "declaration")
-    var declaration: Int,
+    var declaration: Int? = null
+
     @ColumnInfo(name = "result")
-    var result: Int
-)
+    var result: Int? = null
+}

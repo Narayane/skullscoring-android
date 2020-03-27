@@ -23,12 +23,12 @@ import com.sebastienbalard.skullscoring.models.SKTurn
 @Dao
 interface SKTurnDao : SKBaseDao<SKTurn> {
 
-    @Query("SELECT * FROM sk_turns WHERE fk_game_id = :gameId")
-    suspend fun findByGame(gameId: Long): List<SKTurn>
+    @Query("SELECT COUNT(*) FROM sk_turns")
+    suspend fun getAllCount(): Int
 
     @Query("SELECT COUNT(*) FROM sk_turns WHERE fk_game_id = :gameId")
     suspend fun getCountByGame(gameId: Long): Int
 
-    @Query("SELECT COUNT(*) FROM sk_turns")
-    suspend fun getAllCount(): Int
+    @Query("SELECT * FROM sk_turns WHERE fk_game_id = :gameId")
+    suspend fun findByGame(gameId: Long): List<SKTurn>
 }

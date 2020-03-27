@@ -18,13 +18,20 @@ package com.sebastienbalard.skullscoring.repositories
 
 import com.sebastienbalard.skullscoring.data.SKGameDao
 import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
-import com.sebastienbalard.skullscoring.models.SKGame
-import com.sebastienbalard.skullscoring.models.SKGamePlayerJoin
-import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.data.SKTurnDao
+import com.sebastienbalard.skullscoring.data.SKTurnPlayerJoinDao
+import com.sebastienbalard.skullscoring.models.*
 
 class SKGameRepository(
-    private val gameDao: SKGameDao, private val gamePlayerJoinDao: SKGamePlayerJoinDao
+    private val gameDao: SKGameDao,
+    private val gamePlayerJoinDao: SKGamePlayerJoinDao,
+    private val turnDao: SKTurnDao,
+    private val turnPlayerJoinDao: SKTurnPlayerJoinDao
 ) {
+
+    suspend fun hasGame(): Boolean {
+        return gameDao.getAllCount() > 0
+    }
 
     suspend fun createGame(players: List<SKPlayer>): SKGame {
         val newGame = SKGame()
@@ -32,10 +39,22 @@ class SKGameRepository(
         val savedGame = gameDao.findByDate(newGame.startDate)
         gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(savedGame.id, it.id) }
             .toTypedArray())
+        turnDao.insert(*Array(10) { index -> SKTurn(index + 1, savedGame.id) })
+        val savedTurns = turnDao.findByGame(savedGame.id)
+        val results = savedTurns.map { turn ->
+            players.map { player ->
+                SKTurnPlayerJoin(
+                    turn.id,
+                    player.id
+                )
+            }
+        }.flatten()
+        turnPlayerJoinDao.insert(*results.toTypedArray())
         return savedGame
     }
 
     suspend fun deleteGame(game: SKGame) {
+        turnDao.delete(*turnDao.findByGame(game.id).toTypedArray())
         gameDao.delete(game)
     }
 }

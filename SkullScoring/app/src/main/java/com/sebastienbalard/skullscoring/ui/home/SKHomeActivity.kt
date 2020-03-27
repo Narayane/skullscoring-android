@@ -14,29 +14,27 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring
+package com.sebastienbalard.skullscoring.ui.home
 
-import android.app.Application
-import com.sebastienbalard.skullscoring.di.skullScoringApp
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.sebastienbalard.skullscoring.R
 import timber.log.Timber
-import timber.log.Timber.DebugTree
 
+class SKHomeActivity : AppCompatActivity(R.layout.activity_home) {
 
-open class SKApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(DebugTree())
-        } else {
-            Timber.plant(ReleaseTree())
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(
+                context, SKHomeActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        startKoin {
-            androidContext(this@SKApplication)
-            modules(skullScoringApp)
-        }
     }
 }

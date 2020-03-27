@@ -24,11 +24,11 @@ import com.sebastienbalard.skullscoring.models.SKPlayer
 interface SKPlayerDao : SKBaseDao<SKPlayer> {
 
     @Query("SELECT * FROM sk_players")
-    suspend fun findAll(): List<SKPlayer>
-
-    @Query("SELECT * FROM sk_players WHERE name = :name")
-    suspend fun findByName(name: String): SKPlayer
+    suspend fun getAll(): List<SKPlayer>
 
     @Query("SELECT COUNT(*) FROM sk_players")
     suspend fun getAllCount(): Int
+
+    @Query("SELECT * FROM sk_players WHERE name = :name")
+    suspend fun findByName(name: String): SKPlayer
 }

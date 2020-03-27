@@ -30,4 +30,7 @@ interface SKTurnPlayerJoinDao : SKBaseDao<SKTurnPlayerJoin> {
 
     @Query("SELECT * FROM sk_players INNER JOIN sk_turn_player_joins ON sk_players.pk_player_id = sk_turn_player_joins.fk_player_id WHERE sk_turn_player_joins.fk_turn_id = :turnId")
     suspend fun findPlayerByTurn(turnId: Long): List<SKPlayer>
+
+    @Query("SELECT * FROM sk_turn_player_joins WHERE sk_turn_player_joins.fk_turn_id = :turnId")
+    suspend fun findResultByTurn(turnId: Long): List<SKTurnPlayerJoin>
 }

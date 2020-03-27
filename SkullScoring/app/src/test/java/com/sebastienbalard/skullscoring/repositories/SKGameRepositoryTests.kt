@@ -19,9 +19,7 @@ package com.sebastienbalard.skullscoring.repositories
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.sebastienbalard.skullscoring.data.SKDatabase
-import com.sebastienbalard.skullscoring.data.SKGameDao
-import com.sebastienbalard.skullscoring.data.SKPlayerDao
+import com.sebastienbalard.skullscoring.data.*
 import com.sebastienbalard.skullscoring.di.commonTestModule
 import com.sebastienbalard.skullscoring.di.dataTestModule
 import com.sebastienbalard.skullscoring.models.SKPlayer
@@ -44,6 +42,8 @@ import org.koin.test.KoinTest
 import org.koin.test.KoinTestRule
 import org.koin.test.inject
 
+fun void() {}
+
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class SKGameRepositoryTests : KoinTest {
@@ -64,13 +64,30 @@ class SKGameRepositoryTests : KoinTest {
     private val repository by inject<SKGameRepository>()
     private val gameDao by inject<SKGameDao>()
     private val playerDao by inject<SKPlayerDao>()
+    private val turnDao by inject<SKTurnDao>()
+    private val turnPlayerJoinDao by inject<SKTurnPlayerJoinDao>()
 
     @Test
     fun testCreateGame() = runBlocking {
-        val players = playerDao.findAll()
+
+        val players = playerDao.getAll()
+
         val savedGame = repository.createGame(players)
-        savedGame.id shouldBeGreaterThan 0
+        val gameId = savedGame.id
+        gameId shouldBeGreaterThan 0
+
+        val turns = turnDao.findByGame(gameId)
+        turns.size shouldBeEqualTo 10
+        turns.map { turn ->
+            val results = turnPlayerJoinDao.findResultByTurn(turn.id)
+            results.size shouldBeEqualTo players.size
+        }
+
         repository.deleteGame(savedGame)
+
+        turnDao.getCountByGame(gameId) shouldBeEqualTo 0
+
+        void()
     }
 
     @Before
@@ -79,8 +96,7 @@ class SKGameRepositoryTests : KoinTest {
         runBlocking {
             gameDao.getAllCount() shouldBeEqualTo 0
             playerDao.getAllCount() shouldBeEqualTo 0
-            playerDao.insert(SKPlayer("Sébastien"))
-            playerDao.insert(SKPlayer("Arnaud"))
+            playerDao.insert(SKPlayer("Sébastien"), SKPlayer("Arnaud"))
         }
     }
 

@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring
+package com.sebastienbalard.skullscoring.ui.game
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.sebastienbalard.skullscoring.R
+import timber.log.Timber
 
-class SKSplashActivity : AppCompatActivity() {
+class SKGameCreationActivity : AppCompatActivity(R.layout.activity_game_creation) {
+
+    companion object {
+        fun getIntent(context: Context): Intent {
+            return Intent(
+                context, SKGameCreationActivity::class.java
+            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+        Timber.v("onCreate")
     }
 }

@@ -16,27 +16,15 @@
 
 package com.sebastienbalard.skullscoring
 
-import android.app.Application
-import com.sebastienbalard.skullscoring.di.skullScoringApp
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import android.util.Log
+import org.jetbrains.annotations.NotNull
 import timber.log.Timber
-import timber.log.Timber.DebugTree
 
-
-open class SKApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(DebugTree())
-        } else {
-            Timber.plant(ReleaseTree())
-        }
-        Timber.v("onCreate")
-        startKoin {
-            androidContext(this@SKApplication)
-            modules(skullScoringApp)
+class ReleaseTree : @NotNull Timber.Tree() {
+    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+        if (priority == Log.ERROR || priority == Log.WARN) {
+            //TODO: send to crashlytics
         }
     }
+
 }

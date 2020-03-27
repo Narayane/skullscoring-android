@@ -25,11 +25,11 @@ import java.util.*
 interface SKGameDao : SKBaseDao<SKGame> {
 
     @Query("SELECT * FROM sk_games")
-    suspend fun findAll(): List<SKGame>
-
-    @Query("SELECT * FROM sk_games WHERE start_date = :date")
-    suspend fun findByDate(date: Date): SKGame
+    suspend fun getAll(): List<SKGame>
 
     @Query("SELECT COUNT(*) FROM sk_games")
     suspend fun getAllCount(): Int
+
+    @Query("SELECT * FROM sk_games WHERE start_date = :date")
+    suspend fun findByDate(date: Date): SKGame
 }
