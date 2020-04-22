@@ -14,7 +14,9 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
         <item name="buttonStyle">@style/AppTheme.Widget.Button</item>
+        <item name="editTextStyle">@style/AppTheme.Widget.EditText</item>
     </style>
 
     <style name="AppTheme.AppBar" parent="Theme.AppCompat.Light">

@@ -17,10 +17,7 @@
 package com.sebastienbalard.skullscoring.models
 
 import androidx.annotation.NonNull
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
+import androidx.room.*
 import java.util.*
 
 @Entity(
@@ -35,6 +32,9 @@ data class SKGame(
     @ColumnInfo(name = "pk_game_id")
     @NonNull
     var id: Long = 0
+
+    @Ignore
+    lateinit var players: List<SKPlayer>
 
     constructor() : this(Date())
 

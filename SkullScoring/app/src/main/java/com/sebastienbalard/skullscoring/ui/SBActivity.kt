@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
+package com.sebastienbalard.skullscoring.ui
+
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.ContentView
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.sebastienbalard.skullscoring.R
 import kotlinx.android.synthetic.main.widget_appbar.*
 
-open class SBActivity : AppCompatActivity() {
+open class SBActivity(@LayoutRes contentLayoutId: Int): AppCompatActivity(contentLayoutId) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,8 +36,8 @@ open class SBActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.anim_activity_enter, R.anim.anim_activity_exit)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
                 true

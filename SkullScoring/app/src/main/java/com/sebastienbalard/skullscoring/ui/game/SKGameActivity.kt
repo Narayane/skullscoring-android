@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.ui.home
+package com.sebastienbalard.skullscoring.ui.game
 
 import android.content.Context
 import android.content.Intent
@@ -28,41 +28,44 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
-import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.SBActivity
-import com.sebastienbalard.skullscoring.ui.game.SKGameCreationActivity
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.item_game.view.*
+import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.item_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class SKHomeActivity : SBActivity(R.layout.activity_home) {
+open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
-    internal val homeViewModel: SKHomeViewModel by viewModel()
+    internal val gameViewModel: SKGameViewModel by viewModel()
 
-    private lateinit var gameListAdapter: GameListAdapter
+    private lateinit var playerListAdapter: PlayerListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = getString(R.string.app_name)
 
+        initToolbar()
         initUI()
         initObservers()
 
-        homeViewModel.loadGames()
+        intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+            gameViewModel.loadGame(gameId)
+        }
     }
 
     private fun initObservers() {
-        homeViewModel.events.observe(this, Observer { event ->
+        gameViewModel.events.observe(this, Observer { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
-                    is EventGameList -> {
-                        Timber.d("games count: ${games.size}")
-                        gameListAdapter.games = games
-                        gameListAdapter.notifyDataSetChanged()
+                    is EventGame -> {
+                        Timber.d("load a game with ${game.players.size} players")
+                        toolbar.title =
+                            "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
+                        playerListAdapter.players = game.players
+                        playerListAdapter.notifyDataSetChanged()
                     }
                     else -> {
                     }
@@ -72,37 +75,31 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
     }
 
     private fun initUI() {
-        gameListAdapter = GameListAdapter(this, listOf())
-        recycleViewHome.layoutManager = LinearLayoutManager(this)
-        recycleViewHome.itemAnimator = DefaultItemAnimator()
-        recycleViewHome.adapter = gameListAdapter
-
-        fabHome.setOnClickListener {
-            startActivity(
-                SKGameCreationActivity.getIntent(
-                    this
-                )
-            )
-        }
+        playerListAdapter = PlayerListAdapter(listOf())
+        recyclerViewGame.layoutManager = LinearLayoutManager(this)
+        recyclerViewGame.itemAnimator = DefaultItemAnimator()
+        recyclerViewGame.adapter = playerListAdapter
     }
 
     companion object {
-        fun getIntent(context: Context): Intent {
+        const val EXTRA_GAME_ID = "EXTRA_GAME_ID"
+
+        fun getIntent(context: Context, gameId: Long): Intent {
             return Intent(
-                context, SKHomeActivity::class.java
-            ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context, SKGameActivity::class.java
+            ).putExtra(EXTRA_GAME_ID, gameId)
         }
     }
 
-    private class GameListAdapter(val context: Context, var games: List<SKGame>) :
-        RecyclerView.Adapter<GameListAdapter.ViewHolder>() {
+    private class PlayerListAdapter(var players: List<SKPlayer>) :
+        RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
 
         override fun onCreateViewHolder(
             parent: ViewGroup, viewType: Int
         ): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_game, parent, false
+                    R.layout.item_player, parent, false
                 )
             )
         }
@@ -110,15 +107,15 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         override fun onBindViewHolder(
             viewHolder: ViewHolder, position: Int
         ) {
-            viewHolder.bind(context, games[position])
+            viewHolder.bind(players[position])
         }
 
-        override fun getItemCount() = games.size
+        override fun getItemCount() = players.size
 
         class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-            fun bind(context: Context, game: SKGame) {
-                itemView.textViewGameDate.text = game.startDate.formatDateTime(context)
+            fun bind(player: SKPlayer) {
+                itemView.textViewPlayerName.text = player.name
             }
         }
     }

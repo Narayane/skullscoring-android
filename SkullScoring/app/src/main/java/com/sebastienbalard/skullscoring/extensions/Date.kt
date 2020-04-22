@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.data
+package com.sebastienbalard.skullscoring.extensions
 
-import androidx.room.Dao
-import androidx.room.Query
-import com.sebastienbalard.skullscoring.models.SKGame
+import android.content.Context
+import android.text.format.DateFormat
 import java.util.*
 
-@Dao
-interface SKGameDao : SKBaseDao<SKGame> {
+fun Date.formatDate(context: Context): String {
+    return DateFormat.getDateFormat(context).format(this)
+}
 
-    @Query("SELECT * FROM sk_games")
-    suspend fun getAll(): List<SKGame>
+fun Date.formatTime(context: Context): String {
+    return DateFormat.getTimeFormat(context).format(this)
+}
 
-    @Query("SELECT COUNT(*) FROM sk_games")
-    suspend fun getAllCount(): Int
-
-    @Query("SELECT * FROM sk_games WHERE pk_game_id = :id")
-    suspend fun findById(id: Long): SKGame
-
-    @Query("SELECT * FROM sk_games WHERE start_date = :date")
-    suspend fun findByDate(date: Date): SKGame
+fun Date.formatDateTime(context: Context): String {
+    return "${formatDate(context)} ${formatTime(context)}"
 }

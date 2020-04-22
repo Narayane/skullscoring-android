@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.data
+package com.sebastienbalard.skullscoring.ui.home
 
-import androidx.room.Dao
-import androidx.room.Query
+import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.models.SKGame
-import java.util.*
+import com.sebastienbalard.skullscoring.repositories.SKGameRepository
+import com.sebastienbalard.skullscoring.ui.SBEvent
+import com.sebastienbalard.skullscoring.ui.SBViewModel
+import kotlinx.coroutines.launch
 
-@Dao
-interface SKGameDao : SKBaseDao<SKGame> {
+data class EventGameList(val games: List<SKGame>) : SBEvent()
 
-    @Query("SELECT * FROM sk_games")
-    suspend fun getAll(): List<SKGame>
+open class SKHomeViewModel(
+    private val gameRepository: SKGameRepository
+) : SBViewModel() {
 
-    @Query("SELECT COUNT(*) FROM sk_games")
-    suspend fun getAllCount(): Int
-
-    @Query("SELECT * FROM sk_games WHERE pk_game_id = :id")
-    suspend fun findById(id: Long): SKGame
-
-    @Query("SELECT * FROM sk_games WHERE start_date = :date")
-    suspend fun findByDate(date: Date): SKGame
+    open fun loadGames() = viewModelScope.launch {
+        _events.postValue(EventGameList(gameRepository.loadGames()))
+    }
 }

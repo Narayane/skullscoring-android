@@ -16,19 +16,19 @@
 
 package com.sebastienbalard.skullscoring.ui.splash
 
+import com.sebastienbalard.skullscoring.ui.SBActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.sebastienbalard.skullscoring.R
-import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameCreationActivity
+import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-open class SKSplashActivity : AppCompatActivity(R.layout.activity_splash) {
+open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
 
     internal val viewModel: SKSplashViewModel by viewModel()
 

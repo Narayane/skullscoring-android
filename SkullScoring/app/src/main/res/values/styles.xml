@@ -2,15 +2,23 @@
 
     <style name="AppTheme.Widget.Button" parent="@style/Widget.AppCompat.Button">
         <item name="android:padding">16dp</item>
-        <!--<item name="android:backgroundTint">@color/bic_selector_button_background</item>-->
+        <item name="android:backgroundTint">@color/selector_button_background</item>
         <item name="android:textSize">@dimen/fontSizeBody</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.Widget.Button.Borderless" parent="@style/Widget.AppCompat.Button.Borderless">
-        <item name="android:padding">16dp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/fontSizeSubhead</item>
+    <style name="AppTheme.Widget.Button.White" parent="@style/AppTheme.Widget.Button">
+        <item name="android:backgroundTint">@color/selector_button_white_background</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.Widget.EditText"  parent="@android:style/Widget.Holo.EditText">
+        <item name="android:textSize">@dimen/fontSizeBody</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:backgroundTint">@android:color/white</item>
     </style>
 
 </resources>

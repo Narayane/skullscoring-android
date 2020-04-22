@@ -14,25 +14,15 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.data
+package com.sebastienbalard.skullscoring.extensions
 
-import androidx.room.Dao
-import androidx.room.Query
-import com.sebastienbalard.skullscoring.models.SKGame
-import java.util.*
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 
-@Dao
-interface SKGameDao : SKBaseDao<SKGame> {
-
-    @Query("SELECT * FROM sk_games")
-    suspend fun getAll(): List<SKGame>
-
-    @Query("SELECT COUNT(*) FROM sk_games")
-    suspend fun getAllCount(): Int
-
-    @Query("SELECT * FROM sk_games WHERE pk_game_id = :id")
-    suspend fun findById(id: Long): SKGame
-
-    @Query("SELECT * FROM sk_games WHERE start_date = :date")
-    suspend fun findByDate(date: Date): SKGame
+fun EditText.setFocus(context: Context) {
+    requestFocus()
+    val imm: InputMethodManager =
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT)
 }

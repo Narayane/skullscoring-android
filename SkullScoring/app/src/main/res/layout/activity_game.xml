@@ -4,16 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.game.SKGameCreationActivity">
+    tools:context=".ui.game.SKGameActivity">
 
     <include layout="@layout/widget_appbar" />
 
-    <FrameLayout
-        android:id="@+id/layoutGameCreation"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewGame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <include layout="@layout/scene_game_onboarding" />
-    </FrameLayout>
+        app:layout_constrainedHeight="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -33,6 +33,16 @@ class SKGameRepository(
         return gameDao.getAllCount() > 0
     }
 
+    suspend fun loadGame(gameId: Long): SKGame {
+        val game = gameDao.findById(gameId)
+        game.players = gamePlayerJoinDao.findPlayerByGame(gameId).sortedBy { it.name }
+        return game
+    }
+
+    suspend fun loadGames(): List<SKGame> {
+        return gameDao.getAll().sortedByDescending { it.startDate }
+    }
+
     suspend fun createGame(players: List<SKPlayer>): SKGame {
         val newGame = SKGame()
         gameDao.insert(newGame)
