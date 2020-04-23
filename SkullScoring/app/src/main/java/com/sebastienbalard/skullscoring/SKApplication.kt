@@ -21,15 +21,13 @@ import com.sebastienbalard.skullscoring.di.skullScoringApp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import timber.log.Timber
-import timber.log.Timber.DebugTree
-
 
 open class SKApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
-            Timber.plant(DebugTree())
+            Timber.plant(SKDebugTree())
         } else {
             Timber.plant(ReleaseTree())
         }

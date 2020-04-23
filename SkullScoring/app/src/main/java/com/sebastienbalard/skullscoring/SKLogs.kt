@@ -20,6 +20,14 @@ import android.util.Log
 import org.jetbrains.annotations.NotNull
 import timber.log.Timber
 
+class SKDebugTree : Timber.DebugTree() {
+
+    override fun createStackElementTag(element: StackTraceElement): String? {
+        return String.format("### - %s",
+            super.createStackElementTag(element))
+    }
+}
+
 class ReleaseTree : @NotNull Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         if (priority == Log.ERROR || priority == Log.WARN) {

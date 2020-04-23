@@ -30,7 +30,11 @@ import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.game.EventGame
+import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameCreationActivity
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.item_game.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -50,6 +54,11 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
 
         initUI()
         initObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.v("onResume")
 
         homeViewModel.loadGames()
     }
@@ -59,9 +68,13 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
+                    is EventGame -> {
+                        Timber.d("open game of ${game.startDate.formatDateTime(this@SKHomeActivity)}")
+                        startActivity(SKGameActivity.getIntent(this@SKHomeActivity, game.id))
+                    }
                     is EventGameList -> {
                         Timber.d("games count: ${games.size}")
-                        gameListAdapter.games = games
+                        gameListAdapter.elements = games
                         gameListAdapter.notifyDataSetChanged()
                     }
                     else -> {
@@ -76,6 +89,24 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         recycleViewHome.layoutManager = LinearLayoutManager(this)
         recycleViewHome.itemAnimator = DefaultItemAnimator()
         recycleViewHome.adapter = gameListAdapter
+        recycleViewHome.addOnItemTouchListener(
+            SBRecyclerViewOnItemTouchListener(this,
+                recycleViewHome,
+                object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
+                    override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                        Timber.v("onClick")
+                        homeViewModel.loadGame(gameListAdapter.elements[position])
+                    }
+
+                    override fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+
+                    }
+
+                    override fun isEnabled(position: Int): Boolean {
+                        return true
+                    }
+                })
+        )
 
         fabHome.setOnClickListener {
             startActivity(
@@ -94,12 +125,9 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         }
     }
 
-    private class GameListAdapter(val context: Context, var games: List<SKGame>) :
-        RecyclerView.Adapter<GameListAdapter.ViewHolder>() {
+    private class GameListAdapter(context: Context, games: List<SKGame>) : SBRecyclerViewAdapter<SKGame, GameListAdapter.ViewHolder>(context, games) {
 
-        override fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int
-        ): ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_game, parent, false
@@ -107,19 +135,12 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
             )
         }
 
-        override fun onBindViewHolder(
-            viewHolder: ViewHolder, position: Int
-        ) {
-            viewHolder.bind(context, games[position])
-        }
+        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKGame>(itemView) {
 
-        override fun getItemCount() = games.size
-
-        class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-            fun bind(context: Context, game: SKGame) {
-                itemView.textViewGameDate.text = game.startDate.formatDateTime(context)
+            override fun bind(context: Context, element: SKGame) {
+                itemView.textViewGameDate.text = element.startDate.formatDateTime(context)
             }
         }
+
     }
 }

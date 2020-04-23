@@ -25,11 +25,11 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.item_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -61,10 +61,10 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
                     is EventGame -> {
-                        Timber.d("load a game with ${game.players.size} players")
+                        Timber.d("player count: ${game.players.size}")
                         toolbar.title =
                             "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
-                        playerListAdapter.players = game.players
+                        playerListAdapter.elements = game.players
                         playerListAdapter.notifyDataSetChanged()
                     }
                     else -> {
@@ -75,7 +75,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     }
 
     private fun initUI() {
-        playerListAdapter = PlayerListAdapter(listOf())
+        playerListAdapter = PlayerListAdapter(this, listOf())
         recyclerViewGame.layoutManager = LinearLayoutManager(this)
         recyclerViewGame.itemAnimator = DefaultItemAnimator()
         recyclerViewGame.adapter = playerListAdapter
@@ -87,16 +87,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         fun getIntent(context: Context, gameId: Long): Intent {
             return Intent(
                 context, SKGameActivity::class.java
-            ).putExtra(EXTRA_GAME_ID, gameId)
+            ).putExtra(EXTRA_GAME_ID, gameId).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         }
     }
 
-    private class PlayerListAdapter(var players: List<SKPlayer>) :
-        RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
+        SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
 
-        override fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int
-        ): ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_player, parent, false
@@ -104,18 +102,10 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
             )
         }
 
-        override fun onBindViewHolder(
-            viewHolder: ViewHolder, position: Int
-        ) {
-            viewHolder.bind(players[position])
-        }
+        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-        override fun getItemCount() = players.size
-
-        class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-            fun bind(player: SKPlayer) {
-                itemView.textViewPlayerName.text = player.name
+            override fun bind(context: Context, element: SKPlayer) {
+                itemView.textViewPlayerName.text = element.name
             }
         }
     }

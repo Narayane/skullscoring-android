@@ -21,6 +21,7 @@ import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.ui.SBEvent
 import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.game.EventGame
 import kotlinx.coroutines.launch
 
 data class EventGameList(val games: List<SKGame>) : SBEvent()
@@ -28,6 +29,10 @@ data class EventGameList(val games: List<SKGame>) : SBEvent()
 open class SKHomeViewModel(
     private val gameRepository: SKGameRepository
 ) : SBViewModel() {
+
+    open fun loadGame(game: SKGame) = viewModelScope.launch {
+        _events.postValue(EventGame(gameRepository.loadGame(game.id)))
+    }
 
     open fun loadGames() = viewModelScope.launch {
         _events.postValue(EventGameList(gameRepository.loadGames()))

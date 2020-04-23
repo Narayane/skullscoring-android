@@ -34,7 +34,7 @@ import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.SBActivity
-import kotlinx.android.extensions.LayoutContainer
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game_creation.*
 import kotlinx.android.synthetic.main.item_player.view.*
 import kotlinx.android.synthetic.main.scene_game_onboarding.*
@@ -77,7 +77,7 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
         })
 
         gameViewModel.players.observe(this, Observer { players ->
-            playerListAdapter.players = players
+            playerListAdapter.elements = players
             playerListAdapter.notifyDataSetChanged()
         })
     }
@@ -110,7 +110,7 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
     }
 
     private fun initScenePlayerList() {
-        playerListAdapter = PlayerListAdapter(listOf())
+        playerListAdapter = PlayerListAdapter(this, listOf())
         scenePlayerList = Scene.getSceneForLayout(
             layoutGameCreation, R.layout.scene_game_player_list, this
         )
@@ -142,12 +142,10 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
         }
     }
 
-    private class PlayerListAdapter(var players: List<SKPlayer>) :
-        RecyclerView.Adapter<PlayerListAdapter.ViewHolder>() {
+    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
+        SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
 
-        override fun onCreateViewHolder(
-            parent: ViewGroup, viewType: Int
-        ): ViewHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
                     R.layout.item_player, parent, false
@@ -155,18 +153,10 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
             )
         }
 
-        override fun onBindViewHolder(
-            viewHolder: ViewHolder, position: Int
-        ) {
-            viewHolder.bind(players[position])
-        }
+        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-        override fun getItemCount() = players.size
-
-        class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-            fun bind(player: SKPlayer) {
-                itemView.textViewPlayerName.text = player.name
+            override fun bind(context: Context, element: SKPlayer) {
+                itemView.textViewPlayerName.text = element.name
             }
         }
     }
