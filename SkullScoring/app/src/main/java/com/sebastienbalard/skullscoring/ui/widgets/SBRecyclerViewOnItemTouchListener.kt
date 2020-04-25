@@ -29,7 +29,9 @@ open class SBRecyclerViewOnItemTouchListener(
 
     interface OnItemTouchListener {
         fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int)
-        fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int)
+        fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+            // optional
+        }
         fun isEnabled(position: Int): Boolean
     }
 

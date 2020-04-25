@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="fontSizeHeadline">24sp</dimen>
-    <dimen name="fontSizeSubhead">17sp</dimen>
-    <dimen name="fontSizeBody">14sp</dimen>
-    <dimen name="fontSizeCaption">11sp</dimen>
+    <dimen name="textSizeHeadline">24sp</dimen>
+    <dimen name="textSizeSubhead">17sp</dimen>
+    <dimen name="textSizeBody">14sp</dimen>
+    <dimen name="textSizeCaption">11sp</dimen>
+    <dimen name="marginXL">64dp</dimen>
+    <dimen name="marginL">32dp</dimen>
+    <dimen name="marginM">16dp</dimen>
+    <dimen name="marginS">8dp</dimen>
+    <dimen name="marginXS">4dp</dimen>
 </resources>

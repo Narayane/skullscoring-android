@@ -37,4 +37,8 @@ class SKPlayerRepository(
     suspend fun findPlayerByGame(game: SKGame): List<SKPlayer> {
         return gamePlayerJoinDao.findPlayerByGame(game.id)
     }
+
+    suspend fun findAll(): List<SKPlayer> {
+        return playerDao.getAll().sortedBy { it.name }
+    }
 }

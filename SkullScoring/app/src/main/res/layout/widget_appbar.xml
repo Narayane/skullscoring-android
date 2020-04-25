@@ -10,7 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        app:titleMarginStart="16dp">
+        app:titleMarginStart="@dimen/marginM">
 
     </androidx.appcompat.widget.Toolbar>
 

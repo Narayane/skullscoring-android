@@ -16,25 +16,34 @@
 
 package com.sebastienbalard.skullscoring.ui.game
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
+import com.sebastienbalard.skullscoring.ui.EventError
 import com.sebastienbalard.skullscoring.ui.SBEvent
 import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.onboarding.EventGameCreated
 import kotlinx.coroutines.launch
 
-data class EventGame(val game: SKGame) : SBEvent()
+data class EventPlayerList(val players: List<SKPlayer>) : SBEvent()
 
-open class SKGameViewModel(
-    private val gameRepository: SKGameRepository
+open class SKPlayerSearchViewModel(
+    private val playerRepository: SKPlayerRepository, private val gameRepository: SKGameRepository
 ) : SBViewModel() {
 
-    open fun loadGame(gameId: Long) = viewModelScope.launch {
-        val game = gameRepository.loadGame(gameId)
-        _events.value = EventGame(game)
+    open fun loadPlayers() = viewModelScope.launch {
+        val players = playerRepository.findAll()
+        _events.value = EventPlayerList(players)
+    }
+
+    open fun createGame(players: List<SKPlayer>) = viewModelScope.launch {
+        if (players.count() < 2) {
+            _events.value = EventError(R.string.error_not_enough_selected_players)
+        } else {
+            val game = gameRepository.createGame(players)
+            _events.value = EventGameCreated(game.id)
+        }
     }
 }

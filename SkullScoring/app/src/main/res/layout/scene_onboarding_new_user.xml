@@ -1,31 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/sceneGameOnboarding"
+    android:id="@+id/sceneOnboardingNewPlayer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="@dimen/marginM">
 
     <TextView
-        android:id="@+id/textViewOnboarding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/game_onboarding_text"
+        android:layout_marginBottom="@dimen/marginM"
+        android:text="@string/game_new_player_text"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/editTextOnboardingNewPlayer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextOnboardingNewPlayer"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:inputType="textCapWords|textPersonName|textNoSuggestions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonStartOnboarding"
+        android:id="@+id/buttonOnboardingCreatePlayer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:drawableStart="@drawable/ic_person_add"
-        android:drawablePadding="8dp"
-        android:text="@string/add"
+        android:layout_marginTop="@dimen/marginM"
+        android:text="@string/validate"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOnboarding" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextOnboardingNewPlayer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

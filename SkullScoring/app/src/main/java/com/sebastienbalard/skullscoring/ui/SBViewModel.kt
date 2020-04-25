@@ -16,7 +16,6 @@
 
 package com.sebastienbalard.skullscoring.ui
 
-import androidx.annotation.CallSuper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,9 +25,7 @@ object StateLoading : SBState()
 data class StateError(val error: Throwable) : SBState()
 
 open class SBEvent
-object EventSuccess : SBEvent()
-data class EventMessage(val message: String) : SBEvent()
-data class EventFailure(val error: Throwable) : SBEvent()
+open class EventError(val messageResId: Int) : SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 

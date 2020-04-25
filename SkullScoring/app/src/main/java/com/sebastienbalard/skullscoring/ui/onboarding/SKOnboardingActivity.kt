@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.ui.game
+package com.sebastienbalard.skullscoring.ui.onboarding
 
 import android.content.Context
 import android.content.Intent
@@ -34,41 +34,53 @@ import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.game.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
-import kotlinx.android.synthetic.main.activity_game_creation.*
+import kotlinx.android.synthetic.main.activity_onboarding.*
 import kotlinx.android.synthetic.main.item_player.view.*
-import kotlinx.android.synthetic.main.scene_game_onboarding.*
+import kotlinx.android.synthetic.main.scene_onboarding_start.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) {
+open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
 
-    internal val gameViewModel: SKGameViewModel by viewModel()
+    internal val onboardingViewModel: SKOnboardingViewModel by viewModel()
 
     private lateinit var sceneNewPlayer: Scene
     private lateinit var scenePlayerList: Scene
     private lateinit var playerListAdapter: PlayerListAdapter
+    private var hasAtLeastOneGame = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = getString(R.string.new_game)
+        toolbar.title = getString(R.string.first_game)
 
         initUI()
         initObservers()
+
+        onboardingViewModel.load()
     }
 
     private fun initObservers() {
-        gameViewModel.events.observe(this, Observer { event ->
+        onboardingViewModel.events.observe(this, Observer { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
+                    is EventGameAtLeastOne -> {
+                        this@SKOnboardingActivity.hasAtLeastOneGame = hasAtLeastOneGame
+                    }
                     is EventPlayerCreated -> {
                         TransitionManager.go(scenePlayerList)
                     }
                     is EventGameCreated -> {
-                        startActivity(SKGameActivity.getIntent(this@SKGameCreationActivity, gameId))
+                        startActivity(
+                            SKGameActivity.getIntent(
+                                this@SKOnboardingActivity,
+                                gameId
+                            )
+                        )
                     }
                     else -> {
                     }
@@ -76,7 +88,7 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
             }
         })
 
-        gameViewModel.players.observe(this, Observer { players ->
+        onboardingViewModel.players.observe(this, Observer { players ->
             playerListAdapter.elements = players
             playerListAdapter.notifyDataSetChanged()
         })
@@ -86,50 +98,70 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
         initSceneNewPlayer()
         initScenePlayerList()
 
-        buttonStartOnboarding.setOnClickListener {
-            TransitionManager.go(sceneNewPlayer)
+        buttonOnboardingStart.setOnClickListener {
+            if (hasAtLeastOneGame) {
+                startActivity(
+                    SKPlayerSearchActivity.getIntent(
+                        this@SKOnboardingActivity
+                    )
+                )
+            } else {
+                TransitionManager.go(sceneNewPlayer)
+            }
         }
     }
 
     private fun initSceneNewPlayer() {
         sceneNewPlayer =
-            Scene.getSceneForLayout(layoutGameCreation, R.layout.scene_game_new_user, this)
+            Scene.getSceneForLayout(layoutOnboarding, R.layout.scene_onboarding_new_user, this)
         sceneNewPlayer.setEnterAction {
             val editTextNewPlayer =
-                sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextNewPlayer)
+                sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextOnboardingNewPlayer)
             editTextNewPlayer.setFocus(this)
 
             val buttonCreatePlayer =
-                sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonCreatePlayer)
+                sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)
             buttonCreatePlayer.setOnClickListener {
                 if (editTextNewPlayer.text.isNotEmpty()) {
-                    gameViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
+                    onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
                 }
             }
         }
     }
 
     private fun initScenePlayerList() {
-        playerListAdapter = PlayerListAdapter(this, listOf())
+        playerListAdapter =
+            PlayerListAdapter(
+                this,
+                listOf()
+            )
         scenePlayerList = Scene.getSceneForLayout(
-            layoutGameCreation, R.layout.scene_game_player_list, this
+            layoutOnboarding, R.layout.scene_onboarding_player_list, this
         )
         scenePlayerList.setEnterAction {
             val recyclerViewPlayers =
-                scenePlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recyclerViewPlayers)
+                scenePlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recyclerViewOnboarding)
             recyclerViewPlayers.layoutManager = LinearLayoutManager(this)
             recyclerViewPlayers.itemAnimator = DefaultItemAnimator()
             recyclerViewPlayers.adapter = playerListAdapter
 
             val buttonAddPlayer =
-                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonAddPlayer)
+                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingAddPlayer)
             buttonAddPlayer.setOnClickListener {
-                TransitionManager.go(sceneNewPlayer)
+                if (hasAtLeastOneGame) {
+                    startActivity(
+                        SKPlayerSearchActivity.getIntent(
+                            this@SKOnboardingActivity
+                        )
+                    )
+                } else {
+                    TransitionManager.go(sceneNewPlayer)
+                }
             }
 
-            val buttonPlayGame = scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonPlayGame)
+            val buttonPlayGame = scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingPlayGame)
             buttonPlayGame.setOnClickListener {
-                gameViewModel.createGame()
+                onboardingViewModel.createGame()
             }
         }
     }
@@ -137,7 +169,7 @@ open class SKGameCreationActivity : SBActivity(R.layout.activity_game_creation) 
     companion object {
         fun getIntent(context: Context): Intent {
             return Intent(
-                context, SKGameCreationActivity::class.java
+                context, SKOnboardingActivity::class.java
             ).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         }
     }

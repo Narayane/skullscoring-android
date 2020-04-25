@@ -22,7 +22,7 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.Observer
 import com.sebastienbalard.skullscoring.R
-import com.sebastienbalard.skullscoring.ui.game.SKGameCreationActivity
+import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingActivity
 import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,7 +53,7 @@ open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
                     is EventSplashStartOnboarding -> {
                         Handler(Looper.getMainLooper()).postDelayed({
                             startActivity(
-                                SKGameCreationActivity.getIntent(
+                                SKOnboardingActivity.getIntent(
                                     this@SKSplashActivity
                                 )
                             )

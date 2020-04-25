@@ -32,7 +32,7 @@ import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.game.EventGame
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
-import com.sebastienbalard.skullscoring.ui.game.SKGameCreationActivity
+import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_home.*
@@ -98,10 +98,6 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                         homeViewModel.loadGame(gameListAdapter.elements[position])
                     }
 
-                    override fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
-
-                    }
-
                     override fun isEnabled(position: Int): Boolean {
                         return true
                     }
@@ -110,9 +106,7 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
 
         fabHome.setOnClickListener {
             startActivity(
-                SKGameCreationActivity.getIntent(
-                    this
-                )
+                SKPlayerSearchActivity.getIntent(this)
             )
         }
     }
@@ -125,7 +119,8 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         }
     }
 
-    private class GameListAdapter(context: Context, games: List<SKGame>) : SBRecyclerViewAdapter<SKGame, GameListAdapter.ViewHolder>(context, games) {
+    private class GameListAdapter(context: Context, games: List<SKGame>) :
+        SBRecyclerViewAdapter<SKGame, GameListAdapter.ViewHolder>(context, games) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(

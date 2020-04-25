@@ -29,7 +29,7 @@ class SKGameRepository(
     private val turnPlayerJoinDao: SKTurnPlayerJoinDao
 ) {
 
-    suspend fun hasGame(): Boolean {
+    suspend fun hasAtLeastOneGame(): Boolean {
         return gameDao.getAllCount() > 0
     }
 

@@ -32,7 +32,7 @@ open class SKSplashViewModel(private val gameRepository: SKGameRepository) : SBV
 
     open fun loadConfig() = viewModelScope.launch {
         _states.value = StateSplashConfig
-        if (gameRepository.hasGame()) {
+        if (gameRepository.hasAtLeastOneGame()) {
             _events.value = EventSplashGoToHome
         } else {
             _events.value = EventSplashStartOnboarding

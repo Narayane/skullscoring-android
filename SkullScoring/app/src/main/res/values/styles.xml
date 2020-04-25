@@ -2,8 +2,10 @@
 
     <style name="AppTheme.Widget.Button" parent="@style/Widget.AppCompat.Button">
         <item name="android:padding">16dp</item>
+        <item name="android:minWidth">120dp</item>
+        <item name="android:minHeight">60dp</item>
         <item name="android:backgroundTint">@color/selector_button_background</item>
-        <item name="android:textSize">@dimen/fontSizeBody</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -14,11 +16,15 @@
     </style>
 
     <style name="AppTheme.Widget.EditText"  parent="@android:style/Widget.Holo.EditText">
-        <item name="android:textSize">@dimen/fontSizeBody</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
         <item name="android:singleLine">true</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:backgroundTint">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.Widget.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:buttonTint">@android:color/white</item>
     </style>
 
 </resources>
