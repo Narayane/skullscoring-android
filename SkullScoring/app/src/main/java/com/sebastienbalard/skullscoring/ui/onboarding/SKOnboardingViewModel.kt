@@ -19,13 +19,11 @@ package com.sebastienbalard.skullscoring.ui.onboarding
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.ui.EventGameAtLeastOne
-import com.sebastienbalard.skullscoring.ui.EventGameCreated
-import com.sebastienbalard.skullscoring.ui.EventPlayerCreated
-import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
 
 open class SKOnboardingViewModel(
@@ -42,12 +40,16 @@ open class SKOnboardingViewModel(
     }
 
     open fun createPlayer(name: String) = viewModelScope.launch {
-        _players.postValue(mutableListOf<SKPlayer>().apply {
-            addAll(_players.value!!)
-            add(playerRepository.createPlayer(name))
-            sortBy { it.name }
-        })
-        _events.value = EventPlayerCreated
+        if (name.isEmpty()) {
+            _events.value = EventError(R.string.error_player_empty_name)
+        } else {
+            _players.postValue(mutableListOf<SKPlayer>().apply {
+                addAll(_players.value!!)
+                add(playerRepository.createPlayer(name))
+                sortBy { it.name }
+            })
+            _events.value = EventPlayerCreated
+        }
     }
 
     open fun load() = viewModelScope.launch {

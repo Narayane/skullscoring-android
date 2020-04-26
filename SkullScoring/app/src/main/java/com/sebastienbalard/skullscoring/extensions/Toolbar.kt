@@ -16,13 +16,13 @@
 
 package com.sebastienbalard.skullscoring.extensions
 
-import android.content.Context
 import android.graphics.Color
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
 
-fun Toolbar.showSnackBarError(message: String, duration: Int
+fun Toolbar.showSnackBarError(
+    message: String, duration: Int = Snackbar.LENGTH_SHORT
 ) {
     Snackbar.make(this, message, duration).apply {
         view.setBackgroundColor(Color.RED)

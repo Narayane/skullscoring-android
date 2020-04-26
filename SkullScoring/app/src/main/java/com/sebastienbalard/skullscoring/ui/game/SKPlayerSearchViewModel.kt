@@ -34,16 +34,20 @@ open class SKPlayerSearchViewModel(
     }
 
     open fun createPlayer(name: String) = viewModelScope.launch {
-        playerRepository.findPlayerByName(name)?.let {
-            _events.value = EventErrorWithArg(R.string.error_player_already_exists, it.name)
-        } ?: playerRepository.createPlayer(name).apply {
-            _events.value = EventPlayer(this)
+        if (name.isEmpty()) {
+            _events.value = EventError(R.string.error_player_empty_name)
+        } else {
+            playerRepository.findPlayerByName(name)?.let {
+                _events.value = EventErrorWithArg(R.string.error_player_already_exists, it.name)
+            } ?: playerRepository.createPlayer(name).apply {
+                _events.value = EventPlayer(this)
+            }
         }
     }
 
     open fun createGame(players: List<SKPlayer>) = viewModelScope.launch {
         if (players.count() < 2) {
-            _events.value = EventError(R.string.error_not_enough_selected_players)
+            _events.value = EventError(R.string.error_players_not_enough_selected)
         } else {
             val game = gameRepository.createGame(players)
             _events.value = EventGameCreated(game.id)

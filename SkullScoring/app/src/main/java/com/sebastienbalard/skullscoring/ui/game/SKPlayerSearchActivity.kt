@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
 import androidx.transition.TransitionManager
-import com.google.android.material.snackbar.Snackbar
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.resetFocus
 import com.sebastienbalard.skullscoring.extensions.setFocus
@@ -39,7 +38,6 @@ import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
-import kotlinx.android.synthetic.main.activity_onboarding.*
 import kotlinx.android.synthetic.main.activity_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -129,10 +127,10 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                         )
                     }
                     is EventError -> toolbar.showSnackBarError(
-                        getString(messageResId), Snackbar.LENGTH_SHORT
+                        getString(messageResId)
                     )
                     is EventErrorWithArg -> toolbar.showSnackBarError(
-                        getString(messageResId, arg), Snackbar.LENGTH_SHORT
+                        getString(messageResId, arg)
                     )
                     else -> {
                     }
@@ -202,8 +200,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                                 )
                             if (!isEnabled) {
                                 toolbar.showSnackBarError(
-                                    getString(R.string.error_too_many_selected_players),
-                                    Snackbar.LENGTH_SHORT
+                                    getString(R.string.error_players_too_many_selected)
                                 )
                             }
                             return isEnabled

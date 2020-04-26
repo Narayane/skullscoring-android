@@ -32,11 +32,9 @@ import androidx.transition.Scene
 import androidx.transition.TransitionManager
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.setFocus
+import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKPlayer
-import com.sebastienbalard.skullscoring.ui.EventGameAtLeastOne
-import com.sebastienbalard.skullscoring.ui.EventGameCreated
-import com.sebastienbalard.skullscoring.ui.EventPlayerCreated
-import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
@@ -85,6 +83,9 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
                             )
                         )
                     }
+                    is EventError -> toolbar.showSnackBarError(
+                        getString(messageResId)
+                    )
                     else -> {
                     }
                 }

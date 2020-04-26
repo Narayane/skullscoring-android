@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/marginM"
-        android:text="@string/game_new_player_text"
+        android:text="@string/onboarding_new_player"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/editTextOnboardingNewPlayer"
         app:layout_constraintLeft_toLeftOf="parent"

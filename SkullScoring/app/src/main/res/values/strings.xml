@@ -5,11 +5,12 @@
     <string name="validate">Valider</string>
     <string name="play">Jouer</string>
     <string name="init">Configuration</string>
-    <string name="game_onboarding_text">On se la fait cette première partie ?</string>
-    <string name="game_new_player_text">Comment s\'appelle le joueur ?</string>
-    <string name="game_player_list_text">Qui joue ?</string>
+    <string name="onboarding_start">On se la fait cette première partie ?</string>
+    <string name="onboarding_new_player">Comment s\'appelle le joueur ?</string>
+    <string name="onboarding_player_list">Qui joue ?</string>
 
-    <string name="error_not_enough_selected_players">Sélectionne au moins 2 joueurs</string>
-    <string name="error_too_many_selected_players">On ne peut pas jouer à plus de 6 joueurs</string>
+    <string name="error_players_not_enough_selected">Sélectionne au moins 2 joueurs</string>
+    <string name="error_players_too_many_selected">On ne peut pas jouer à plus de 6 joueurs</string>
     <string name="error_player_already_exists">Le joueur %1$s existe déjà</string>
+    <string name="error_player_empty_name">Saisis un nom</string>
 </resources>
