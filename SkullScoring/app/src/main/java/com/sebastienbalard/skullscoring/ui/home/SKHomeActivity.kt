@@ -29,8 +29,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.ui.EventGame
+import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBActivity
-import com.sebastienbalard.skullscoring.ui.game.EventGame
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter

@@ -22,13 +22,11 @@ import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.ui.SBEvent
+import com.sebastienbalard.skullscoring.ui.EventGameAtLeastOne
+import com.sebastienbalard.skullscoring.ui.EventGameCreated
+import com.sebastienbalard.skullscoring.ui.EventPlayerCreated
 import com.sebastienbalard.skullscoring.ui.SBViewModel
 import kotlinx.coroutines.launch
-
-object EventPlayerCreated : SBEvent()
-data class EventGameCreated(val gameId: Long) : SBEvent()
-data class EventGameAtLeastOne(val hasAtLeastOneGame: Boolean) : SBEvent()
 
 open class SKOnboardingViewModel(
     private val gameRepository: SKGameRepository, private val playerRepository: SKPlayerRepository
@@ -40,8 +38,7 @@ open class SKOnboardingViewModel(
 
     open fun createGame() = viewModelScope.launch {
         val game = gameRepository.createGame(players.value!!)
-        _events.value =
-            EventGameCreated(game.id)
+        _events.value = EventGameCreated(game.id)
     }
 
     open fun createPlayer(name: String) = viewModelScope.launch {
@@ -50,15 +47,13 @@ open class SKOnboardingViewModel(
             add(playerRepository.createPlayer(name))
             sortBy { it.name }
         })
-        _events.value =
-            EventPlayerCreated
+        _events.value = EventPlayerCreated
     }
 
     open fun load() = viewModelScope.launch {
         val hasAtLeastOneGame = gameRepository.hasAtLeastOneGame()
-        _events.value =
-            EventGameAtLeastOne(
-                hasAtLeastOneGame
-            )
+        _events.value = EventGameAtLeastOne(
+            hasAtLeastOneGame
+        )
     }
 }

@@ -30,5 +30,5 @@ interface SKPlayerDao : SKBaseDao<SKPlayer> {
     suspend fun getAllCount(): Int
 
     @Query("SELECT * FROM sk_players WHERE name = :name")
-    suspend fun findByName(name: String): SKPlayer
+    suspend fun findByName(name: String): SKPlayer?
 }

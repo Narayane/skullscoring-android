@@ -16,14 +16,17 @@
 
 package com.sebastienbalard.skullscoring.ui.splash
 
-import com.sebastienbalard.skullscoring.ui.SBActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.Observer
 import com.sebastienbalard.skullscoring.R
-import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingActivity
+import com.sebastienbalard.skullscoring.ui.EventSplashGoToHome
+import com.sebastienbalard.skullscoring.ui.EventSplashStartOnboarding
+import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.StateSplashConfig
 import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
+import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber

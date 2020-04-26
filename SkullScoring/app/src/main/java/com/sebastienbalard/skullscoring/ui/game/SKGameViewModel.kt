@@ -16,18 +16,11 @@
 
 package com.sebastienbalard.skullscoring.ui.game
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sebastienbalard.skullscoring.models.SKGame
-import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.ui.SBEvent
+import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBViewModel
 import kotlinx.coroutines.launch
-
-data class EventGame(val game: SKGame) : SBEvent()
 
 open class SKGameViewModel(
     private val gameRepository: SKGameRepository

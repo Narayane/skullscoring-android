@@ -21,13 +21,8 @@ import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.ui.EventError
-import com.sebastienbalard.skullscoring.ui.SBEvent
-import com.sebastienbalard.skullscoring.ui.SBViewModel
-import com.sebastienbalard.skullscoring.ui.onboarding.EventGameCreated
+import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
-
-data class EventPlayerList(val players: List<SKPlayer>) : SBEvent()
 
 open class SKPlayerSearchViewModel(
     private val playerRepository: SKPlayerRepository, private val gameRepository: SKGameRepository
@@ -36,6 +31,14 @@ open class SKPlayerSearchViewModel(
     open fun loadPlayers() = viewModelScope.launch {
         val players = playerRepository.findAll()
         _events.value = EventPlayerList(players)
+    }
+
+    open fun createPlayer(name: String) = viewModelScope.launch {
+        playerRepository.findPlayerByName(name)?.let {
+            _events.value = EventErrorWithArg(R.string.error_player_already_exists, it.name)
+        } ?: playerRepository.createPlayer(name).apply {
+            _events.value = EventPlayer(this)
+        }
     }
 
     open fun createGame(players: List<SKPlayer>) = viewModelScope.launch {

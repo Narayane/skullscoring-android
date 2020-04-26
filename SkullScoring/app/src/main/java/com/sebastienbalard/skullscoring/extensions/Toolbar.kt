@@ -22,10 +22,9 @@ import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
 
-fun Toolbar.showSnackBarError(
-    context: Context, messageResId: Int, duration: Int
+fun Toolbar.showSnackBarError(message: String, duration: Int
 ) {
-    Snackbar.make(this, context.getString(messageResId), duration).apply {
+    Snackbar.make(this, message, duration).apply {
         view.setBackgroundColor(Color.RED)
         view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).apply {
             maxLines = 3

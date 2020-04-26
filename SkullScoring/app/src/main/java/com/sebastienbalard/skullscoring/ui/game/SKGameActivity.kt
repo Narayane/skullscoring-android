@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game.*

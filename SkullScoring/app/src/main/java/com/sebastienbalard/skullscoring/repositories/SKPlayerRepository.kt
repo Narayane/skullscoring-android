@@ -27,11 +27,15 @@ class SKPlayerRepository(
 
     suspend fun createPlayer(name: String): SKPlayer {
         playerDao.insert(SKPlayer(name))
-        return playerDao.findByName(name)
+        return playerDao.findByName(name)!!
     }
 
     suspend fun deletePlayer(vararg player: SKPlayer) {
         playerDao.delete(*player)
+    }
+
+    suspend fun findPlayerByName(name: String): SKPlayer? {
+        return playerDao.findByName(name)
     }
 
     suspend fun findPlayerByGame(game: SKGame): List<SKPlayer> {

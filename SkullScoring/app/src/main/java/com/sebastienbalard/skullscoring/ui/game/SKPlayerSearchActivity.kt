@@ -21,20 +21,25 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.SparseBooleanArray
 import android.view.*
+import android.widget.Button
+import android.widget.EditText
 import androidx.core.util.keyIterator
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Scene
+import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.extensions.resetFocus
+import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKPlayer
-import com.sebastienbalard.skullscoring.ui.EventError
-import com.sebastienbalard.skullscoring.ui.SBActivity
-import com.sebastienbalard.skullscoring.ui.onboarding.EventGameCreated
+import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
+import kotlinx.android.synthetic.main.activity_onboarding.*
 import kotlinx.android.synthetic.main.activity_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -45,7 +50,12 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
     internal val playerSearchViewModel: SKPlayerSearchViewModel by viewModel()
 
+    private lateinit var scenePlayerList: Scene
+    private lateinit var sceneNewPlayer: Scene
     private lateinit var playerListAdapter: PlayerListAdapter
+
+    private lateinit var menuItemAdd: MenuItem
+    private lateinit var menuItemValidate: MenuItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,16 +70,18 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         playerSearchViewModel.loadPlayers()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Timber.v("onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu_player_search, menu)
+        menuItemAdd = menu.findItem(R.id.menu_player_search_item_add)
+        menuItemValidate = menu.findItem(R.id.menu_player_search_item_validate)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_player_search_item_add -> {
-
+                showNewPlayerScene()
                 true
             }
             R.id.menu_player_search_item_validate -> {
@@ -78,6 +90,16 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onBackPressed() {
+        Scene.getCurrentScene(layoutPlayerSearch)?.let { currentScene ->
+            if (currentScene == sceneNewPlayer) {
+                showPlayerListScene()
+            } else {
+                super.onBackPressed()
+            }
+        } ?: super.onBackPressed()
     }
 
     private fun initObservers() {
@@ -90,6 +112,15 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                         playerListAdapter.elements = players
                         playerListAdapter.notifyDataSetChanged()
                     }
+                    is EventPlayer -> {
+                        showPlayerListScene()
+                        val players = mutableListOf<SKPlayer>().apply {
+                            addAll(playerListAdapter.elements)
+                            add(player)
+                            sortBy { it.name }
+                        }
+                        playerListAdapter.notifyItemInserted(players.indexOf(player))
+                    }
                     is EventGameCreated -> {
                         startActivity(
                             SKGameActivity.getIntent(
@@ -98,7 +129,10 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                         )
                     }
                     is EventError -> toolbar.showSnackBarError(
-                        this@SKPlayerSearchActivity, messageResId, Snackbar.LENGTH_SHORT
+                        getString(messageResId), Snackbar.LENGTH_SHORT
+                    )
+                    is EventErrorWithArg -> toolbar.showSnackBarError(
+                        getString(messageResId, arg), Snackbar.LENGTH_SHORT
                     )
                     else -> {
                     }
@@ -107,27 +141,83 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         })
     }
 
-    private fun initUI() {
-        playerListAdapter = PlayerListAdapter(this, listOf())
-        recycleViewPlayerSearch.layoutManager = LinearLayoutManager(this)
-        recycleViewPlayerSearch.itemAnimator = DefaultItemAnimator()
-        recycleViewPlayerSearch.adapter = playerListAdapter
-        recycleViewPlayerSearch.addOnItemTouchListener(
-            SBRecyclerViewOnItemTouchListener(this,
-                recycleViewPlayerSearch,
-                object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
-                    override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
-                        Timber.v("onClick")
-                        playerListAdapter.toggleSelection(position)
-                    }
+    private fun showPlayerListScene() {
+        toolbar.subtitle = "Sélectionner les joueurs"
+        menuItemAdd.isVisible = true
+        menuItemValidate.isVisible = true
+        TransitionManager.go(scenePlayerList)
+    }
 
-                    override fun isEnabled(position: Int): Boolean {
-                        return playerListAdapter.selectedPlayers.count() < 6 || playerListAdapter.isPlayerSelected(
-                            position
-                        )
-                    }
-                })
+    private fun showNewPlayerScene() {
+        toolbar.subtitle = "Ajouter un joueur"
+        menuItemAdd.isVisible = false
+        menuItemValidate.isVisible = false
+        TransitionManager.go(sceneNewPlayer)
+    }
+
+    private fun initSceneNewPlayer() {
+        sceneNewPlayer =
+            Scene.getSceneForLayout(layoutPlayerSearch, R.layout.scene_onboarding_new_user, this)
+        sceneNewPlayer.setEnterAction {
+            val editTextNewPlayer =
+                sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextOnboardingNewPlayer)
+            editTextNewPlayer.setFocus(this)
+
+            val buttonCreatePlayer =
+                sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)
+            buttonCreatePlayer.setOnClickListener {
+                if (editTextNewPlayer.text.isNotEmpty()) {
+                    editTextNewPlayer.resetFocus()
+                    playerSearchViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
+
+                }
+            }
+        }
+    }
+
+    private fun initScenePlayerList() {
+        playerListAdapter = PlayerListAdapter(this, listOf())
+        scenePlayerList = Scene.getSceneForLayout(
+            layoutPlayerSearch, R.layout.scene_player_search_player_list, this
         )
+        scenePlayerList.setEnterAction {
+            val recycleViewPlayerSearch =
+                scenePlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recycleViewPlayerSearch)
+            recycleViewPlayerSearch.layoutManager = LinearLayoutManager(this)
+            recycleViewPlayerSearch.itemAnimator = DefaultItemAnimator()
+            recycleViewPlayerSearch.adapter = playerListAdapter
+            recycleViewPlayerSearch.addOnItemTouchListener(
+                SBRecyclerViewOnItemTouchListener(this,
+                    recycleViewPlayerSearch,
+                    object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
+                        override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                            Timber.v("onClick")
+                            playerListAdapter.toggleSelection(position)
+                        }
+
+                        override fun isEnabled(position: Int): Boolean {
+                            val isEnabled =
+                                playerListAdapter.selectedPlayers.count() < 6 || playerListAdapter.isPlayerSelected(
+                                    position
+                                )
+                            if (!isEnabled) {
+                                toolbar.showSnackBarError(
+                                    getString(R.string.error_too_many_selected_players),
+                                    Snackbar.LENGTH_SHORT
+                                )
+                            }
+                            return isEnabled
+                        }
+                    })
+            )
+        }
+    }
+
+    private fun initUI() {
+        initScenePlayerList()
+        initSceneNewPlayer()
+
+        TransitionManager.go(scenePlayerList)
     }
 
     companion object {

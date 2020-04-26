@@ -18,15 +18,11 @@ package com.sebastienbalard.skullscoring.ui.splash
 
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.ui.SBEvent
-import com.sebastienbalard.skullscoring.ui.SBState
+import com.sebastienbalard.skullscoring.ui.EventSplashGoToHome
+import com.sebastienbalard.skullscoring.ui.EventSplashStartOnboarding
 import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.StateSplashConfig
 import kotlinx.coroutines.launch
-
-object StateSplashConfig : SBState()
-
-object EventSplashStartOnboarding : SBEvent()
-object EventSplashGoToHome : SBEvent()
 
 open class SKSplashViewModel(private val gameRepository: SKGameRepository) : SBViewModel() {
 

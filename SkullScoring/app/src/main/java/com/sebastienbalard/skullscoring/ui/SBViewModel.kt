@@ -19,13 +19,28 @@ package com.sebastienbalard.skullscoring.ui
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.models.SKPlayer
 
 open class SBState
 object StateLoading : SBState()
 data class StateError(val error: Throwable) : SBState()
 
+object StateSplashConfig : SBState()
+
 open class SBEvent
 open class EventError(val messageResId: Int) : SBEvent()
+open class EventErrorWithArg(val messageResId: Int, val arg: Any) : SBEvent()
+
+object EventSplashStartOnboarding : SBEvent()
+object EventSplashGoToHome : SBEvent()
+object EventPlayerCreated : SBEvent()
+data class EventPlayerList(val players: List<SKPlayer>) : SBEvent()
+data class EventPlayer(val player: SKPlayer) : SBEvent()
+data class EventGame(val game: SKGame) : SBEvent()
+data class EventGameCreated(val gameId: Long) : SBEvent()
+data class EventGameAtLeastOne(val hasAtLeastOneGame: Boolean) : SBEvent()
+data class EventGameList(val games: List<SKGame>) : SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 

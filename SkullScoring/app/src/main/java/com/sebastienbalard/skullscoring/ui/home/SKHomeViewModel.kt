@@ -19,12 +19,10 @@ package com.sebastienbalard.skullscoring.ui.home
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.ui.SBEvent
+import com.sebastienbalard.skullscoring.ui.EventGame
+import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBViewModel
-import com.sebastienbalard.skullscoring.ui.game.EventGame
 import kotlinx.coroutines.launch
-
-data class EventGameList(val games: List<SKGame>) : SBEvent()
 
 open class SKHomeViewModel(
     private val gameRepository: SKGameRepository

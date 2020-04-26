@@ -33,8 +33,12 @@ import androidx.transition.TransitionManager
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.ui.EventGameAtLeastOne
+import com.sebastienbalard.skullscoring.ui.EventGameCreated
+import com.sebastienbalard.skullscoring.ui.EventPlayerCreated
 import com.sebastienbalard.skullscoring.ui.SBActivity
-import com.sebastienbalard.skullscoring.ui.game.*
+import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
+import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_onboarding.*
 import kotlinx.android.synthetic.main.item_player.view.*
@@ -77,8 +81,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
                     is EventGameCreated -> {
                         startActivity(
                             SKGameActivity.getIntent(
-                                this@SKOnboardingActivity,
-                                gameId
+                                this@SKOnboardingActivity, gameId
                             )
                         )
                     }
@@ -92,23 +95,6 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
             playerListAdapter.elements = players
             playerListAdapter.notifyDataSetChanged()
         })
-    }
-
-    private fun initUI() {
-        initSceneNewPlayer()
-        initScenePlayerList()
-
-        buttonOnboardingStart.setOnClickListener {
-            if (hasAtLeastOneGame) {
-                startActivity(
-                    SKPlayerSearchActivity.getIntent(
-                        this@SKOnboardingActivity
-                    )
-                )
-            } else {
-                TransitionManager.go(sceneNewPlayer)
-            }
-        }
     }
 
     private fun initSceneNewPlayer() {
@@ -130,11 +116,9 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
     }
 
     private fun initScenePlayerList() {
-        playerListAdapter =
-            PlayerListAdapter(
-                this,
-                listOf()
-            )
+        playerListAdapter = PlayerListAdapter(
+            this, listOf()
+        )
         scenePlayerList = Scene.getSceneForLayout(
             layoutOnboarding, R.layout.scene_onboarding_player_list, this
         )
@@ -159,9 +143,27 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
                 }
             }
 
-            val buttonPlayGame = scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingPlayGame)
+            val buttonPlayGame =
+                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingPlayGame)
             buttonPlayGame.setOnClickListener {
                 onboardingViewModel.createGame()
+            }
+        }
+    }
+
+    private fun initUI() {
+        initSceneNewPlayer()
+        initScenePlayerList()
+
+        buttonOnboardingStart.setOnClickListener {
+            if (hasAtLeastOneGame) {
+                startActivity(
+                    SKPlayerSearchActivity.getIntent(
+                        this@SKOnboardingActivity
+                    )
+                )
+            } else {
+                TransitionManager.go(sceneNewPlayer)
             }
         }
     }
