@@ -117,7 +117,10 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                             add(player)
                             sortBy { it.name }
                         }
-                        playerListAdapter.notifyItemInserted(players.indexOf(player))
+                        playerListAdapter.elements = players
+                        val index = players.indexOf(player)
+                        playerListAdapter.toggleSelection(index)
+                        playerListAdapter.notifyDataSetChanged()
                     }
                     is EventGameCreated -> {
                         startActivity(
@@ -164,11 +167,8 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
             val buttonCreatePlayer =
                 sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)
             buttonCreatePlayer.setOnClickListener {
-                if (editTextNewPlayer.text.isNotEmpty()) {
-                    editTextNewPlayer.resetFocus()
-                    playerSearchViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
-
-                }
+                editTextNewPlayer.resetFocus()
+                playerSearchViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
             }
         }
     }

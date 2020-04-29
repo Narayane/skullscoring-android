@@ -22,6 +22,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.Observer
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
 import androidx.transition.TransitionManager
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.extensions.resetFocus
 import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKPlayer
@@ -101,17 +103,24 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
     private fun initSceneNewPlayer() {
         sceneNewPlayer =
             Scene.getSceneForLayout(layoutOnboarding, R.layout.scene_onboarding_new_user, this)
+
         sceneNewPlayer.setEnterAction {
             val editTextNewPlayer =
                 sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextOnboardingNewPlayer)
             editTextNewPlayer.setFocus(this)
+            editTextNewPlayer.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    editTextNewPlayer.resetFocus()
+                    onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
+                }
+                true
+            }
 
             val buttonCreatePlayer =
                 sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)
             buttonCreatePlayer.setOnClickListener {
-                if (editTextNewPlayer.text.isNotEmpty()) {
-                    onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
-                }
+                editTextNewPlayer.resetFocus()
+                onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
             }
         }
     }
@@ -132,6 +141,9 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
 
             val buttonAddPlayer =
                 scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingAddPlayer)
+            onboardingViewModel.players.value?.size?.let {
+                buttonAddPlayer.isEnabled = it < 6
+            }
             buttonAddPlayer.setOnClickListener {
                 if (hasAtLeastOneGame) {
                     startActivity(

@@ -5,25 +5,32 @@
     android:layout_height="match_parent"
     android:padding="@dimen/marginM">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.5" />
+
     <TextView
         android:id="@+id/textViewOnboarding"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/onboarding_start"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="@dimen/marginS"
+        app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <Button
         android:id="@+id/buttonOnboardingStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/marginM"
+        android:layout_marginTop="@dimen/marginS"
         android:text="C'est parti"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOnboarding" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
