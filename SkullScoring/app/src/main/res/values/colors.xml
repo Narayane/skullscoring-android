@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=00838F&secondary.color=D32F2F -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#00838f</color>
     <color name="colorPrimaryDark">#005662</color>
-    <color name="colorAccent">#d32f2f</color>
+    <color name="colorSecondary">#d32f2f</color>
+    <color name="colorSecondaryDark">#9a0007</color>
     <color name="colorTextPrimary">#ffffff</color>
     <color name="colorGreyLight">#b8b8b8</color>
 </resources>

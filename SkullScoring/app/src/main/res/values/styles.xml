@@ -1,26 +1,23 @@
 <resources>
 
-    <style name="AppTheme.Widget.Button" parent="@style/Widget.AppCompat.Button">
-        <item name="android:padding">16dp</item>
-        <item name="android:minWidth">120dp</item>
-        <item name="android:minHeight">60dp</item>
-        <item name="android:backgroundTint">@color/selector_button_background</item>
-        <item name="android:textSize">@dimen/textSizeBody</item>
+    <style name="AppTheme.Widget.Button" parent="@style/Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/selector_button_background</item>
+        <item name="rippleColor">#ff6659</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.Widget.Button.White" parent="@style/AppTheme.Widget.Button">
-        <item name="android:backgroundTint">@color/selector_button_white_background</item>
-        <item name="android:textColor">@color/colorAccent</item>
+    <style name="AppTheme.Widget.Button.White" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:tint">@android:color/white</item>
+        <item name="rippleColor">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Widget.EditText"  parent="@android:style/Widget.Holo.EditText">
-        <item name="android:textSize">@dimen/textSizeBody</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:backgroundTint">@android:color/white</item>
+    <style name="AppTheme.Widget.TextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/selector_text_input</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="hintTextColor">@android:color/white</item>
     </style>
 
     <style name="AppTheme.Widget.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">

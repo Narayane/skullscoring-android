@@ -62,7 +62,7 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:$androidx_arch_version"
 
     // Support
-    api "com.google.android.material:material:$androidx_legacy_version"
+    implementation "com.google.android.material:material:$androidx_legacy_version"
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"

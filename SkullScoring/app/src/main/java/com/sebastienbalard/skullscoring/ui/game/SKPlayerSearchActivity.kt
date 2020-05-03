@@ -21,6 +21,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.SparseBooleanArray
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.util.keyIterator
@@ -79,7 +80,13 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_player_search_item_add -> {
-                showNewPlayerScene()
+                if (playerListAdapter.selectedPlayers.size < 6) {
+                    showNewPlayerScene()
+                } else {
+                    toolbar.showSnackBarError(
+                        getString(R.string.error_players_too_many_selected)
+                    )
+                }
                 true
             }
             R.id.menu_player_search_item_validate -> {
@@ -163,6 +170,13 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
             val editTextNewPlayer =
                 sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextOnboardingNewPlayer)
             editTextNewPlayer.setFocus(this)
+            editTextNewPlayer.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    editTextNewPlayer.resetFocus()
+                    playerSearchViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
+                }
+                true
+            }
 
             val buttonCreatePlayer =
                 sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)

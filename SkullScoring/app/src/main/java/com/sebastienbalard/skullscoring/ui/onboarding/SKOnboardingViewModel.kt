@@ -35,8 +35,12 @@ open class SKOnboardingViewModel(
         get() = _players
 
     open fun createGame() = viewModelScope.launch {
-        val game = gameRepository.createGame(players.value!!)
-        _events.value = EventGameCreated(game.id)
+        if (players.value!!.count() < 2) {
+            _events.value = EventError(R.string.error_players_not_enough_selected)
+        } else {
+            val game = gameRepository.createGame(players.value!!)
+            _events.value = EventGameCreated(game.id)
+        }
     }
 
     open fun createPlayer(name: String) = viewModelScope.launch {

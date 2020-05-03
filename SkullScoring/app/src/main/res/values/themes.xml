@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textSize">@dimen/textSizeBody</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryDark</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorError">@android:color/holo_red_dark</item>
+        <item name="colorOnError">@android:color/white</item>
+        <item name="colorSurface">@android:color/white</item>
+        <item name="colorOnSurface">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+        <item name="colorOnBackground">@android:color/white</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:colorControlHighlight">@color/colorAccent</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -15,12 +24,12 @@
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
-        <item name="buttonStyle">@style/AppTheme.Widget.Button</item>
-        <item name="editTextStyle">@style/AppTheme.Widget.EditText</item>
+        <item name="materialButtonStyle">@style/AppTheme.Widget.Button</item>
+        <item name="textInputStyle">@style/AppTheme.Widget.TextInput</item>
         <item name="checkboxStyle">@style/AppTheme.Widget.CheckBox</item>
     </style>
 
-    <style name="AppTheme.AppBar" parent="Theme.AppCompat.Light">
+    <style name="AppTheme.AppBar" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
@@ -28,5 +37,5 @@
         <item name="popupTheme">@style/AppTheme.Popup</item>
     </style>
 
-    <style name="AppTheme.Popup" parent="@style/ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.Popup" parent="@style/ThemeOverlay.MaterialComponents.Light"/>
 </resources>
