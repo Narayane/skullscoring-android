@@ -95,3 +95,4 @@ gradle.properties
 kotlinc.xml
 SkullScoring/.idea/caches
 assetWizardSettings.xml
+workspace.xml

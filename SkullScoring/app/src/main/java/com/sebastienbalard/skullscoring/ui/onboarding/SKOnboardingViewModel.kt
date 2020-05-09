@@ -31,7 +31,7 @@ open class SKOnboardingViewModel(
 ) : SBViewModel() {
 
     private var _players = MutableLiveData<List<SKPlayer>>(listOf())
-    val players: LiveData<List<SKPlayer>>
+    open val players: LiveData<List<SKPlayer>>
         get() = _players
 
     open fun createGame() = viewModelScope.launch {

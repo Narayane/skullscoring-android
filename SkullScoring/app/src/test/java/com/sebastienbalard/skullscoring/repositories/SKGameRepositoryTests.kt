@@ -104,8 +104,8 @@ class SKGameRepositoryTests : KoinTest {
     fun tearDown() {
         runBlocking {
             gameDao.getAllCount() shouldBeEqualTo 0
-            playerDao.delete(playerDao.findByName("Sébastien"))
-            playerDao.delete(playerDao.findByName("Arnaud"))
+            playerDao.delete(playerDao.findByName("Sébastien")!!)
+            playerDao.delete(playerDao.findByName("Arnaud")!!)
             playerDao.getAllCount() shouldBeEqualTo 0
         }
         testDatabase.close()

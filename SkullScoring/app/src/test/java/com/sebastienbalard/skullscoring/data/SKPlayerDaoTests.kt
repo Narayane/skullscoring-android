@@ -37,7 +37,7 @@ class SKPlayerDaoTests : SKBaseDaoTests() {
         val player = SKPlayer("Sébastien")
         playerDao.insert(player)
         playerDao.getAllCount() shouldBeEqualTo 1
-        playerDao.delete(playerDao.findByName("Sébastien"))
+        playerDao.delete(playerDao.findByName("Sébastien")!!)
     }
 
     @Before
