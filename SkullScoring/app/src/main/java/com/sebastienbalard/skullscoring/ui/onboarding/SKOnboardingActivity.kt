@@ -21,6 +21,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
@@ -54,6 +56,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
     private lateinit var sceneNewPlayer: Scene
     private lateinit var scenePlayerList: Scene
     private lateinit var playerListAdapter: PlayerListAdapter
+    private var buttonAddPlayer: Button? = null
     private var hasAtLeastOneGame = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,6 +100,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         onboardingViewModel.players.observe(this, Observer { players ->
             playerListAdapter.elements = players
             playerListAdapter.notifyDataSetChanged()
+            buttonAddPlayer?.visibility = if (players.size < 6) VISIBLE else GONE
         })
     }
 
@@ -139,12 +143,9 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
             recyclerViewPlayers.itemAnimator = DefaultItemAnimator()
             recyclerViewPlayers.adapter = playerListAdapter
 
-            val buttonAddPlayer =
+            buttonAddPlayer =
                 scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingAddPlayer)
-            onboardingViewModel.players.value?.size?.let {
-                buttonAddPlayer.isEnabled = it < 6
-            }
-            buttonAddPlayer.setOnClickListener {
+            buttonAddPlayer?.setOnClickListener {
                 if (hasAtLeastOneGame) {
                     startActivity(
                         SKPlayerSearchActivity.getIntent(

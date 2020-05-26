@@ -16,6 +16,7 @@
 
 package com.sebastienbalard.skullscoring.ui.game
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -25,6 +26,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKPlayer
@@ -32,7 +34,7 @@ import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.item_player.view.*
+import kotlinx.android.synthetic.main.item_game_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -56,6 +58,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }
     }
 
+    override fun onBackPressed() {
+        if (speedDialGame.isOpen) {
+            speedDialGame.close()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun initObservers() {
         gameViewModel.events.observe(this, Observer { event ->
             event?.apply {
@@ -75,11 +85,32 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         })
     }
 
+    @SuppressLint("ResourceType")
     private fun initUI() {
         playerListAdapter = PlayerListAdapter(this, listOf())
         recyclerViewGame.layoutManager = LinearLayoutManager(this)
         recyclerViewGame.itemAnimator = DefaultItemAnimator()
         recyclerViewGame.adapter = playerListAdapter
+
+        speedDialGame.apply {
+            addActionItem(
+                SpeedDialActionItem.Builder(1, R.drawable.ic_bet_24dp).setLabel("Paris").create()
+            )
+            addActionItem(
+                SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
+                    .create()
+            )
+        }.setOnActionSelectedListener {
+            return@setOnActionSelectedListener when (it.id) {
+                1 -> {
+                    false
+                }
+                2 -> {
+                    false
+                }
+                else -> true
+            }
+        }
     }
 
     companion object {
@@ -98,7 +129,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_player, parent, false
+                    R.layout.item_game_player, parent, false
                 )
             )
         }
@@ -106,7 +137,8 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, element: SKPlayer) {
-                itemView.textViewPlayerName.text = element.name
+                itemView.textViewGamePlayerName.text = element.name
+                itemView.textViewGamePlayerScore.text = "0"
             }
         }
     }

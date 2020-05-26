@@ -12,6 +12,28 @@
         android:id="@+id/recyclerViewGame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constrainedHeight="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:paddingTop="@dimen/marginS"
+        android:paddingBottom="@dimen/marginS"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constrainedHeight="true" />
+
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/marginM"
+        app:srcCompat="@drawable/ic_add_24dp" />-->
+
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speedDialGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:sdMainFabClosedBackgroundColor="@color/colorSecondary"
+        app:sdMainFabClosedIconColor="@android:color/white"
+        app:sdMainFabClosedSrc="@drawable/ic_add_24dp"
+        app:sdMainFabOpenedBackgroundColor="@color/colorSecondary"
+        app:sdMainFabOpenedIconColor="@android:color/white"
+        app:sdMainFabOpenedSrc="@drawable/ic_close_24dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
