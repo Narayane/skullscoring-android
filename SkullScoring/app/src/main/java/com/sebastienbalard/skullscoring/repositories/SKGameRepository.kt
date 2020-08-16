@@ -16,17 +16,15 @@
 
 package com.sebastienbalard.skullscoring.repositories
 
-import com.sebastienbalard.skullscoring.data.SKGameDao
-import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
-import com.sebastienbalard.skullscoring.data.SKTurnDao
-import com.sebastienbalard.skullscoring.data.SKTurnPlayerJoinDao
+import com.sebastienbalard.skullscoring.data.*
 import com.sebastienbalard.skullscoring.models.*
 
 open class SKGameRepository(
     private val gameDao: SKGameDao,
     private val gamePlayerJoinDao: SKGamePlayerJoinDao,
     private val turnDao: SKTurnDao,
-    private val turnPlayerJoinDao: SKTurnPlayerJoinDao
+    private val turnPlayerJoinDao: SKTurnPlayerJoinDao,
+    private val playerDao: SKPlayerDao
 ) {
 
     open suspend fun hasAtLeastOneGame(): Boolean {
@@ -40,7 +38,10 @@ open class SKGameRepository(
     }
 
     open suspend fun loadGames(): List<SKGame> {
-        return gameDao.getAll().sortedByDescending { it.startDate }
+        return gameDao.getAll().apply {
+            map { it.state = Ongoing }
+            sortedByDescending { it.startDate }
+        }
     }
 
     open suspend fun createGame(players: List<SKPlayer>): SKGame {
@@ -65,5 +66,16 @@ open class SKGameRepository(
     open suspend fun deleteGame(game: SKGame) {
         turnDao.delete(*turnDao.findByGame(game.id).toTypedArray())
         gameDao.delete(game)
+    }
+
+    open suspend fun loadCurrentTurn(gameId: Long): SKTurn {
+        val game = gameDao.findById(gameId)
+        val turn = turnDao.findByNumber(gameId, game.currentTurnNumber)
+        turn.results = turnPlayerJoinDao.findResultByTurn(turn.id)
+        turn.results.forEach {
+            it.player = playerDao.findById(it.playerId)
+        }
+        turn.results.sortedBy { it.player.name }
+        return turn
     }
 }

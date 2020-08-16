@@ -13,4 +13,5 @@
     <string name="error_players_too_many_selected">On ne peut pas jouer à plus de 6 joueurs</string>
     <string name="error_player_already_exists">Le joueur %1$s existe déjà</string>
     <string name="error_player_empty_name">Saisis un nom</string>
+    <string name="error_turn_declarations_not_updated">%1$s annonces n\'ont pas été mises à jour</string>
 </resources>

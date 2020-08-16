@@ -9,13 +9,13 @@ buildscript {
     ext.androidx_core_version = '1.2.0'
     ext.kotlinx_coroutines_version = '1.2.1'
     ext.robolectric_version = '4.3.1'
-    ext.koin_version = '2.1.5'
+    ext.koin_version = '2.1.6'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong

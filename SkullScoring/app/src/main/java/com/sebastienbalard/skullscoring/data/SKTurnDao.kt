@@ -31,4 +31,7 @@ interface SKTurnDao : SKBaseDao<SKTurn> {
 
     @Query("SELECT * FROM sk_turns WHERE fk_game_id = :gameId")
     suspend fun findByGame(gameId: Long): List<SKTurn>
+
+    @Query("SELECT * FROM sk_turns WHERE fk_game_id = :gameId AND number = :number")
+    suspend fun findByNumber(gameId: Long, number: Int): SKTurn
 }

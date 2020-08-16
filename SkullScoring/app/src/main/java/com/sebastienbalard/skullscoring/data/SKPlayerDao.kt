@@ -31,4 +31,7 @@ interface SKPlayerDao : SKBaseDao<SKPlayer> {
 
     @Query("SELECT * FROM sk_players WHERE name = :name")
     suspend fun findByName(name: String): SKPlayer?
+
+    @Query("SELECT * FROM sk_players WHERE pk_player_id = :playerId")
+    suspend fun findById(playerId: Long): SKPlayer
 }

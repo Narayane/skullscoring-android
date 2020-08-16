@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.models.SKTurn
 
 open class SBState
 object StateLoading : SBState()
@@ -41,6 +42,8 @@ data class EventGame(val game: SKGame) : SBEvent()
 data class EventGameCreated(val gameId: Long) : SBEvent()
 data class EventGameAtLeastOne(val hasAtLeastOneGame: Boolean) : SBEvent()
 data class EventGameList(val games: List<SKGame>) : SBEvent()
+data class EventTurn(val turn: SKTurn) : SBEvent()
+object EventTurnDeclarationsUpdated : SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 

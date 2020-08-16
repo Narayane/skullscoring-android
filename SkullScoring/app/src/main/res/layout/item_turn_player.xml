@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginStart="@dimen/marginM"
+    android:layout_marginTop="@dimen/marginS"
+    android:layout_marginEnd="@dimen/marginM"
+    android:layout_marginBottom="@dimen/marginS"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    tools:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/textViewTurnPlayerName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/marginS"
+        android:gravity="center_vertical"
+        tools:text="Sébastien" />
+
+    <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
+        android:id="@+id/buttonStepperDeclaration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:backGroundColor="@color/colorPrimaryDark"/>
+
+</LinearLayout>

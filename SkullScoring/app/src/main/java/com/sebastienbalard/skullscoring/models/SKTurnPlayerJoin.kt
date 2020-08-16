@@ -16,10 +16,7 @@
 
 package com.sebastienbalard.skullscoring.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
+import androidx.room.*
 
 @Entity(
     tableName = "sk_turn_player_joins",
@@ -46,4 +43,7 @@ data class SKTurnPlayerJoin(
 
     @ColumnInfo(name = "result")
     var result: Int? = null
+
+    @Ignore
+    lateinit var player: SKPlayer
 }

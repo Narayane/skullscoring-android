@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,11 +34,13 @@ import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBSectionRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.item_game_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
 
 open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
@@ -88,13 +91,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     @SuppressLint("ResourceType")
     private fun initUI() {
         playerListAdapter = PlayerListAdapter(this, listOf())
+        //playerListAdapter = PlayerSectionListAdapter(this,mapOf("Tour 0" to listOf()))
         recyclerViewGame.layoutManager = LinearLayoutManager(this)
         recyclerViewGame.itemAnimator = DefaultItemAnimator()
         recyclerViewGame.adapter = playerListAdapter
 
         speedDialGame.apply {
             addActionItem(
-                SpeedDialActionItem.Builder(1, R.drawable.ic_bet_24dp).setLabel("Paris").create()
+                SpeedDialActionItem.Builder(1, R.drawable.ic_bet_24dp).setLabel("Annonces").create()
             )
             addActionItem(
                 SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
@@ -103,6 +107,9 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }.setOnActionSelectedListener {
             return@setOnActionSelectedListener when (it.id) {
                 1 -> {
+                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                        startActivity(SKTurnActivity.getIntent(this@SKGameActivity, gameId))
+                    }
                     false
                 }
                 2 -> {
@@ -119,7 +126,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         fun getIntent(context: Context, gameId: Long): Intent {
             return Intent(
                 context, SKGameActivity::class.java
-            ).putExtra(EXTRA_GAME_ID, gameId).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            ).putExtra(EXTRA_GAME_ID, gameId)
         }
     }
 
@@ -135,6 +142,42 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }
 
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+
+            override fun bind(context: Context, element: SKPlayer) {
+                itemView.textViewGamePlayerName.text = element.name
+                itemView.textViewGamePlayerScore.text = "0"
+            }
+        }
+    }
+
+    private class PlayerSectionListAdapter(
+        context: Context,
+        sections: Map<String, List<SKPlayer>>
+    ) : SBSectionRecyclerViewAdapter<String, SKPlayer, PlayerSectionListAdapter.ViewHolder>(
+        context,
+        sections
+    ) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.section_item_game_player, parent, false
+                )
+            )
+        }
+
+        override fun configureFloatingHeader(header: View?, position: Int) {
+            (header as? TextView)?.apply {
+                text = getSections()[getSectionIndexForPosition(position)]
+            }
+        }
+
+        override fun getSectionLabel(key: String): String {
+            return key
+        }
+
+        class ViewHolder(itemView: View) :
+            SBSectionRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, element: SKPlayer) {
                 itemView.textViewGamePlayerName.text = element.name

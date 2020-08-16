@@ -25,7 +25,7 @@ interface SKBaseDao<T> {
     suspend fun insert(vararg type: T): LongArray
 
     @Update
-    suspend fun update(vararg type: T)
+    suspend fun update(vararg type: T): Int
 
     @Delete
     suspend fun delete(vararg type: T)

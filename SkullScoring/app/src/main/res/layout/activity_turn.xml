@@ -4,29 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.game.SKGameActivity">
+    tools:context=".ui.game.SKTurnActivity">
 
     <include layout="@layout/widget_appbar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewGame"
+        android:id="@+id/recyclerViewTurn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="@dimen/marginS"
         android:paddingBottom="@dimen/marginS"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constrainedHeight="true" />
-
-    <com.leinardi.android.speeddial.SpeedDialView
-        android:id="@+id/speedDialGame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        app:sdMainFabClosedBackgroundColor="@color/colorSecondary"
-        app:sdMainFabClosedIconColor="@android:color/white"
-        app:sdMainFabClosedSrc="@drawable/ic_add_24dp"
-        app:sdMainFabOpenedBackgroundColor="@color/colorSecondary"
-        app:sdMainFabOpenedIconColor="@android:color/white"
-        app:sdMainFabOpenedSrc="@drawable/ic_close_24dp" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

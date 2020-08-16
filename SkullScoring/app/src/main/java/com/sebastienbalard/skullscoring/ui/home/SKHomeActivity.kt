@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
+import com.sebastienbalard.skullscoring.models.Ongoing
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.EventGameList
@@ -135,6 +136,10 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
 
             override fun bind(context: Context, element: SKGame) {
                 itemView.textViewGameDate.text = element.startDate.formatDateTime(context)
+                itemView.textViewGameState.text = when (element.state) {
+                    is Ongoing -> "Tour ${element.currentTurnNumber}"
+                    else -> "Terminé"
+                }
             }
         }
 

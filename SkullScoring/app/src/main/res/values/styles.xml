@@ -1,26 +1,26 @@
 <resources>
 
-    <style name="AppTheme.Widget.Button" parent="@style/Widget.MaterialComponents.Button">
+    <style name="SKAppTheme.Widget.Button" parent="@style/Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/selector_button_background</item>
         <item name="rippleColor">#ff6659</item>
         <item name="android:fontFamily">sans-serif-medium</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.Widget.Button.White" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="SKAppTheme.Widget.Button.White" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:tint">@android:color/white</item>
         <item name="rippleColor">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Widget.TextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="SKAppTheme.Widget.TextInput" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/selector_text_input</item>
         <item name="android:textColorHint">@android:color/white</item>
         <item name="hintTextColor">@android:color/white</item>
     </style>
 
-    <style name="AppTheme.Widget.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="SKAppTheme.Widget.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:buttonTint">@android:color/white</item>
     </style>
 

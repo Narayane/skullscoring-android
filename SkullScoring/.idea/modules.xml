@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Skull Scoring.iml" filepath="$PROJECT_DIR$/Skull Scoring.iml" group="Skull Scoring" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Skull_Scoring.iml" filepath="$PROJECT_DIR$/.idea/modules/Skull_Scoring.iml" group="Skull_Scoring" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Skull Scoring/app" />
     </modules>
   </component>

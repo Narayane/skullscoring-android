@@ -25,6 +25,7 @@ import com.sebastienbalard.skullscoring.data.SKDatabase
 import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKGameViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
+import com.sebastienbalard.skullscoring.ui.game.SKTurnViewModel
 import com.sebastienbalard.skullscoring.ui.home.SKHomeViewModel
 import com.sebastienbalard.skullscoring.ui.splash.SKSplashViewModel
 import org.koin.android.ext.koin.androidApplication
@@ -57,6 +58,7 @@ val appModule = module {
     viewModel<SKPlayerSearchViewModel>()
     viewModel<SKHomeViewModel>()
     viewModel<SKGameViewModel>()
+    viewModel<SKTurnViewModel>()
 }
 
 val skullScoringApp = listOf(appModule, commonModule, dataModule)

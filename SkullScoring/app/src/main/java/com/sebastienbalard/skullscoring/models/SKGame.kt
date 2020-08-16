@@ -33,8 +33,15 @@ data class SKGame(
     @NonNull
     var id: Long = 0
 
+    @ColumnInfo(name = "current_turn_number")
+    @NonNull
+    var currentTurnNumber: Int = 1
+
     @Ignore
     lateinit var players: List<SKPlayer>
+
+    @Ignore
+    lateinit var state: GameState
 
     constructor() : this(Date())
 
@@ -52,6 +59,8 @@ data class SKGame(
     override fun hashCode(): Int {
         return startDate.hashCode()
     }
-
-
 }
+
+sealed class GameState
+object Ongoing : GameState()
+object Finished : GameState()

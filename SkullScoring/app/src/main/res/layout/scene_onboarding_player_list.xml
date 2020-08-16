@@ -17,7 +17,7 @@
 
     <Button
         android:id="@+id/buttonOnboardingAddPlayer"
-        style="@style/AppTheme.Widget.Button.White"
+        style="@style/SKAppTheme.Widget.Button.White"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/marginM"

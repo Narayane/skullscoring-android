@@ -43,4 +43,7 @@ data class SKTurn(
     @ColumnInfo(name = "pk_turn_id")
     @NonNull
     var id: Long = 0
+
+    @Ignore
+    lateinit var results: List<SKTurnPlayerJoin>
 }
