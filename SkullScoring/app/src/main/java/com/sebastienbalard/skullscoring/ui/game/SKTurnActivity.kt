@@ -20,40 +20,48 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.leinardi.android.speeddial.UiUtils
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.extensions.resetFocus
+import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKTurnPlayerJoin
-import com.sebastienbalard.skullscoring.ui.EventErrorWithArg
-import com.sebastienbalard.skullscoring.ui.EventTurn
-import com.sebastienbalard.skullscoring.ui.EventTurnDeclarationsUpdated
-import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_turn.*
-import kotlinx.android.synthetic.main.item_turn_player.view.*
+import kotlinx.android.synthetic.main.item_turn_declaration.view.*
+import kotlinx.android.synthetic.main.item_turn_result.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+
 
 class SKTurnActivity : SBActivity(R.layout.activity_turn) {
 
     internal val turnViewModel: SKTurnViewModel by viewModel()
 
-    private lateinit var turnPlayerListAdapter: TurnPlayerListAdapter
+    private lateinit var turnDeclarationListAdapter: TurnDeclarationListAdapter
+    private lateinit var turnResultListAdapter: TurnResultListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
 
         initToolbar()
-        initUI()
         initObservers()
 
         intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
-            turnViewModel.loadCurrentTurn(gameId)
-        }
+            intent.extras?.getBoolean(EXTRA_IS_GAME_RESULTS)?.let {
+                if (!it) turnViewModel.loadTurnDeclarations(gameId) else turnViewModel.loadTurnResults(
+                    gameId
+                )
+            } ?: finish()
+
+        } ?: finish()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,7 +73,11 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_turn_item_validate -> {
-                turnViewModel.saveDeclarations(turnPlayerListAdapter.elements)
+                if (turnViewModel.states.value is StateTurnDeclarations) {
+                    turnViewModel.saveTurnDeclarations(turnDeclarationListAdapter.elements)
+                } else {
+                    turnViewModel.saveTurnResults(turnResultListAdapter.elements)
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -73,16 +85,32 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
     }
 
     private fun initObservers() {
+        turnViewModel.states.observe(this, Observer { event ->
+            event?.apply {
+                Timber.v("state -> ${this::class.java.simpleName}")
+                initUI()
+                when (this) {
+                    is StateTurnDeclarations -> {
+                        Timber.d("turn number: ${turn.number}")
+                        toolbar.title = "Tour ${turn.number} - Annonces"
+                        turnDeclarationListAdapter.elements = turn.results
+                        turnDeclarationListAdapter.notifyDataSetChanged()
+                    }
+                    is StateTurnResults -> {
+                        Timber.d("turn number: ${turn.number}")
+                        toolbar.title = "Tour ${turn.number} - Résultats"
+                        turnResultListAdapter.elements = turn.results
+                        turnResultListAdapter.notifyDataSetChanged()
+                    }
+                    else -> {
+                    }
+                }
+            }
+        })
         turnViewModel.events.observe(this, Observer { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
-                    is EventTurn -> {
-                        Timber.d("turn number: ${turn.number}")
-                        toolbar.title = "Tour ${turn.number} - Annonces"
-                        turnPlayerListAdapter.elements = turn.results
-                        turnPlayerListAdapter.notifyDataSetChanged()
-                    }
                     is EventErrorWithArg -> toolbar.showSnackBarError(
                         getString(messageResId, arg)
                     )
@@ -95,30 +123,47 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
     }
 
     private fun initUI() {
-        turnPlayerListAdapter = TurnPlayerListAdapter(this, listOf())
-        recyclerViewTurn.layoutManager = LinearLayoutManager(this)
-        recyclerViewTurn.itemAnimator = DefaultItemAnimator()
-        recyclerViewTurn.adapter = turnPlayerListAdapter
-    }
-
-    companion object {const val EXTRA_GAME_ID = "EXTRA_GAME_ID"
-
-        fun getIntent(context: Context, gameId: Long): Intent {
-            return Intent(
-                context, SKTurnActivity::class.java
-            ).putExtra(SKGameActivity.EXTRA_GAME_ID, gameId).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        if (turnViewModel.states.value is StateTurnDeclarations) {
+            turnDeclarationListAdapter = TurnDeclarationListAdapter(this, listOf())
+            recyclerViewTurn.layoutManager = LinearLayoutManager(this)
+            recyclerViewTurn.itemAnimator = DefaultItemAnimator()
+            recyclerViewTurn.adapter = turnDeclarationListAdapter
+        } else {
+            turnResultListAdapter = TurnResultListAdapter(this, listOf())
+            recyclerViewTurn.layoutManager = LinearLayoutManager(this)
+            recyclerViewTurn.itemAnimator = DefaultItemAnimator()
+            recyclerViewTurn.adapter = turnResultListAdapter
         }
     }
 
-    private class TurnPlayerListAdapter(context: Context, players: List<SKTurnPlayerJoin>) :
-        SBRecyclerViewAdapter<SKTurnPlayerJoin, TurnPlayerListAdapter.ViewHolder>(
+    companion object {
+        const val EXTRA_GAME_ID = "EXTRA_GAME_ID"
+        const val EXTRA_IS_GAME_RESULTS = "EXTRA_IS_GAME_RESULTS"
+
+        fun getIntentForDeclarations(context: Context, gameId: Long): Intent {
+            return Intent(
+                context, SKTurnActivity::class.java
+            ).putExtra(EXTRA_GAME_ID, gameId).putExtra(EXTRA_IS_GAME_RESULTS, false)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        }
+
+        fun getIntentForResults(context: Context, gameId: Long): Intent {
+            return Intent(
+                context, SKTurnActivity::class.java
+            ).putExtra(EXTRA_GAME_ID, gameId).putExtra(EXTRA_IS_GAME_RESULTS, true)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        }
+    }
+
+    private class TurnResultListAdapter(context: Context, players: List<SKTurnPlayerJoin>) :
+        SBRecyclerViewAdapter<SKTurnPlayerJoin, TurnResultListAdapter.ViewHolder>(
             context, players
         ) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_turn_player, parent, false
+                    R.layout.item_turn_result, parent, false
                 )
             )
         }
@@ -127,11 +172,81 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             SBRecyclerViewAdapter.ViewHolder<SKTurnPlayerJoin>(itemView) {
 
             override fun bind(context: Context, element: SKTurnPlayerJoin) {
-                itemView.textViewTurnPlayerName.text = element.player.name
-                element.declaration?.apply {
-                    itemView.buttonStepperDeclaration.number = this.toString()
+                itemView.textViewTurnResultPlayerName.text = "${element.player.name} (annonce : ${element.declaration ?: 0})"
+                element.result?.apply {
+                    itemView.buttonStepperTurnResult.number = this.toString()
                 }
-                itemView.buttonStepperDeclaration.setOnValueChangeListener { _, _, newValue ->
+                element.hasSkullKing?.apply {
+                    itemView.checkboxTurnHasSkullKing.isChecked = this
+                    itemView.editTextTurnPirateCount.isEnabled = this
+                    if (this) {
+                        element.pirateCount?.apply {
+                            itemView.editTextTurnPirateCount.setText(this.toString())
+                        }
+                    }
+                }
+                element.hasMarmaid?.apply {
+                    itemView.checkboxTurnHasMarmaid.isChecked = this
+                }
+                itemView.buttonStepperTurnResult.setOnValueChangeListener { _, _, newValue ->
+                    element.result = newValue
+                }
+                itemView.checkboxTurnHasSkullKing.setOnCheckedChangeListener { _, isChecked ->
+                    element.hasSkullKing = isChecked
+                    itemView.editTextTurnPirateCount.visibility = if (isChecked) View.VISIBLE else View.GONE
+                    itemView.editTextTurnPirateCount.append(if (isChecked) "0" else "")
+                    if (isChecked) {
+                        itemView.editTextTurnPirateCount.apply {
+                            isFocusableInTouchMode = true
+                            post {
+                                setFocus(context)
+                            }
+                            setOnEditorActionListener { _, actionId, _ ->
+                                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                    element.pirateCount = itemView.editTextTurnPirateCount.text.toString().toInt()
+                                    itemView.editTextTurnPirateCount.resetFocus()
+                                }
+                                true
+                            }
+
+                        }
+                    } else {
+                        itemView.editTextTurnPirateCount.apply {
+                            post {
+                                resetFocus()
+                            }
+                        }
+                    }
+                }
+                itemView.checkboxTurnHasMarmaid.setOnCheckedChangeListener { _, isChecked ->
+                    element.hasMarmaid = isChecked
+                }
+            }
+        }
+    }
+
+    private class TurnDeclarationListAdapter(context: Context, players: List<SKTurnPlayerJoin>) :
+        SBRecyclerViewAdapter<SKTurnPlayerJoin, TurnDeclarationListAdapter.ViewHolder>(
+            context, players
+        ) {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_turn_declaration, parent, false
+                )
+            )
+        }
+
+        class ViewHolder(itemView: View) :
+            SBRecyclerViewAdapter.ViewHolder<SKTurnPlayerJoin>(itemView) {
+
+            override fun bind(context: Context, element: SKTurnPlayerJoin) {
+                itemView.textViewTurnDeclarationPlayerName.text = element.player.name
+                element.declaration?.apply {
+                    itemView.buttonStepperTurnDeclaration.number = this.toString()
+                }
+                itemView.buttonStepperTurnDeclaration.setOnValueChangeListener { _, _, newValue ->
                     element.declaration = newValue
                 }
             }

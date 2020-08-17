@@ -108,11 +108,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
             return@setOnActionSelectedListener when (it.id) {
                 1 -> {
                     intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
-                        startActivity(SKTurnActivity.getIntent(this@SKGameActivity, gameId))
+                        startActivity(SKTurnActivity.getIntentForDeclarations(this@SKGameActivity, gameId))
                     }
                     false
                 }
                 2 -> {
+                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                        startActivity(SKTurnActivity.getIntentForResults(this@SKGameActivity, gameId))
+                    }
                     false
                 }
                 else -> true

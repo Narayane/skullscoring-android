@@ -21,22 +21,24 @@ import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.data.SKTurnPlayerJoinDao
 import com.sebastienbalard.skullscoring.models.SKTurnPlayerJoin
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.ui.EventErrorWithArg
-import com.sebastienbalard.skullscoring.ui.EventTurn
-import com.sebastienbalard.skullscoring.ui.EventTurnDeclarationsUpdated
-import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
 
 open class SKTurnViewModel(
     private val gameRepository: SKGameRepository, private val turnPlayerJoinDao: SKTurnPlayerJoinDao
 ) : SBViewModel() {
 
-    open fun loadCurrentTurn(gameId: Long) = viewModelScope.launch {
+    open fun loadTurnDeclarations(gameId: Long) = viewModelScope.launch {
         val turn = gameRepository.loadCurrentTurn(gameId)
-        _events.value = EventTurn(turn)
+        _states.value = StateTurnDeclarations(turn)
     }
 
-    fun saveDeclarations(declarations: List<SKTurnPlayerJoin>) = viewModelScope.launch {
+    open fun loadTurnResults(gameId: Long) = viewModelScope.launch {
+        val turn = gameRepository.loadCurrentTurn(gameId)
+        _states.value = StateTurnResults(turn)
+    }
+
+    open fun saveTurnDeclarations(declarations: List<SKTurnPlayerJoin>) = viewModelScope.launch {
         val updatedCount = turnPlayerJoinDao.update(*declarations.toTypedArray())
         if (updatedCount == declarations.count()) {
             _events.value = EventTurnDeclarationsUpdated
@@ -44,6 +46,18 @@ open class SKTurnViewModel(
             _events.value = EventErrorWithArg(
                 R.string.error_turn_declarations_not_updated,
                 declarations.count() - updatedCount
+            )
+        }
+    }
+
+    open fun saveTurnResults(results: List<SKTurnPlayerJoin>) = viewModelScope.launch {
+        val updatedCount = turnPlayerJoinDao.update(*results.toTypedArray())
+        if (updatedCount == results.count()) {
+            _events.value = EventTurnDeclarationsUpdated
+        } else {
+            _events.value = EventErrorWithArg(
+                R.string.error_turn_results_not_updated,
+                results.count() - updatedCount
             )
         }
     }

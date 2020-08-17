@@ -20,8 +20,14 @@
         <item name="hintTextColor">@android:color/white</item>
     </style>
 
-    <style name="SKAppTheme.Widget.CheckBox" parent="@style/Widget.AppCompat.CompoundButton.CheckBox">
+    <style name="SKAppTheme.Widget.CheckBox" parent="@style/Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="android:buttonTint">@android:color/white</item>
+    </style>
+
+    <style name="SKAppTheme.Widget.EditText" parent="@style/Widget.MaterialComponents.TextView">
+        <item name="boxStrokeColor">@color/selector_text_input</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="hintTextColor">@android:color/white</item>
     </style>
 
 </resources>

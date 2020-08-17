@@ -27,6 +27,7 @@
         <item name="materialButtonStyle">@style/SKAppTheme.Widget.Button</item>
         <item name="textInputStyle">@style/SKAppTheme.Widget.TextInput</item>
         <item name="checkboxStyle">@style/SKAppTheme.Widget.CheckBox</item>
+        <item name="editTextStyle">@style/SKAppTheme.Widget.EditText</item>
     </style>
 
     <style name="SKAppTheme.AppBar" parent="Theme.MaterialComponents.Light">

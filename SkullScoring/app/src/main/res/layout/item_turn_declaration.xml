@@ -13,7 +13,7 @@
     tools:background="@color/colorPrimaryDark">
 
     <TextView
-        android:id="@+id/textViewTurnPlayerName"
+        android:id="@+id/textViewTurnDeclarationPlayerName"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -22,7 +22,7 @@
         tools:text="Sébastien" />
 
     <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
-        android:id="@+id/buttonStepperDeclaration"
+        android:id="@+id/buttonStepperTurnDeclaration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:backGroundColor="@color/colorPrimaryDark"/>

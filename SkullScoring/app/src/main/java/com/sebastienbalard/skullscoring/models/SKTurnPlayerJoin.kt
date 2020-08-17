@@ -44,6 +44,15 @@ data class SKTurnPlayerJoin(
     @ColumnInfo(name = "result")
     var result: Int? = null
 
+    @ColumnInfo(name = "has_skull_king")
+    var hasSkullKing: Boolean? = null
+
+    @ColumnInfo(name = "pirate_count")
+    var pirateCount: Int? = null
+
+    @ColumnInfo(name = "has_marmaid")
+    var hasMarmaid: Boolean? = null
+
     @Ignore
     lateinit var player: SKPlayer
 }
