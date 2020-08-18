@@ -24,7 +24,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.leinardi.android.speeddial.UiUtils
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.resetFocus
 import com.sebastienbalard.skullscoring.extensions.setFocus
@@ -115,6 +114,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                         getString(messageResId, arg)
                     )
                     is EventTurnDeclarationsUpdated -> finish()
+                    is EventTurnResultsUpdated -> finish()
                     else -> {
                     }
                 }
@@ -172,16 +172,19 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             SBRecyclerViewAdapter.ViewHolder<SKTurnPlayerJoin>(itemView) {
 
             override fun bind(context: Context, element: SKTurnPlayerJoin) {
-                itemView.textViewTurnResultPlayerName.text = "${element.player.name} (annonce : ${element.declaration ?: 0})"
+                itemView.textViewTurnResultPlayerName.text =
+                    "${element.player.name} (annonce : ${element.declaration ?: 0})"
                 element.result?.apply {
                     itemView.buttonStepperTurnResult.number = this.toString()
                 }
-                element.hasSkullKing?.apply {
-                    itemView.checkboxTurnHasSkullKing.isChecked = this
-                    itemView.editTextTurnPirateCount.isEnabled = this
-                    if (this) {
-                        element.pirateCount?.apply {
-                            itemView.editTextTurnPirateCount.setText(this.toString())
+                element.hasSkullKing?.let { hasSkullKing ->
+                    itemView.checkboxTurnHasSkullKing.isChecked = hasSkullKing
+                    if (hasSkullKing) {
+                        itemView.editTextTurnPirateCount.apply {
+                            isEnabled = hasSkullKing
+                            element.pirateCount?.apply {
+                                append(this.toString())
+                            }
                         }
                     }
                 }
@@ -193,26 +196,24 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 }
                 itemView.checkboxTurnHasSkullKing.setOnCheckedChangeListener { _, isChecked ->
                     element.hasSkullKing = isChecked
-                    itemView.editTextTurnPirateCount.visibility = if (isChecked) View.VISIBLE else View.GONE
-                    itemView.editTextTurnPirateCount.append(if (isChecked) "0" else "")
-                    if (isChecked) {
-                        itemView.editTextTurnPirateCount.apply {
-                            isFocusableInTouchMode = true
-                            post {
+                    itemView.editTextTurnPirateCount.visibility =
+                        if (isChecked) View.VISIBLE else View.GONE
+                    itemView.editTextTurnPirateCount.apply {
+                        post {
+                            isEnabled = isChecked
+                            if (isChecked) {
+                                append("0")
                                 setFocus(context)
-                            }
-                            setOnEditorActionListener { _, actionId, _ ->
-                                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                    element.pirateCount = itemView.editTextTurnPirateCount.text.toString().toInt()
-                                    itemView.editTextTurnPirateCount.resetFocus()
+                                setOnEditorActionListener { _, actionId, _ ->
+                                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                        element.pirateCount = text.toString().toInt()
+                                        resetFocus()
+                                    }
+                                    true
                                 }
-                                true
-                            }
-
-                        }
-                    } else {
-                        itemView.editTextTurnPirateCount.apply {
-                            post {
+                            } else {
+                                setText("")
+                                element.pirateCount = null
                                 resetFocus()
                             }
                         }

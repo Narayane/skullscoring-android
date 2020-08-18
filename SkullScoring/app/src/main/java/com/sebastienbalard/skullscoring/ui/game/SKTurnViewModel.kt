@@ -53,7 +53,7 @@ open class SKTurnViewModel(
     open fun saveTurnResults(results: List<SKTurnPlayerJoin>) = viewModelScope.launch {
         val updatedCount = turnPlayerJoinDao.update(*results.toTypedArray())
         if (updatedCount == results.count()) {
-            _events.value = EventTurnDeclarationsUpdated
+            _events.value = EventTurnResultsUpdated
         } else {
             _events.value = EventErrorWithArg(
                 R.string.error_turn_results_not_updated,

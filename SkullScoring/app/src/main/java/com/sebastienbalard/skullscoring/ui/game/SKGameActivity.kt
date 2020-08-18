@@ -148,7 +148,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
             override fun bind(context: Context, element: SKPlayer) {
                 itemView.textViewGamePlayerName.text = element.name
-                itemView.textViewGamePlayerScore.text = "0"
+                itemView.textViewGamePlayerScore.text = element.score.toString()
             }
         }
     }

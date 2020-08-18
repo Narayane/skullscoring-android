@@ -45,6 +45,7 @@ data class EventGameCreated(val gameId: Long) : SBEvent()
 data class EventGameAtLeastOne(val hasAtLeastOneGame: Boolean) : SBEvent()
 data class EventGameList(val games: List<SKGame>) : SBEvent()
 object EventTurnDeclarationsUpdated : SBEvent()
+object EventTurnResultsUpdated: SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 
