@@ -18,6 +18,8 @@ package com.sebastienbalard.skullscoring.repositories
 
 import com.sebastienbalard.skullscoring.data.*
 import com.sebastienbalard.skullscoring.models.*
+import timber.log.Timber
+import kotlin.math.abs
 
 open class SKGameRepository(
     private val gameDao: SKGameDao,
@@ -32,8 +34,38 @@ open class SKGameRepository(
     }
 
     open suspend fun loadGame(gameId: Long): SKGame {
+        val players = gamePlayerJoinDao.findPlayerByGame(gameId)
+        players.forEach { player ->
+            Timber.d("current player: ${player.name}")
+            val turns = turnPlayerJoinDao.findTurnByPlayer(player.id)
+            turns.map {
+                it.results = turnPlayerJoinDao.findResultByTurn(it.id)
+            }
+            player.score = turns.map { turn ->
+                Timber.d("current turn: ${turn.number}")
+                var turnScore = 0
+                turn.results.first { it.playerId == player.id }.let {
+                    Timber.d("declaration: ${it.declaration}, result: ${it.result}, hasSkullKing: ${it.hasSkullKing}(${it.pirateCount}), hasMarmaid: ${it.hasMarmaid}")
+                    it.declaration?.let { declaration ->
+                        it.result?.let { result ->
+                            turnScore += if (declaration == result) {
+                                if (result == 0) turn.number * 10 else result * 20
+                            } else {
+                                abs(result - declaration) * -10
+                            }
+                            val hasSkullKing = it.hasSkullKing ?: false
+                            val pirateCount = it.pirateCount ?: 0
+                            turnScore += if (hasSkullKing) pirateCount * 30 else 0
+                            val hasMarmaid = it.hasMarmaid ?: false
+                            turnScore += if (hasMarmaid) 50 else 0
+                        }
+                    }
+                }
+                turnScore
+            }.reduce { acc, next -> acc + next }
+        }
         val game = gameDao.findById(gameId)
-        game.players = gamePlayerJoinDao.findPlayerByGame(gameId).sortedBy { it.name }
+        game.players = players.sortedWith(compareByDescending<SKPlayer> { it.score }.thenBy { it.name })
         return game
     }
 

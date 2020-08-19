@@ -18,7 +18,6 @@ package com.sebastienbalard.skullscoring.models
 
 import androidx.annotation.NonNull
 import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
 
 @Entity(
     tableName = "sk_players",
@@ -33,4 +32,7 @@ data class SKPlayer(
     @ColumnInfo(name = "pk_player_id")
     @NonNull
     var id: Long = 0
+
+    @Ignore
+    var score: Int = 0
 }

@@ -55,6 +55,10 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         initToolbar()
         initUI()
         initObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
             gameViewModel.loadGame(gameId)

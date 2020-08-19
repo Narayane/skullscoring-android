@@ -174,16 +174,19 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             override fun bind(context: Context, element: SKTurnPlayerJoin) {
                 itemView.textViewTurnResultPlayerName.text =
                     "${element.player.name} (annonce : ${element.declaration ?: 0})"
-                element.result?.apply {
-                    itemView.buttonStepperTurnResult.number = this.toString()
+                itemView.buttonStepperTurnResult.number = element.result?.run {
+                    this.toString()
+                } ?: run {
+                    element.result = 0
+                    "0"
                 }
                 element.hasSkullKing?.let { hasSkullKing ->
                     itemView.checkboxTurnHasSkullKing.isChecked = hasSkullKing
                     if (hasSkullKing) {
                         itemView.editTextTurnPirateCount.apply {
                             isEnabled = hasSkullKing
-                            element.pirateCount?.apply {
-                                append(this.toString())
+                            element.pirateCount?.let {
+                                append(it.toString())
                             }
                         }
                     }
@@ -219,6 +222,15 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                         }
                     }
                 }
+                /*itemView.editTextTurnPirateCount.setOnClickListener {
+                    setOnEditorActionListener { _, actionId, _ ->
+                        if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            element.pirateCount = text.toString().toInt()
+                            resetFocus()
+                        }
+                        true
+                    }
+                }*/
                 itemView.checkboxTurnHasMarmaid.setOnCheckedChangeListener { _, isChecked ->
                     element.hasMarmaid = isChecked
                 }
@@ -244,8 +256,11 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
 
             override fun bind(context: Context, element: SKTurnPlayerJoin) {
                 itemView.textViewTurnDeclarationPlayerName.text = element.player.name
-                element.declaration?.apply {
-                    itemView.buttonStepperTurnDeclaration.number = this.toString()
+                itemView.buttonStepperTurnDeclaration.number = element.declaration?.run {
+                    this.toString()
+                } ?: run {
+                    element.declaration = 0
+                    "0"
                 }
                 itemView.buttonStepperTurnDeclaration.setOnValueChangeListener { _, _, newValue ->
                     element.declaration = newValue
