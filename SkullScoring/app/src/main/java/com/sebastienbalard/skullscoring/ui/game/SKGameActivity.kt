@@ -24,6 +24,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,7 +41,6 @@ import kotlinx.android.synthetic.main.item_game_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-
 
 open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
@@ -82,6 +82,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                         Timber.d("player count: ${game.players.size}")
                         toolbar.title =
                             "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
+                        toolbar.subtitle = "Tour ${game.currentTurnNumber}"
                         playerListAdapter.elements = game.players
                         playerListAdapter.notifyDataSetChanged()
                     }
@@ -108,17 +109,39 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
                     .create()
             )
+            addActionItem(
+                SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24).setLabel("Tour suivant")
+                    .setFabBackgroundColor(
+                        ResourcesCompat.getColor(
+                            resources, R.color.colorSecondary, theme
+                        )
+                    ).create()
+            )
         }.setOnActionSelectedListener {
             return@setOnActionSelectedListener when (it.id) {
                 1 -> {
                     intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
-                        startActivity(SKTurnActivity.getIntentForDeclarations(this@SKGameActivity, gameId))
+                        startActivity(
+                            SKTurnActivity.getIntentForDeclarations(
+                                this@SKGameActivity, gameId
+                            )
+                        )
                     }
                     false
                 }
                 2 -> {
                     intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
-                        startActivity(SKTurnActivity.getIntentForResults(this@SKGameActivity, gameId))
+                        startActivity(
+                            SKTurnActivity.getIntentForResults(
+                                this@SKGameActivity, gameId
+                            )
+                        )
+                    }
+                    false
+                }
+                3 -> {
+                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                        gameViewModel.startNextTurn(gameId)
                     }
                     false
                 }
@@ -158,11 +181,9 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     }
 
     private class PlayerSectionListAdapter(
-        context: Context,
-        sections: Map<String, List<SKPlayer>>
+        context: Context, sections: Map<String, List<SKPlayer>>
     ) : SBSectionRecyclerViewAdapter<String, SKPlayer, PlayerSectionListAdapter.ViewHolder>(
-        context,
-        sections
+        context, sections
     ) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

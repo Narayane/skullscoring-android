@@ -30,4 +30,9 @@ open class SKGameViewModel(
         val game = gameRepository.loadGame(gameId)
         _events.value = EventGame(game)
     }
+
+    fun startNextTurn(gameId: Long) = viewModelScope.launch {
+        gameRepository.startNextTurn(gameId)
+        loadGame(gameId)
+    }
 }

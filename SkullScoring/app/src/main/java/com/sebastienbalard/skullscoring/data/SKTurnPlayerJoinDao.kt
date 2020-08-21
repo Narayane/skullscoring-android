@@ -25,8 +25,8 @@ import com.sebastienbalard.skullscoring.models.SKTurnPlayerJoin
 @Dao
 interface SKTurnPlayerJoinDao : SKBaseDao<SKTurnPlayerJoin> {
 
-    @Query("SELECT * FROM sk_turns INNER JOIN sk_turn_player_joins ON sk_turns.pk_turn_id = sk_turn_player_joins.fk_turn_id WHERE sk_turn_player_joins.fk_player_id = :playerId")
-    suspend fun findTurnByPlayer(playerId: Long): List<SKTurn>
+    @Query("SELECT * FROM sk_turns INNER JOIN sk_turn_player_joins ON sk_turns.pk_turn_id = sk_turn_player_joins.fk_turn_id WHERE sk_turn_player_joins.fk_player_id = :playerId AND sk_turns.fk_game_id = :gameId")
+    suspend fun findTurnByPlayer(playerId: Long, gameId: Long): List<SKTurn>
 
     @Query("SELECT * FROM sk_players INNER JOIN sk_turn_player_joins ON sk_players.pk_player_id = sk_turn_player_joins.fk_player_id WHERE sk_turn_player_joins.fk_turn_id = :turnId")
     suspend fun findPlayerByTurn(turnId: Long): List<SKPlayer>

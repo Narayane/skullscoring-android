@@ -37,7 +37,7 @@ open class SKGameRepository(
         val players = gamePlayerJoinDao.findPlayerByGame(gameId)
         players.forEach { player ->
             Timber.d("current player: ${player.name}")
-            val turns = turnPlayerJoinDao.findTurnByPlayer(player.id)
+            val turns = turnPlayerJoinDao.findTurnByPlayer(player.id, gameId)
             turns.map {
                 it.results = turnPlayerJoinDao.findResultByTurn(it.id)
             }
@@ -48,16 +48,16 @@ open class SKGameRepository(
                     Timber.d("declaration: ${it.declaration}, result: ${it.result}, hasSkullKing: ${it.hasSkullKing}(${it.pirateCount}), hasMarmaid: ${it.hasMarmaid}")
                     it.declaration?.let { declaration ->
                         it.result?.let { result ->
-                            turnScore += if (declaration == result) {
-                                if (result == 0) turn.number * 10 else result * 20
+                            if (declaration == result) {
+                                turnScore += if (result == 0) turn.number * 10 else result * 20
+                                val hasSkullKing = it.hasSkullKing ?: false
+                                val pirateCount = it.pirateCount ?: 0
+                                turnScore += if (hasSkullKing) pirateCount * 30 else 0
+                                val hasMarmaid = it.hasMarmaid ?: false
+                                turnScore += if (hasMarmaid) 50 else 0
                             } else {
-                                abs(result - declaration) * -10
+                                turnScore += if (declaration == 0 ) turn.number * -10 else abs(result - declaration) * -10
                             }
-                            val hasSkullKing = it.hasSkullKing ?: false
-                            val pirateCount = it.pirateCount ?: 0
-                            turnScore += if (hasSkullKing) pirateCount * 30 else 0
-                            val hasMarmaid = it.hasMarmaid ?: false
-                            turnScore += if (hasMarmaid) 50 else 0
                         }
                     }
                 }
@@ -70,10 +70,9 @@ open class SKGameRepository(
     }
 
     open suspend fun loadGames(): List<SKGame> {
-        return gameDao.getAll().apply {
-            map { it.state = Ongoing }
-            sortedByDescending { it.startDate }
-        }
+        val games = gameDao.getAll()
+        games.map { it.state = Ongoing }
+        return games.sortedByDescending { it.startDate }
     }
 
     open suspend fun createGame(players: List<SKPlayer>): SKGame {
@@ -109,5 +108,12 @@ open class SKGameRepository(
         }
         turn.results.sortedBy { it.player.name }
         return turn
+    }
+
+    open suspend fun startNextTurn(gameId: Long) {
+        val game = gameDao.findById(gameId)
+        game.currentTurnNumber++
+        gameDao.update(game)
+
     }
 }

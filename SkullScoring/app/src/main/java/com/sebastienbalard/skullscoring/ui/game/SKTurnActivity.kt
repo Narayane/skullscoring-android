@@ -175,10 +175,10 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 itemView.textViewTurnResultPlayerName.text =
                     "${element.player.name} (annonce : ${element.declaration ?: 0})"
                 itemView.buttonStepperTurnResult.number = element.result?.run {
-                    this.toString()
+                    "$this"
                 } ?: run {
-                    element.result = 0
-                    "0"
+                    element.result = element.declaration
+                    "${element.declaration}"
                 }
                 element.hasSkullKing?.let { hasSkullKing ->
                     itemView.checkboxTurnHasSkullKing.isChecked = hasSkullKing
