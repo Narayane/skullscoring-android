@@ -37,11 +37,11 @@ data class SKGame(
     @NonNull
     var currentTurnNumber: Int = 1
 
-    @Ignore
-    lateinit var players: List<SKPlayer>
+    @ColumnInfo(name = "is_ended")
+    var isEnded: Boolean = false
 
     @Ignore
-    lateinit var state: GameState
+    lateinit var players: List<SKPlayer>
 
     constructor() : this(Date())
 
@@ -63,4 +63,4 @@ data class SKGame(
 
 sealed class GameState
 object Ongoing : GameState()
-object Finished : GameState()
+object Ended : GameState()

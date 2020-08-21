@@ -191,7 +191,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                         }
                     }
                 }
-                element.hasMarmaid?.apply {
+                element.hasMermaid?.apply {
                     itemView.checkboxTurnHasMarmaid.isChecked = this
                 }
                 itemView.buttonStepperTurnResult.setOnValueChangeListener { _, _, newValue ->
@@ -232,7 +232,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                     }
                 }*/
                 itemView.checkboxTurnHasMarmaid.setOnCheckedChangeListener { _, isChecked ->
-                    element.hasMarmaid = isChecked
+                    element.hasMermaid = isChecked
                 }
             }
         }

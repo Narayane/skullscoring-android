@@ -50,8 +50,8 @@ data class SKTurnPlayerJoin(
     @ColumnInfo(name = "pirate_count")
     var pirateCount: Int? = null
 
-    @ColumnInfo(name = "has_marmaid")
-    var hasMarmaid: Boolean? = null
+    @ColumnInfo(name = "has_mermaid")
+    var hasMermaid: Boolean? = null
 
     @Ignore
     lateinit var player: SKPlayer

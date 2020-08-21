@@ -35,4 +35,9 @@ open class SKGameViewModel(
         gameRepository.startNextTurn(gameId)
         loadGame(gameId)
     }
+
+    fun endGame(gameId: Long) = viewModelScope.launch {
+        gameRepository.endGame(gameId)
+        loadGame(gameId)
+    }
 }

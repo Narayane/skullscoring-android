@@ -45,7 +45,7 @@ open class SKGameRepository(
                 Timber.d("current turn: ${turn.number}")
                 var turnScore = 0
                 turn.results.first { it.playerId == player.id }.let {
-                    Timber.d("declaration: ${it.declaration}, result: ${it.result}, hasSkullKing: ${it.hasSkullKing}(${it.pirateCount}), hasMarmaid: ${it.hasMarmaid}")
+                    Timber.d("declaration: ${it.declaration}, result: ${it.result}, hasSkullKing: ${it.hasSkullKing}(${it.pirateCount}), hasMarmaid: ${it.hasMermaid}")
                     it.declaration?.let { declaration ->
                         it.result?.let { result ->
                             if (declaration == result) {
@@ -53,7 +53,7 @@ open class SKGameRepository(
                                 val hasSkullKing = it.hasSkullKing ?: false
                                 val pirateCount = it.pirateCount ?: 0
                                 turnScore += if (hasSkullKing) pirateCount * 30 else 0
-                                val hasMarmaid = it.hasMarmaid ?: false
+                                val hasMarmaid = it.hasMermaid ?: false
                                 turnScore += if (hasMarmaid) 50 else 0
                             } else {
                                 turnScore += if (declaration == 0 ) turn.number * -10 else abs(result - declaration) * -10
@@ -71,7 +71,6 @@ open class SKGameRepository(
 
     open suspend fun loadGames(): List<SKGame> {
         val games = gameDao.getAll()
-        games.map { it.state = Ongoing }
         return games.sortedByDescending { it.startDate }
     }
 
@@ -115,5 +114,11 @@ open class SKGameRepository(
         game.currentTurnNumber++
         gameDao.update(game)
 
+    }
+
+    open suspend fun endGame(gameId: Long) {
+        val game = gameDao.findById(gameId)
+        game.isEnded = true
+        gameDao.update(game)
     }
 }

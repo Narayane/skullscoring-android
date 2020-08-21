@@ -22,6 +22,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -73,6 +75,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }
     }
 
+    @SuppressLint("ResourceType")
     private fun initObservers() {
         gameViewModel.events.observe(this, Observer { event ->
             event?.apply {
@@ -82,7 +85,18 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                         Timber.d("player count: ${game.players.size}")
                         toolbar.title =
                             "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
-                        toolbar.subtitle = "Tour ${game.currentTurnNumber}"
+                        toolbar.subtitle =
+                            if (game.isEnded) "Terminé" else "Tour ${game.currentTurnNumber}"
+                        speedDialGame.visibility = if (game.isEnded) GONE else VISIBLE
+                        if (game.currentTurnNumber == 10) {
+                            val itemEndGame = SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24)
+                                .setLabel("Fin de partie").setFabBackgroundColor(
+                                    ResourcesCompat.getColor(
+                                        resources, R.color.colorSecondary, theme
+                                    )
+                                ).create()
+                            speedDialGame.replaceActionItem(itemEndGame, 2)
+                        }
                         playerListAdapter.elements = game.players
                         playerListAdapter.notifyDataSetChanged()
                     }
@@ -142,6 +156,12 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 3 -> {
                     intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
                         gameViewModel.startNextTurn(gameId)
+                    }
+                    false
+                }
+                4 -> {
+                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                        gameViewModel.endGame(gameId)
                     }
                     false
                 }
