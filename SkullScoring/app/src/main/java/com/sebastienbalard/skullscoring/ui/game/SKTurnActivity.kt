@@ -75,7 +75,9 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 if (turnViewModel.states.value is StateTurnDeclarations) {
                     turnViewModel.saveTurnDeclarations(turnDeclarationListAdapter.elements)
                 } else {
-                    turnViewModel.saveTurnResults(turnResultListAdapter.elements)
+                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                        turnViewModel.saveTurnResults(turnResultListAdapter.elements, gameId)
+                    }
                 }
                 true
             }
@@ -91,13 +93,15 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 when (this) {
                     is StateTurnDeclarations -> {
                         Timber.d("turn number: ${turn.number}")
-                        toolbar.title = "Tour ${turn.number} - Annonces"
+                        toolbar.title = "Annonces"
+                        toolbar.subtitle = "Tour ${turn.number}"
                         turnDeclarationListAdapter.elements = turn.results
                         turnDeclarationListAdapter.notifyDataSetChanged()
                     }
                     is StateTurnResults -> {
                         Timber.d("turn number: ${turn.number}")
-                        toolbar.title = "Tour ${turn.number} - Résultats"
+                        toolbar.title = "Résultats"
+                        toolbar.subtitle = "Tour ${turn.number}"
                         turnResultListAdapter.elements = turn.results
                         turnResultListAdapter.notifyDataSetChanged()
                     }

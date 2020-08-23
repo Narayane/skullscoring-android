@@ -114,6 +114,7 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.game.SKGameActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/SKAppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
@@ -124,6 +125,7 @@
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".ui.game.SKTurnActivity"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/SKAppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />

@@ -35,4 +35,7 @@ data class SKPlayer(
 
     @Ignore
     var score: Int = 0
+
+    @Ignore
+    var currentTurnDeclaration: Int? = null
 }

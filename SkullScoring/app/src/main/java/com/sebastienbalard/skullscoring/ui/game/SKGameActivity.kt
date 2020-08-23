@@ -27,12 +27,14 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
+import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
@@ -49,6 +51,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     internal val gameViewModel: SKGameViewModel by viewModel()
 
     private lateinit var playerListAdapter: PlayerListAdapter
+    private var gameId: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +60,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         initToolbar()
         initUI()
         initObservers()
+
+        gameId = intent.extras?.getLong(EXTRA_GAME_ID)
     }
 
     override fun onResume() {
         super.onResume()
 
-        intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+        gameId?.let { gameId ->
             gameViewModel.loadGame(gameId)
         }
     }
@@ -75,7 +80,6 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }
     }
 
-    @SuppressLint("ResourceType")
     private fun initObservers() {
         gameViewModel.events.observe(this, Observer { event ->
             event?.apply {
@@ -83,28 +87,63 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 when (this) {
                     is EventGame -> {
                         Timber.d("player count: ${game.players.size}")
-                        toolbar.title =
-                            "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
-                        toolbar.subtitle =
-                            if (game.isEnded) "Terminé" else "Tour ${game.currentTurnNumber}"
-                        speedDialGame.visibility = if (game.isEnded) GONE else VISIBLE
-                        if (game.currentTurnNumber == 10) {
-                            val itemEndGame = SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24)
-                                .setLabel("Fin de partie").setFabBackgroundColor(
-                                    ResourcesCompat.getColor(
-                                        resources, R.color.colorSecondary, theme
-                                    )
-                                ).create()
-                            speedDialGame.replaceActionItem(itemEndGame, 2)
-                        }
-                        playerListAdapter.elements = game.players
-                        playerListAdapter.notifyDataSetChanged()
+                        refreshToolbar(game)
+                        refreshSpeedDial(game)
+                        refreshRecyclerView(game)
                     }
                     else -> {
                     }
                 }
             }
         })
+    }
+
+    private fun refreshRecyclerView(game: SKGame) {
+        playerListAdapter.elements = game.players
+        playerListAdapter.notifyDataSetChanged()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun refreshSpeedDial(game: SKGame) {
+        speedDialGame.visibility = if (game.isEnded) GONE else VISIBLE
+        if (speedDialGame.actionItems.size > 1) {
+            speedDialGame.actionItems.withIndex().filter { it.index > 0 }.forEach {
+                speedDialGame.removeActionItem(it.value)
+            }
+        }
+        if (speedDialGame.isVisible) {
+            if (game.areCurrentTurnDeclarationsSet) {
+                speedDialGame.addActionItem(
+                    SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
+                        .create()
+                )
+            }
+            if (game.areCurrentTurnResultsSet) {
+                speedDialGame.addActionItem(
+                    SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24)
+                        .setLabel("Tour suivant").setFabBackgroundColor(
+                            ResourcesCompat.getColor(
+                                resources, R.color.colorSecondary, theme
+                            )
+                        ).create()
+                )
+            }
+            if (speedDialGame.actionItems.size == 3 && game.currentTurnNumber == 10) {
+                val itemEndGame =
+                    SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24).setLabel("Fin de partie")
+                        .setFabBackgroundColor(
+                            ResourcesCompat.getColor(
+                                resources, R.color.colorSecondary, theme
+                            )
+                        ).create()
+                speedDialGame.replaceActionItem(itemEndGame, 2)
+            }
+        }
+    }
+
+    private fun refreshToolbar(game: SKGame) {
+        toolbar.title = "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
+        toolbar.subtitle = if (game.isEnded) "Terminé" else "Tour ${game.currentTurnNumber}"
     }
 
     @SuppressLint("ResourceType")
@@ -119,22 +158,10 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
             addActionItem(
                 SpeedDialActionItem.Builder(1, R.drawable.ic_bet_24dp).setLabel("Annonces").create()
             )
-            addActionItem(
-                SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
-                    .create()
-            )
-            addActionItem(
-                SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24).setLabel("Tour suivant")
-                    .setFabBackgroundColor(
-                        ResourcesCompat.getColor(
-                            resources, R.color.colorSecondary, theme
-                        )
-                    ).create()
-            )
         }.setOnActionSelectedListener {
             return@setOnActionSelectedListener when (it.id) {
                 1 -> {
-                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                    gameId?.let { gameId ->
                         startActivity(
                             SKTurnActivity.getIntentForDeclarations(
                                 this@SKGameActivity, gameId
@@ -144,7 +171,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                     false
                 }
                 2 -> {
-                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                    gameId?.let { gameId ->
                         startActivity(
                             SKTurnActivity.getIntentForResults(
                                 this@SKGameActivity, gameId
@@ -154,13 +181,13 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                     false
                 }
                 3 -> {
-                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                    gameId?.let { gameId ->
                         gameViewModel.startNextTurn(gameId)
                     }
                     false
                 }
                 4 -> {
-                    intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
+                    gameId?.let { gameId ->
                         gameViewModel.endGame(gameId)
                     }
                     false
@@ -195,12 +222,17 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
             override fun bind(context: Context, element: SKPlayer) {
                 itemView.textViewGamePlayerName.text = element.name
+                element.currentTurnDeclaration?.apply {
+                    itemView.textViewGamePlayerDeclaration.visibility = VISIBLE
+                    itemView.textViewGamePlayerDeclaration.text = "$this"
+                } ?: run { itemView.textViewGamePlayerDeclaration.visibility = GONE }
+                itemView.textViewGamePlayerDeclaration.visibility
                 itemView.textViewGamePlayerScore.text = element.score.toString()
             }
         }
     }
 
-    private class PlayerSectionListAdapter(
+    /*private class PlayerSectionListAdapter(
         context: Context, sections: Map<String, List<SKPlayer>>
     ) : SBSectionRecyclerViewAdapter<String, SKPlayer, PlayerSectionListAdapter.ViewHolder>(
         context, sections
@@ -232,5 +264,5 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 itemView.textViewGamePlayerScore.text = "0"
             }
         }
-    }
+    }*/
 }

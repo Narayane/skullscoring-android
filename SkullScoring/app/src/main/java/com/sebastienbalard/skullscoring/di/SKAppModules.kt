@@ -22,6 +22,7 @@ import com.sebastienbalard.skullscoring.SKApplication
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
 import com.sebastienbalard.skullscoring.data.SKDatabase
+import com.sebastienbalard.skullscoring.repositories.SKTurnRepository
 import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKGameViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
@@ -50,6 +51,7 @@ val commonModule = module {
     single { androidApplication() as SKApplication }
     single<SKGameRepository>()
     single<SKPlayerRepository>()
+    single<SKTurnRepository>()
 }
 
 val appModule = module {

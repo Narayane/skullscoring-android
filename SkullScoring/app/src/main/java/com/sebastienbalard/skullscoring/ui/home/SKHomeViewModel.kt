@@ -28,9 +28,9 @@ open class SKHomeViewModel(
     private val gameRepository: SKGameRepository
 ) : SBViewModel() {
 
-    open fun loadGame(game: SKGame) = viewModelScope.launch {
+    /*open fun loadGame(game: SKGame) = viewModelScope.launch {
         _events.postValue(EventGame(gameRepository.loadGame(game.id)))
-    }
+    }*/
 
     open fun loadGames() = viewModelScope.launch {
         _events.postValue(EventGameList(gameRepository.loadGames()))

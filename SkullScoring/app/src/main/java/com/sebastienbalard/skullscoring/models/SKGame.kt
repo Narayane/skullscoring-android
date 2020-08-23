@@ -43,6 +43,12 @@ data class SKGame(
     @Ignore
     lateinit var players: List<SKPlayer>
 
+    @Ignore
+    var areCurrentTurnDeclarationsSet: Boolean = false
+
+    @Ignore
+    var areCurrentTurnResultsSet: Boolean = false
+
     constructor() : this(Date())
 
     override fun equals(other: Any?): Boolean {

@@ -16,17 +16,16 @@
 
 package com.sebastienbalard.skullscoring.repositories
 
-import com.sebastienbalard.skullscoring.data.*
-import com.sebastienbalard.skullscoring.models.*
+import com.sebastienbalard.skullscoring.data.SKGameDao
+import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.models.SKTurn
 import timber.log.Timber
-import kotlin.math.abs
 
 open class SKGameRepository(
-    private val gameDao: SKGameDao,
-    private val gamePlayerJoinDao: SKGamePlayerJoinDao,
-    private val turnDao: SKTurnDao,
-    private val turnPlayerJoinDao: SKTurnPlayerJoinDao,
-    private val playerDao: SKPlayerDao
+    private val playerRepository: SKPlayerRepository,
+    private val turnRepository: SKTurnRepository,
+    private val gameDao: SKGameDao
 ) {
 
     open suspend fun hasAtLeastOneGame(): Boolean {
@@ -34,86 +33,43 @@ open class SKGameRepository(
     }
 
     open suspend fun loadGame(gameId: Long): SKGame {
-        val players = gamePlayerJoinDao.findPlayerByGame(gameId)
-        players.forEach { player ->
-            Timber.d("current player: ${player.name}")
-            val turns = turnPlayerJoinDao.findTurnByPlayer(player.id, gameId)
-            turns.map {
-                it.results = turnPlayerJoinDao.findResultByTurn(it.id)
-            }
-            player.score = turns.map { turn ->
-                Timber.d("current turn: ${turn.number}")
-                var turnScore = 0
-                turn.results.first { it.playerId == player.id }.let {
-                    Timber.d("declaration: ${it.declaration}, result: ${it.result}, hasSkullKing: ${it.hasSkullKing}(${it.pirateCount}), hasMarmaid: ${it.hasMermaid}")
-                    it.declaration?.let { declaration ->
-                        it.result?.let { result ->
-                            if (declaration == result) {
-                                turnScore += if (result == 0) turn.number * 10 else result * 20
-                                val hasSkullKing = it.hasSkullKing ?: false
-                                val pirateCount = it.pirateCount ?: 0
-                                turnScore += if (hasSkullKing) pirateCount * 30 else 0
-                                val hasMarmaid = it.hasMermaid ?: false
-                                turnScore += if (hasMarmaid) 50 else 0
-                            } else {
-                                turnScore += if (declaration == 0 ) turn.number * -10 else abs(result - declaration) * -10
-                            }
-                        }
-                    }
-                }
-                turnScore
-            }.reduce { acc, next -> acc + next }
-        }
         val game = gameDao.findById(gameId)
-        game.players = players.sortedWith(compareByDescending<SKPlayer> { it.score }.thenBy { it.name })
+        Timber.d("current turn: ${game.currentTurnNumber}")
+        game.players =
+            playerRepository.getPlayersWithScore(gameId, game.isEnded, game.currentTurnNumber)
+        val results = turnRepository.getTurnByNumber(
+            game.id, game.currentTurnNumber
+        ).results
+        val nullDeclarationCount = results.filter { it.declaration == null }.size
+        game.areCurrentTurnDeclarationsSet = nullDeclarationCount == 0
+        val nullResultsCount = results.filter { it.result == null }.size
+        game.areCurrentTurnResultsSet = nullResultsCount == 0
         return game
     }
 
-    open suspend fun loadGames(): List<SKGame> {
-        val games = gameDao.getAll()
-        return games.sortedByDescending { it.startDate }
-    }
+    open suspend fun loadGames(): List<SKGame> =
+        gameDao.getAll().sortedByDescending { it.startDate }
 
     open suspend fun createGame(players: List<SKPlayer>): SKGame {
         val newGame = SKGame()
         gameDao.insert(newGame)
         val savedGame = gameDao.findByDate(newGame.startDate)
-        gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(savedGame.id, it.id) }
-            .toTypedArray())
-        turnDao.insert(*Array(10) { index -> SKTurn(index + 1, savedGame.id) })
-        val savedTurns = turnDao.findByGame(savedGame.id)
-        val results = savedTurns.map { turn ->
-            players.map { player ->
-                SKTurnPlayerJoin(
-                    turn.id, player.id
-                )
-            }
-        }.flatten()
-        turnPlayerJoinDao.insert(*results.toTypedArray())
+        playerRepository.createPlayersForGame(players, savedGame.id)
+        turnRepository.createTurnsForGame(savedGame.id, players)
         return savedGame
     }
 
     open suspend fun deleteGame(game: SKGame) {
-        turnDao.delete(*turnDao.findByGame(game.id).toTypedArray())
+        turnRepository.deleteTurnsForGame(game.id)
         gameDao.delete(game)
     }
 
-    open suspend fun loadCurrentTurn(gameId: Long): SKTurn {
-        val game = gameDao.findById(gameId)
-        val turn = turnDao.findByNumber(gameId, game.currentTurnNumber)
-        turn.results = turnPlayerJoinDao.findResultByTurn(turn.id)
-        turn.results.forEach {
-            it.player = playerDao.findById(it.playerId)
-        }
-        turn.results.sortedBy { it.player.name }
-        return turn
-    }
+    open suspend fun loadCurrentTurn(gameId: Long): SKTurn = turnRepository.getCurrentTurn(gameId)
 
     open suspend fun startNextTurn(gameId: Long) {
         val game = gameDao.findById(gameId)
         game.currentTurnNumber++
         gameDao.update(game)
-
     }
 
     open suspend fun endGame(gameId: Long) {

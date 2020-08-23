@@ -18,14 +18,16 @@ package com.sebastienbalard.skullscoring.ui.game
 
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.data.SKTurnDao
 import com.sebastienbalard.skullscoring.data.SKTurnPlayerJoinDao
 import com.sebastienbalard.skullscoring.models.SKTurnPlayerJoin
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 open class SKTurnViewModel(
-    private val gameRepository: SKGameRepository, private val turnPlayerJoinDao: SKTurnPlayerJoinDao
+    private val gameRepository: SKGameRepository, private val turnDao: SKTurnDao, private val turnPlayerJoinDao: SKTurnPlayerJoinDao
 ) : SBViewModel() {
 
     open fun loadTurnDeclarations(gameId: Long) = viewModelScope.launch {
@@ -50,14 +52,24 @@ open class SKTurnViewModel(
         }
     }
 
-    open fun saveTurnResults(results: List<SKTurnPlayerJoin>) = viewModelScope.launch {
-        val updatedCount = turnPlayerJoinDao.update(*results.toTypedArray())
-        if (updatedCount == results.count()) {
-            _events.value = EventTurnResultsUpdated
+    open fun saveTurnResults(results: List<SKTurnPlayerJoin>, gameId: Long) = viewModelScope.launch {
+        val currentTurnNumber = turnDao.findById(results[0].turnId).number
+        val turnResultSum = results.filter { it.result != null }.map { it.result!! }.reduce { acc, value -> acc + value }
+        Timber.d("turn results sum : $turnResultSum")
+        if (turnResultSum == currentTurnNumber) {
+            val updatedCount = turnPlayerJoinDao.update(*results.toTypedArray())
+            if (updatedCount == results.count()) {
+                _events.value = EventTurnResultsUpdated
+            } else {
+                _events.value = EventErrorWithArg(
+                    R.string.error_turn_results_not_updated,
+                    results.count() - updatedCount
+                )
+            }
         } else {
             _events.value = EventErrorWithArg(
-                R.string.error_turn_results_not_updated,
-                results.count() - updatedCount
+                R.string.error_turn_results_sum_is_invalid,
+                currentTurnNumber
             )
         }
     }

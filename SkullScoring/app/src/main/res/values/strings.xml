@@ -15,4 +15,5 @@
     <string name="error_player_empty_name">Saisis un nom</string>
     <string name="error_turn_declarations_not_updated">%1$s annonces n\'ont pas été mises à jour</string>
     <string name="error_turn_results_not_updated">%1$s resultats n\'ont pas été mis à jour</string>
+    <string name="error_turn_results_sum_is_invalid">La somme des résultats doit être égale à %1$s</string>
 </resources>

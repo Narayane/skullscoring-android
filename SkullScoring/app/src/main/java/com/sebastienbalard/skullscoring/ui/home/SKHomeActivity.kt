@@ -69,10 +69,6 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
-                    is EventGame -> {
-                        Timber.d("open game of ${game.startDate.formatDateTime(this@SKHomeActivity)}")
-                        startActivity(SKGameActivity.getIntent(this@SKHomeActivity, game.id))
-                    }
                     is EventGameList -> {
                         Timber.d("games count: ${games.size}")
                         gameListAdapter.elements = games
@@ -96,7 +92,9 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                 object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
                     override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
                         Timber.v("onClick")
-                        homeViewModel.loadGame(gameListAdapter.elements[position])
+                        val clickedGame = gameListAdapter.elements[position]
+                        Timber.d("open game of ${clickedGame.startDate.formatDateTime(this@SKHomeActivity)}")
+                        startActivity(SKGameActivity.getIntent(this@SKHomeActivity, clickedGame.id))
                     }
 
                     override fun isEnabled(position: Int): Boolean {
