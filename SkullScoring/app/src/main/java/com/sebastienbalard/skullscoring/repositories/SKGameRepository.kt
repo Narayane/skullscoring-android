@@ -59,9 +59,11 @@ open class SKGameRepository(
         return savedGame
     }
 
-    open suspend fun deleteGame(game: SKGame) {
-        turnRepository.deleteTurnsForGame(game.id)
-        gameDao.delete(game)
+    open suspend fun deleteGame(vararg games: SKGame): Int {
+        games.forEach {
+            turnRepository.deleteTurnsForGame(it.id)
+        }
+        return gameDao.delete(*games)
     }
 
     open suspend fun loadCurrentTurn(gameId: Long): SKTurn = turnRepository.getCurrentTurn(gameId)

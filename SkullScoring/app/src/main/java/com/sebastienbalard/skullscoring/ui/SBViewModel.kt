@@ -34,6 +34,7 @@ object StateSplashConfig : SBState()
 open class SBEvent
 open class EventError(val messageResId: Int) : SBEvent()
 open class EventErrorWithArg(val messageResId: Int, val arg: Any) : SBEvent()
+open class EventErrorPluralWithArg(val pluralMessageResId: Int, val arg: Any) : SBEvent()
 
 object EventSplashStartOnboarding : SBEvent()
 object EventSplashGoToHome : SBEvent()

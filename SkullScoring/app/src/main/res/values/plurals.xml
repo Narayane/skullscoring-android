@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="plural_game_selected">
+        <item quantity="one">%d partie sélectionnée</item>
+        <item quantity="other">%d parties sélectionnées</item>
+    </plurals>
+    <plurals name="plural_error_game_not_deleted">
+        <item quantity="one">%d parties n\'a pas été supprimée</item>
+        <item quantity="other">%d parties n\'ont pas été supprimées</item>
+    </plurals>
+</resources>

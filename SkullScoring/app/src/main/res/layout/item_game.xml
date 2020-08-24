@@ -6,6 +6,7 @@
     android:orientation="horizontal"
     android:layout_marginTop="@dimen/marginS"
     android:layout_marginBottom="@dimen/marginS"
+    android:background="?android:attr/selectableItemBackground"
     tools:background="@color/colorPrimaryDark">
 
     <TextView

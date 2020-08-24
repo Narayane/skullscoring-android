@@ -30,4 +30,13 @@
         <item name="hintTextColor">@android:color/white</item>
     </style>
 
+    <style name="SKAppTheme.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
+        <item name="background">?attr/actionModeBackground</item>
+        <item name="backgroundSplit">?attr/actionModeSplitBackground</item>
+        <item name="height">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Title</item>
+        <item name="subtitleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle</item>
+        <item name="closeItemLayout">@layout/abc_action_mode_close_item_material</item>
+    </style>
+
 </resources>

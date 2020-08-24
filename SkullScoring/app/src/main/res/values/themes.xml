@@ -39,4 +39,11 @@
     </style>
 
     <style name="SKAppTheme.Popup" parent="@style/ThemeOverlay.MaterialComponents.Light"/>
+
+    <style name="SKAppTheme.ActionMode" parent="Theme.MaterialComponents.Light">
+        <!--<item name="actionModeStyle">@style/SKAppTheme.Widget.ActionMode</item>-->
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
+        <item name="actionMenuTextColor">@android:color/white</item>
+    </style>
 </resources>

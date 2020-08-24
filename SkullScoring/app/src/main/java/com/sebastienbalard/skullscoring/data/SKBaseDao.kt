@@ -28,5 +28,5 @@ interface SKBaseDao<T> {
     suspend fun update(vararg type: T): Int
 
     @Delete
-    suspend fun delete(vararg type: T)
+    suspend fun delete(vararg type: T): Int
 }

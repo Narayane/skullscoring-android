@@ -17,11 +17,10 @@
 package com.sebastienbalard.skullscoring.ui.home
 
 import androidx.lifecycle.viewModelScope
+import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.ui.EventGame
-import com.sebastienbalard.skullscoring.ui.EventGameList
-import com.sebastienbalard.skullscoring.ui.SBViewModel
+import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
 
 open class SKHomeViewModel(
@@ -34,5 +33,16 @@ open class SKHomeViewModel(
 
     open fun loadGames() = viewModelScope.launch {
         _events.postValue(EventGameList(gameRepository.loadGames()))
+    }
+
+    open fun deleteGame(vararg games: SKGame) = viewModelScope.launch {
+        val count = gameRepository.deleteGame(*games)
+
+        if (count != games.size) {
+            val delta = games.size - count
+            _events.postValue(EventErrorPluralWithArg(R.plurals.plural_error_game_not_deleted, delta))
+        } else {
+            _events.postValue(EventGameList(gameRepository.loadGames()))
+        }
     }
 }
