@@ -28,6 +28,8 @@
         <item name="textInputStyle">@style/SKAppTheme.Widget.TextInput</item>
         <item name="checkboxStyle">@style/SKAppTheme.Widget.CheckBox</item>
         <item name="editTextStyle">@style/SKAppTheme.Widget.EditText</item>
+        <item name="actionModeStyle">@style/SKAppTheme.Widget.ActionMode</item>
+        <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
     </style>
 
     <style name="SKAppTheme.AppBar" parent="Theme.MaterialComponents.Light">
@@ -39,11 +41,4 @@
     </style>
 
     <style name="SKAppTheme.Popup" parent="@style/ThemeOverlay.MaterialComponents.Light"/>
-
-    <style name="SKAppTheme.ActionMode" parent="Theme.MaterialComponents.Light">
-        <!--<item name="actionModeStyle">@style/SKAppTheme.Widget.ActionMode</item>-->
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
-        <item name="actionMenuTextColor">@android:color/white</item>
-    </style>
 </resources>

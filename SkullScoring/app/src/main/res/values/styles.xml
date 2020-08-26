@@ -31,12 +31,17 @@
     </style>
 
     <style name="SKAppTheme.Widget.ActionMode" parent="Widget.AppCompat.ActionMode">
-        <item name="background">?attr/actionModeBackground</item>
-        <item name="backgroundSplit">?attr/actionModeSplitBackground</item>
-        <item name="height">?attr/actionBarSize</item>
-        <item name="titleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Title</item>
-        <item name="subtitleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle</item>
-        <item name="closeItemLayout">@layout/abc_action_mode_close_item_material</item>
+        <item name="titleTextStyle">?attr/textAppearanceCaption</item>
+        <item name="subtitleTextStyle">@style/TextAppearance.AppCompat.Widget.ActionMode.Subtitle
+        </item>
+    </style>
+
+    <style name="SKAppTheme.TextAppearance.Widget.ActionBar.Title" parent="android:TextAppearance.Material.Widget.ActionMode.Title">
+        <item name="textColor">@android:color/white</item>
+    </style>
+
+    <style name="SKAppTheme.TextAppearance.Widget.ActionBar.Subtitle" parent="android:TextAppearance.Material.Widget.ActionMode.Subtitle">
+        <item name="textColor">@android:color/white</item>
     </style>
 
 </resources>
