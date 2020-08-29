@@ -33,6 +33,7 @@ import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
+import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBContextualMenuRecyclerView
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
@@ -52,10 +53,32 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = getString(R.string.app_name)
 
+        initToolbar(false)
         initUI()
         initObservers()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Timber.v("onCreateOptionsMenu")
+        menuInflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_home_item_settings -> {
+                //Timber.i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: settings"))
+                startActivity(SKSettingsActivity.getIntent(this))
+                true
+            }
+            R.id.menu_home_item_about -> {
+                /*i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: about"))
+                startActivity(BICAboutActivity.getIntent(this))*/
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResume() {

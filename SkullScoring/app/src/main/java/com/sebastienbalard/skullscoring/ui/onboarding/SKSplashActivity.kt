@@ -14,31 +14,39 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.ui.splash
+package com.sebastienbalard.skullscoring.ui.onboarding
 
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.Observer
+import com.sebastienbalard.skullscoring.BuildConfig
 import com.sebastienbalard.skullscoring.R
-import com.sebastienbalard.skullscoring.ui.EventSplashGoToHome
-import com.sebastienbalard.skullscoring.ui.EventSplashStartOnboarding
-import com.sebastienbalard.skullscoring.ui.SBActivity
-import com.sebastienbalard.skullscoring.ui.StateSplashConfig
+import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
-import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
 
-    internal val viewModel: SKSplashViewModel by viewModel()
+    internal val viewModel: SKOnboardingViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.states.observe(this, Observer { state ->
+        initObservers()
+
+        viewModel.requestDataSendingPermissions()
+    }
+
+    private fun openDataPermissionScreen() {
+        startActivity(
+            SBDataPermissionActivity.getIntent(this@SKSplashActivity)
+        )
+    }
+
+    private fun initObservers() {
+        viewModel.states.observe(this, { state ->
             state?.let {
                 Timber.v("state -> ${it::class.java.simpleName}")
                 when (it) {
@@ -49,10 +57,10 @@ open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
             }
         })
 
-        viewModel.events.observe(this, Observer { event ->
-            event?.apply {
-                Timber.v("event -> ${this::class.java.simpleName}")
-                when (this) {
+        viewModel.events.observe(this, { event ->
+            event?.let {
+                Timber.v("event -> ${it::class.java.simpleName}")
+                when (it) {
                     is EventSplashStartOnboarding -> {
                         Handler(Looper.getMainLooper()).postDelayed({
                             startActivity(
@@ -71,12 +79,19 @@ open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
                             )
                         }, 2000)
                     }
+                    is EventSplashRequestDataPermissions -> {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            if (it.needed or BuildConfig.DEBUG) {
+                                openDataPermissionScreen()
+                            } else {
+                                viewModel.load()
+                            }
+                        }, 2000)
+                    }
                     else -> {
                     }
                 }
             }
         })
-
-        viewModel.loadConfig()
     }
 }

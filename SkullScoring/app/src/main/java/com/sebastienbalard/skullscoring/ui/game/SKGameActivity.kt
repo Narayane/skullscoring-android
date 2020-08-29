@@ -57,7 +57,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
 
-        initToolbar()
+        initToolbar(true)
         initUI()
         initObservers()
 

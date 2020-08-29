@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "896114900327",
+    "firebase_url": "https://skull-scoring.firebaseio.com",
+    "project_id": "skull-scoring",
+    "storage_bucket": "skull-scoring.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896114900327:android:95cfa087ebfdc2f6b003c2",
+        "android_client_info": {
+          "package_name": "com.sebastienbalard.skullscoring"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "896114900327-e7ccifpdqt9g611cn3l54rv7pqv364a3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh9JjvQTV67Pz0i3VhHODJi5_UxuB5PgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "896114900327-e7ccifpdqt9g611cn3l54rv7pqv364a3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

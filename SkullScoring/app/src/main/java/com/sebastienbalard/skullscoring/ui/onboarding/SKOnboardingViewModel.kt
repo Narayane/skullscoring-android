@@ -16,23 +16,43 @@
 
 package com.sebastienbalard.skullscoring.ui.onboarding
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.SBAnalytics
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
+import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
 import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
 
 open class SKOnboardingViewModel(
-    private val gameRepository: SKGameRepository, private val playerRepository: SKPlayerRepository
+    private val gameRepository: SKGameRepository,
+    private val playerRepository: SKPlayerRepository,
+    private val preferenceRepository: SKPreferenceRepository,
+    private val analytics: SBAnalytics
 ) : SBViewModel() {
 
     private var _players = MutableLiveData<List<SKPlayer>>(listOf())
     open val players: LiveData<List<SKPlayer>>
         get() = _players
+
+    open fun load() = viewModelScope.launch {
+        _states.value = StateSplashConfig
+        if (gameRepository.hasAtLeastOneGame()) {
+            _events.value = EventSplashGoToHome
+        } else {
+            _events.value = EventSplashStartOnboarding
+        }
+    }
+
+    open fun requestDataSendingPermissions() {
+        _events.value =
+            EventSplashRequestDataPermissions(preferenceRepository.requestDataSendingPermissions)
+    }
 
     open fun createGame() = viewModelScope.launch {
         if (players.value!!.count() < 2) {
@@ -56,10 +76,36 @@ open class SKOnboardingViewModel(
         }
     }
 
-    open fun load() = viewModelScope.launch {
+    open fun loadOnboarding() = viewModelScope.launch {
         val hasAtLeastOneGame = gameRepository.hasAtLeastOneGame()
         _events.value = EventGameAtLeastOne(
             hasAtLeastOneGame
         )
+    }
+
+    open fun loadDataSendingPermissions() {
+        _events.value = EventDataSendingPermissionsLoaded(
+            preferenceRepository.isCrashDataSendingAllowed,
+            preferenceRepository.isUseDataSendingAllowed
+        )
+    }
+
+    open fun saveDataSendingPermissions(
+        allowCrashDataSending: Boolean, allowUseDataSending: Boolean
+    ) {
+        preferenceRepository.isCrashDataSendingAllowed = allowCrashDataSending
+        preferenceRepository.isUseDataSendingAllowed = allowUseDataSending
+        preferenceRepository.requestDataSendingPermissions = false
+        var bundle = Bundle()
+        bundle.putInt("allowed", if (allowCrashDataSending) 1 else 0)
+        bundle.putInt("is_onboarding", 1)
+        analytics.sendEvent("crash_data_sending", bundle)
+        bundle = Bundle()
+
+        bundle.putInt("allowed", if (allowUseDataSending) 1 else 0)
+        bundle.putInt("is_onboarding", 1)
+        analytics.sendEvent("use_data_sending", bundle)
+
+        load()
     }
 }

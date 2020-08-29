@@ -46,10 +46,10 @@ open class SBActivity(@LayoutRes contentLayoutId: Int): AppCompatActivity(conten
         }
     }
 
-    protected open fun initToolbar() {
+    protected open fun initToolbar(isHomeAsUp: Boolean) {
         setSupportActionBar(toolbar)
         try {
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(isHomeAsUp)
         } catch (exception: NullPointerException) {
             // do nothing
         }

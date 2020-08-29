@@ -67,7 +67,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         initUI()
         initObservers()
 
-        onboardingViewModel.load()
+        onboardingViewModel.loadOnboarding()
     }
 
     private fun initObservers() {

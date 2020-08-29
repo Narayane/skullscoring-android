@@ -16,19 +16,24 @@
 
 package com.sebastienbalard.skullscoring.di
 
+import androidx.preference.PreferenceManager
 import androidx.room.Room
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.sebastienbalard.skullscoring.BuildConfig
+import com.sebastienbalard.skullscoring.SBAnalytics
+import com.sebastienbalard.skullscoring.SBCrashReport
 import com.sebastienbalard.skullscoring.SKApplication
+import com.sebastienbalard.skullscoring.data.SKDatabase
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.data.SKDatabase
+import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
 import com.sebastienbalard.skullscoring.repositories.SKTurnRepository
-import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKGameViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKTurnViewModel
 import com.sebastienbalard.skullscoring.ui.home.SKHomeViewModel
-import com.sebastienbalard.skullscoring.ui.splash.SKSplashViewModel
+import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.experimental.dsl.viewModel
@@ -49,13 +54,21 @@ val dataModule = module {
 
 val commonModule = module {
     single { androidApplication() as SKApplication }
+    single { PreferenceManager.getDefaultSharedPreferences(androidContext()) }
+
+    single { FirebaseAnalytics.getInstance(androidContext()) }
+    single { FirebaseCrashlytics.getInstance() }
+
+    single<SBAnalytics>()
+    single<SBCrashReport>()
+
     single<SKGameRepository>()
     single<SKPlayerRepository>()
     single<SKTurnRepository>()
+    single<SKPreferenceRepository>()
 }
 
 val appModule = module {
-    viewModel<SKSplashViewModel>()
     viewModel<SKOnboardingViewModel>()
     viewModel<SKPlayerSearchViewModel>()
     viewModel<SKHomeViewModel>()

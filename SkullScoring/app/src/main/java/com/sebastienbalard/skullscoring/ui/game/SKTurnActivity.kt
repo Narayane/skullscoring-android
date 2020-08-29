@@ -50,7 +50,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
 
-        initToolbar()
+        initToolbar(true)
         initObservers()
 
         intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->

@@ -16,13 +16,13 @@
 
 package com.sebastienbalard.skullscoring.ui.splash
 
-import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.ext.junit.rules.activityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
+import com.sebastienbalard.skullscoring.ui.onboarding.SKSplashActivity
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule

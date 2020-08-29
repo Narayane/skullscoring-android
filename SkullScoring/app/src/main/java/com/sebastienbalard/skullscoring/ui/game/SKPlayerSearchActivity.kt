@@ -62,7 +62,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         toolbar.title = "Nouvelle partie"
         toolbar.subtitle = "Sélectionner les joueurs"
 
-        initToolbar()
+        initToolbar(true)
         initUI()
         initObservers()
 

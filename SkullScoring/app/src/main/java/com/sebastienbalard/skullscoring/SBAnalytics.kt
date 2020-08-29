@@ -16,23 +16,20 @@
 
 package com.sebastienbalard.skullscoring
 
-import android.util.Log
-import org.jetbrains.annotations.NotNull
+import android.os.Bundle
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
 import timber.log.Timber
 
-class SKDebugTree : Timber.DebugTree() {
+open class SBAnalytics(
+    private val preferenceRepository: SKPreferenceRepository,
+    private val analytics: FirebaseAnalytics
+) {
 
-    override fun createStackElementTag(element: StackTraceElement): String? {
-        return String.format("### - %s",
-            super.createStackElementTag(element))
-    }
-}
-
-class ReleaseTree : @NotNull Timber.Tree() {
-    override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (priority > Log.DEBUG) {
-            //TODO: send to crashlytics
+    open fun sendEvent(name: String, bundle: Bundle? = null) {
+        Timber.d("send analytics event: $name")
+        if (BuildConfig.BUILD_TYPE == "release" && preferenceRepository.isUseDataSendingAllowed) {
+            analytics.logEvent(name, bundle)
         }
     }
-
 }
