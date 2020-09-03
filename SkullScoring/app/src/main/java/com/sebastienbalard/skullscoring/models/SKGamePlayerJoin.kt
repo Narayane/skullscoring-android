@@ -41,5 +41,7 @@ data class SKGamePlayerJoin(
     @ColumnInfo(name = "fk_game_id")
     var gameId: Long,
     @ColumnInfo(name = "fk_player_id")
-    val playerId: Long
+    val playerId: Long,
+    @ColumnInfo(name = "position")
+    val position: Int
 )

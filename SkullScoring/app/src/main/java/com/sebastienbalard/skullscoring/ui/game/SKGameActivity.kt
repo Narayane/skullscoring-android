@@ -22,10 +22,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -39,7 +37,6 @@ import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventGame
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
-import com.sebastienbalard.skullscoring.ui.widgets.SBSectionRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.item_game_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -52,6 +49,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
     private lateinit var playerListAdapter: PlayerListAdapter
     private var gameId: Long? = null
+    protected var currentTurn: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +85,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 when (this) {
                     is EventGame -> {
                         Timber.d("player count: ${game.players.size}")
+                        currentTurn = game.currentTurnNumber
                         refreshToolbar(game)
                         refreshSpeedDial(game)
                         refreshRecyclerView(game)
@@ -120,7 +119,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
             }
             if (game.areCurrentTurnResultsSet) {
                 speedDialGame.addActionItem(
-                    SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24)
+                    SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24dp)
                         .setLabel("Tour suivant").setFabBackgroundColor(
                             ResourcesCompat.getColor(
                                 resources, R.color.colorSecondary, theme
@@ -129,13 +128,12 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
                 )
             }
             if (speedDialGame.actionItems.size == 3 && game.currentTurnNumber == 10) {
-                val itemEndGame =
-                    SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24).setLabel("Fin de partie")
-                        .setFabBackgroundColor(
-                            ResourcesCompat.getColor(
-                                resources, R.color.colorSecondary, theme
-                            )
-                        ).create()
+                val itemEndGame = SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24dp)
+                    .setLabel("Fin de partie").setFabBackgroundColor(
+                        ResourcesCompat.getColor(
+                            resources, R.color.colorSecondary, theme
+                        )
+                    ).create()
                 speedDialGame.replaceActionItem(itemEndGame, 2)
             }
         }
@@ -207,7 +205,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }
     }
 
-    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
+    inner class PlayerListAdapter(context: Context, val players: List<SKPlayer>) :
         SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -218,9 +216,14 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
             )
         }
 
-        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+        inner class ViewHolder(itemView: View) :
+            SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, element: SKPlayer) {
+                itemView.imageViewGameDealer.visibility = currentTurn?.run {
+                    val modulo = (this - 1).rem(elements.size)
+                    if (elements.isNotEmpty() && element.position == modulo) VISIBLE else INVISIBLE
+                } ?: INVISIBLE
                 itemView.textViewGamePlayerName.text = element.name
                 element.currentTurnDeclaration?.apply {
                     itemView.textViewGamePlayerDeclaration.visibility = VISIBLE

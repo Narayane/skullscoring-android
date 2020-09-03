@@ -52,7 +52,7 @@ open class SKPlayerRepository(
     }
 
     open suspend fun createPlayersForGame(players: List<SKPlayer>, gameId: Long) {
-        gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(gameId, it.id) }
+        gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(gameId, it.id, players.indexOf(it)) }
             .toTypedArray())
     }
 
@@ -88,7 +88,12 @@ open class SKPlayerRepository(
                 }
                 turnScore
             }.reduce { acc, next -> acc + next }
+            player.position = gamePlayerJoinDao.getPlayerPosition(gameId, player.id)
         }
-        return players.sortedWith(compareByDescending<SKPlayer> { it.score }.thenBy { it.name })
+        return if (players.filter { it.score == 0 }.size == players.size) {
+            players.sortedWith(compareBy<SKPlayer> { it.position })
+        } else {
+            players.sortedWith(compareByDescending<SKPlayer> { it.score }.thenBy { it.name })
+        }
     }
 }

@@ -70,7 +70,6 @@ open class SKOnboardingViewModel(
             _players.postValue(mutableListOf<SKPlayer>().apply {
                 addAll(_players.value!!)
                 add(playerRepository.createPlayer(name))
-                sortBy { it.name }
             })
             _events.value = EventPlayerCreated
         }

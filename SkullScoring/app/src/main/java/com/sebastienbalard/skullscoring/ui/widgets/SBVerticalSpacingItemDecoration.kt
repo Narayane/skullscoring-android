@@ -14,31 +14,24 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.models
+package com.sebastienbalard.skullscoring.ui.widgets
 
-import androidx.annotation.NonNull
-import androidx.room.*
+import android.graphics.Rect
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-@Entity(
-    tableName = "sk_players",
-    indices = [Index(value = ["pk_player_id"]), Index(value = ["name"], unique = true)])
-data class SKPlayer(
-    @ColumnInfo(name = "name")
-    @NonNull
-    var name: String
-) {
+class SBVerticalSpacingItemDecoration(private val height: Int) : RecyclerView.ItemDecoration() {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "pk_player_id")
-    @NonNull
-    var id: Long = 0
-
-    @Ignore
-    var score: Int = 0
-
-    @Ignore
-    var currentTurnDeclaration: Int? = null
-
-    @Ignore
-    var position: Int = 0
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        parent.adapter?.itemCount?.let {
+            if (parent.getChildAdapterPosition(view) != it - 1) {
+                outRect.bottom = height
+            }
+        }
+    }
 }

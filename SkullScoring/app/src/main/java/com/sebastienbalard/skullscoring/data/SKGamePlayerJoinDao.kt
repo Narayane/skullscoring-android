@@ -30,4 +30,7 @@ interface SKGamePlayerJoinDao : SKBaseDao<SKGamePlayerJoin> {
 
     @Query("SELECT * FROM sk_players INNER JOIN sk_game_player_joins ON sk_players.pk_player_id = sk_game_player_joins.fk_player_id WHERE sk_game_player_joins.fk_game_id = :gameId")
     suspend fun findPlayerByGame(gameId: Long): List<SKPlayer>
+
+    @Query("SELECT position FROM sk_game_player_joins WHERE fk_game_id = :gameId AND fk_player_id = :playerId")
+    suspend fun getPlayerPosition(gameId: Long, playerId: Long): Int
 }

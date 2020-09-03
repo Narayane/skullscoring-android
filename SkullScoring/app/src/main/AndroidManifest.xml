@@ -139,6 +139,7 @@
             android:name=".ui.settings.SKSettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SKAppTheme.NoActionBar"
+            android:label="@string/settings"
             tools:ignore="LockedOrientationActivity" />
     </application>
 
