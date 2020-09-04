@@ -34,7 +34,7 @@ import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
-import com.sebastienbalard.skullscoring.ui.widgets.SBContextualMenuRecyclerView
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_home.*
@@ -95,8 +95,7 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                 when (this) {
                     is EventGameList -> {
                         Timber.d("games count: ${games.size}")
-                        gameListAdapter.elements = games
-                        gameListAdapter.notifyDataSetChanged()
+                        gameListAdapter.setAllItems(games)
                     }
                     is EventErrorPluralWithArg -> toolbar.showSnackBarError(
                         resources.getQuantityString(
@@ -139,7 +138,7 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                         actionMode?.let {
                             performSelection(position)
                         } ?: run {
-                            val clickedGame = gameListAdapter.elements[position]
+                            val clickedGame = gameListAdapter.getElements()[position]
                             Timber.d("open game of ${clickedGame.startDate.formatDateTime(this@SKHomeActivity)}")
                             startActivity(
                                 SKGameActivity.getIntent(
@@ -199,11 +198,8 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         ): Boolean {
             when (item?.itemId) {
                 R.id.menu_home_contextual_delete -> {
-                    val positions: List<Int> = gameListAdapter.getSelectedItemsPositions()
                     homeViewModel.deleteGame(
-                        *(gameListAdapter.elements.withIndex()
-                            .filter { positions.contains(it.index) }
-                            .map { it.value }).toTypedArray()
+                        *(gameListAdapter.getSelectedItems().toTypedArray())
                     )
                     actionMode?.finish()
                 }
@@ -220,7 +216,7 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
     }
 
     private class GameListAdapter(context: Context, games: List<SKGame>) :
-        SBContextualMenuRecyclerView<SKGame, GameListAdapter.ViewHolder>(context, games) {
+        SBRecyclerViewMultipleSelectionAdapter<SKGame, GameListAdapter.ViewHolder>(context, games) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(

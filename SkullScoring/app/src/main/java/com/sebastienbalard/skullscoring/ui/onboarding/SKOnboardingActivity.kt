@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -104,12 +103,10 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
             }
         })
 
-        onboardingViewModel.players.observe(this, Observer { players ->
-            playerListAdapter.elements = players
-            playerListAdapter.notifyDataSetChanged()
+        onboardingViewModel.players.observe(this, { players ->
+            playerListAdapter.setAllItems(players)
             buttonAddPlayer?.visibility = if (players.size < 6) VISIBLE else GONE
-            sortPlayerListAdapter.elements = players
-            sortPlayerListAdapter.notifyDataSetChanged()
+            sortPlayerListAdapter.setAllItems(players)
         })
     }
 
@@ -262,11 +259,11 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         override fun onRowMoved(fromPosition: Int, toPosition: Int) {
             if (fromPosition < toPosition) {
                 for (i in fromPosition until toPosition) {
-                    Collections.swap(elements, i, i + 1)
+                    Collections.swap(items, i, i + 1)
                 }
             } else {
                 for (i in fromPosition downTo toPosition + 1) {
-                    Collections.swap(elements, i, i - 1)
+                    Collections.swap(items, i, i - 1)
                 }
             }
             notifyItemMoved(fromPosition, toPosition)
@@ -286,7 +283,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
 
             override fun bind(context: Context, element: SKPlayer) {
                 itemView.imageViewDealer.visibility =
-                    if (elements.indexOf(element) == 0) VISIBLE else INVISIBLE
+                    if (items.indexOf(element) == 0) VISIBLE else INVISIBLE
                 itemView.textViewPlayerName.text = element.name
             }
         }

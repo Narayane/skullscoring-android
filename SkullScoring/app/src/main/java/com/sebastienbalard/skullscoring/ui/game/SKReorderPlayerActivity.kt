@@ -17,15 +17,13 @@
 package com.sebastienbalard.skullscoring.ui.game
 
 import android.os.Bundle
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class SKSortPlayerActivity : SBActivity(R.layout.activity_sort_players) {
+class SKReorderPlayerActivity : SBActivity(R.layout.activity_reorder_players) {
 
     internal val playerSearchViewModel: SKPlayerSearchViewModel by viewModel()
 

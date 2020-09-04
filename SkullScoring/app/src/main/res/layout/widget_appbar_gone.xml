@@ -7,12 +7,12 @@
     android:theme="@style/SKAppTheme.AppBar"
     android:visibility="gone">
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:titleMarginStart="@dimen/marginM">
 
-    </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 
 </com.google.android.material.appbar.AppBarLayout>

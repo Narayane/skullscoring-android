@@ -19,12 +19,10 @@ package com.sebastienbalard.skullscoring.ui.game
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.SparseBooleanArray
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import androidx.core.util.keyIterator
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,6 +36,7 @@ import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.view.*
@@ -80,7 +79,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_player_search_item_add -> {
-                if (playerListAdapter.selectedPlayers.size < 6) {
+                if (playerListAdapter.getSelectedItemsCount() < 6) {
                     showNewPlayerScene()
                 } else {
                     toolbar.showSnackBarError(
@@ -90,7 +89,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                 true
             }
             R.id.menu_player_search_item_validate -> {
-                playerSearchViewModel.createGame(playerListAdapter.selectedPlayers)
+                playerSearchViewModel.createGame(playerListAdapter.getSelectedItems())
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -114,20 +113,11 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                 when (this) {
                     is EventPlayerList -> {
                         Timber.d("players count: ${players.size}")
-                        playerListAdapter.elements = players
-                        playerListAdapter.notifyDataSetChanged()
+                        playerListAdapter.setAllItems(players)
                     }
                     is EventPlayer -> {
                         showPlayerListScene()
-                        val players = mutableListOf<SKPlayer>().apply {
-                            addAll(playerListAdapter.elements)
-                            add(player)
-                            sortBy { it.name }
-                        }
-                        playerListAdapter.elements = players
-                        val index = players.indexOf(player)
-                        playerListAdapter.toggleSelection(index)
-                        playerListAdapter.notifyDataSetChanged()
+                        playerListAdapter.insertItem(player)
                     }
                     is EventGameCreated -> {
                         startActivity(
@@ -203,15 +193,16 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                     recycleViewPlayerSearch,
                     object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
                         override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
-                            Timber.v("onClick")
+                            Timber.v("click on position $position")
                             playerListAdapter.toggleSelection(position)
                         }
 
                         override fun isEnabled(position: Int): Boolean {
                             val isEnabled =
-                                playerListAdapter.selectedPlayers.count() < 6 || playerListAdapter.isPlayerSelected(
+                                playerListAdapter.getSelectedItemsCount() < 6 || playerListAdapter.isItemSelected(
                                     position
                                 )
+
                             if (!isEnabled) {
                                 toolbar.showSnackBarError(
                                     getString(R.string.error_players_too_many_selected)
@@ -240,12 +231,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     }
 
     private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
-        SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
-
-        val selectedPlayers: List<SKPlayer>
-            get() = selectedElements.keyIterator().asSequence().toList().map { elements[it] }
-
-        private var selectedElements: SparseBooleanArray = SparseBooleanArray()
+        SBRecyclerViewMultipleSelectionAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -257,20 +243,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             super.onBindViewHolder(viewHolder, position)
-            viewHolder.isChecked(selectedElements.get(position, false))
-        }
-
-        fun isPlayerSelected(position: Int): Boolean {
-            return selectedElements.get(position, false)
-        }
-
-        fun toggleSelection(position: Int) {
-            if (selectedElements.get(position, false)) {
-                selectedElements.delete(position)
-            } else {
-                selectedElements.put(position, true)
-            }
-            notifyItemChanged(position)
+            viewHolder.isChecked(selectedPositions.get(position, false))
         }
 
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {

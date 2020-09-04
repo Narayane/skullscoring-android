@@ -22,8 +22,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 abstract class SBRecyclerViewAdapter<T, VH : SBRecyclerViewAdapter.ViewHolder<T>>(
-    private val context: Context, var elements: List<T>
+    private val context: Context, protected var items: List<T>
 ) : RecyclerView.Adapter<VH>() {
+
+    protected var _items: MutableList<T> = items.toMutableList()
 
     abstract override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
@@ -32,13 +34,22 @@ abstract class SBRecyclerViewAdapter<T, VH : SBRecyclerViewAdapter.ViewHolder<T>
     override fun onBindViewHolder(
         viewHolder: VH, position: Int
     ) {
-        viewHolder.bind(context, elements[position])
+        viewHolder.bind(context, items[position])
     }
 
-    override fun getItemCount() = elements.size
+    open fun setAllItems(items: List<T>) {
+        _items.clear()
+        _items.addAll(items)
+        this.items = _items.toList()
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount() = items.size
+
+    fun getElements() = items
 
     abstract class ViewHolder<T>(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        abstract fun bind(context: Context, element: T)
+        abstract fun bind(context: Context, item: T)
     }
 }

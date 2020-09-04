@@ -98,8 +98,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     }
 
     private fun refreshRecyclerView(game: SKGame) {
-        playerListAdapter.elements = game.players
-        playerListAdapter.notifyDataSetChanged()
+        playerListAdapter.setAllItems(game.players)
     }
 
     @SuppressLint("ResourceType")
@@ -221,8 +220,8 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
             override fun bind(context: Context, element: SKPlayer) {
                 itemView.imageViewGameDealer.visibility = currentTurn?.run {
-                    val modulo = (this - 1).rem(elements.size)
-                    if (elements.isNotEmpty() && element.position == modulo) VISIBLE else INVISIBLE
+                    val modulo = (this - 1).rem(items.size)
+                    if (items.isNotEmpty() && element.position == modulo) VISIBLE else INVISIBLE
                 } ?: INVISIBLE
                 itemView.textViewGamePlayerName.text = element.name
                 element.currentTurnDeclaration?.apply {

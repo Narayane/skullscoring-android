@@ -9,7 +9,7 @@
         <item name="colorOnSecondary">@android:color/white</item>
         <item name="colorError">@android:color/holo_red_dark</item>
         <item name="colorOnError">@android:color/white</item>
-        <item name="colorSurface">@android:color/white</item>
+        <item name="colorSurface">@color/colorPrimary</item>
         <item name="colorOnSurface">@color/colorPrimary</item>
         <item name="android:colorBackground">@color/colorPrimaryDark</item>
         <item name="colorOnBackground">@android:color/white</item>
@@ -30,11 +30,12 @@
         <item name="editTextStyle">@style/SKAppTheme.Widget.EditText</item>
         <item name="actionModeStyle">@style/SKAppTheme.Widget.ActionMode</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <!--<item name="popupMenuStyle">@style/SKAppTheme.Popup</item>
         <item name="actionOverflowMenuStyle">@style/SKAppTheme.Popup.Overflow</item>-->
     </style>
 
-    <style name="SKAppTheme.AppBar" parent="Theme.MaterialComponents.Light">
+    <style name="SKAppTheme.AppBar" parent="ThemeOverlay.MaterialComponents.ActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:textColorSecondary">@android:color/white</item>
