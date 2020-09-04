@@ -25,6 +25,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
@@ -38,11 +39,14 @@ import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
+import com.sebastienbalard.skullscoring.ui.widgets.SBVerticalSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.view.*
+import kotlinx.android.synthetic.main.item_sort_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import java.util.*
 
 class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
@@ -50,6 +54,8 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
     private lateinit var scenePlayerList: Scene
     private lateinit var sceneNewPlayer: Scene
+    private lateinit var sceneSortPlayerList: Scene
+    private lateinit var sortPlayerListAdapter: SortPlayerListAdapter
     private lateinit var playerListAdapter: PlayerListAdapter
 
     private lateinit var menuItemAdd: MenuItem
@@ -89,7 +95,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                 true
             }
             R.id.menu_player_search_item_validate -> {
-                playerSearchViewModel.createGame(playerListAdapter.getSelectedItems())
+                showSortPlayerScene()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -139,6 +145,13 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         })
     }
 
+    private fun showSortPlayerScene() {
+        toolbar.subtitle = "Ordonner les joueurs"
+        menuItemAdd.isVisible = false
+        menuItemValidate.isVisible = false
+        TransitionManager.go(sceneSortPlayerList)
+    }
+
     private fun showPlayerListScene() {
         toolbar.subtitle = "Sélectionner les joueurs"
         menuItemAdd.isVisible = true
@@ -151,6 +164,34 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         menuItemAdd.isVisible = false
         menuItemValidate.isVisible = false
         TransitionManager.go(sceneNewPlayer)
+    }
+
+    private fun initSceneSortPlayer() {
+        sortPlayerListAdapter = SortPlayerListAdapter(
+            this, listOf()
+        )
+
+        sceneSortPlayerList = Scene.getSceneForLayout(
+            layoutPlayerSearch, R.layout.scene_onboarding_sort_player, this
+        )
+        sceneSortPlayerList.setEnterAction {
+            val recycleViewSortPlayer =
+                sceneSortPlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recyclerViewSortPlayer)
+            recycleViewSortPlayer.layoutManager = LinearLayoutManager(this)
+            recycleViewSortPlayer.itemAnimator = DefaultItemAnimator()
+            recycleViewSortPlayer.addItemDecoration(SBVerticalSpacingItemDecoration(32))
+            val callback: ItemTouchHelper.Callback = PlayerMoveCallback(sortPlayerListAdapter)
+            val touchHelper = ItemTouchHelper(callback)
+            touchHelper.attachToRecyclerView(recycleViewSortPlayer)
+            sortPlayerListAdapter.setAllItems(playerListAdapter.getSelectedItems())
+            recycleViewSortPlayer.adapter = sortPlayerListAdapter
+
+            val buttonValidateOrder =
+                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingValidateOrder)
+            buttonValidateOrder.setOnClickListener {
+                playerSearchViewModel.createGame(sortPlayerListAdapter.getElements())
+            }
+        }
     }
 
     private fun initSceneNewPlayer() {
@@ -218,6 +259,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     private fun initUI() {
         initScenePlayerList()
         initSceneNewPlayer()
+        initSceneSortPlayer()
 
         TransitionManager.go(scenePlayerList)
     }
@@ -231,7 +273,9 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     }
 
     private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
-        SBRecyclerViewMultipleSelectionAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
+        SBRecyclerViewMultipleSelectionAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(
+            context, players
+        ) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -255,6 +299,109 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
             fun isChecked(value: Boolean) {
                 itemView.checkBoxPlayerSearch.isChecked = value
             }
+        }
+    }
+
+    inner class SortPlayerListAdapter(context: Context, val players: List<SKPlayer>) :
+        SBRecyclerViewAdapter<SKPlayer, SortPlayerListAdapter.ViewHolder>(context, players),
+        PlayerMoveCallback.PlayerTouchListener {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            return ViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_sort_player, parent, false
+                )
+            )
+        }
+
+        override fun onRowMoved(fromPosition: Int, toPosition: Int) {
+            if (fromPosition < toPosition) {
+                for (i in fromPosition until toPosition) {
+                    Collections.swap(items, i, i + 1)
+                }
+            } else {
+                for (i in fromPosition downTo toPosition + 1) {
+                    Collections.swap(items, i, i - 1)
+                }
+            }
+            notifyItemMoved(fromPosition, toPosition)
+        }
+
+        override fun onRowSelected(viewHolder: SortPlayerListAdapter.ViewHolder?) {
+            //viewHolder?.itemView?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorSecondary, null))
+        }
+
+        override fun onRowClear(viewHolder: SortPlayerListAdapter.ViewHolder?) {
+            notifyDataSetChanged()
+            //viewHolder?.itemView?.setBackgroundColor(ResourcesCompat.getColor(resources, R.color.colorPrimaryDark, null))
+        }
+
+        inner class ViewHolder(itemView: View) :
+            SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+
+            override fun bind(context: Context, element: SKPlayer) {
+                itemView.imageViewDealer.visibility =
+                    if (items.indexOf(element) == 0) View.VISIBLE else View.INVISIBLE
+                itemView.textViewPlayerName.text = element.name
+            }
+        }
+    }
+
+    private class PlayerMoveCallback(private val adapter: PlayerTouchListener) :
+        ItemTouchHelper.Callback() {
+
+        override fun isLongPressDragEnabled(): Boolean {
+            return true
+        }
+
+        override fun isItemViewSwipeEnabled(): Boolean {
+            return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {}
+
+        override fun getMovementFlags(
+            recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN
+            return makeMovementFlags(dragFlags, 0)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            adapter.onRowMoved(viewHolder.adapterPosition, target.adapterPosition)
+            return true
+        }
+
+        override fun onSelectedChanged(
+            viewHolder: RecyclerView.ViewHolder?, actionState: Int
+        ) {
+            if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+                if (viewHolder is SortPlayerListAdapter.ViewHolder) {
+                    val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder?
+                    adapter.onRowSelected(myViewHolder)
+                }
+            }
+            super.onSelectedChanged(viewHolder, actionState)
+        }
+
+        override fun clearView(
+            recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder
+        ) {
+            super.clearView(recyclerView, viewHolder)
+            if (viewHolder is SortPlayerListAdapter.ViewHolder) {
+                val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder
+                adapter.onRowClear(myViewHolder)
+            }
+        }
+
+        interface PlayerTouchListener {
+            fun onRowMoved(fromPosition: Int, toPosition: Int)
+            fun onRowSelected(myViewHolder: SortPlayerListAdapter.ViewHolder?)
+            fun onRowClear(myViewHolder: SortPlayerListAdapter.ViewHolder?)
         }
     }
 }

@@ -291,6 +291,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
 
     private class PlayerMoveCallback(private val adapter: PlayerTouchListener) :
         ItemTouchHelper.Callback() {
+
         override fun isLongPressDragEnabled(): Boolean {
             return true
         }
