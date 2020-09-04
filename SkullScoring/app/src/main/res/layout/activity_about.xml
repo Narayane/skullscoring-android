@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.onboarding.SKSplashActivity">
+    tools:context=".ui.settings.SKAboutActivity">
 
-    <include layout="@layout/widget_appbar_gone" />
+    <include layout="@layout/widget_appbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -49,33 +49,26 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:textColor="@color/colorTextPrimary"
-            android:textSize="36sp"
+            android:textSize="40sp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView"
             android:text="@string/app_name"/>
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginM"
-            android:indeterminate="true"
-            app:layout_constraintBottom_toTopOf="@+id/textViewTitle"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
         <TextView
-            android:id="@+id/textViewTitle"
+            android:id="@+id/textViewAppVersion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/marginM"
-            android:textColor="@color/colorTextPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:text="@string/init" />
+            android:textSize="@dimen/textSizeSubhead"
+            android:layout_marginBottom="@dimen/marginM"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            android:textColor="@android:color/white"
+            tools:text="v1.0-alpha"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

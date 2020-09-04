@@ -33,6 +33,7 @@ import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
+import com.sebastienbalard.skullscoring.ui.settings.SKAboutActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
@@ -73,8 +74,8 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                 true
             }
             R.id.menu_home_item_about -> {
-                /*i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: about"))
-                startActivity(BICAboutActivity.getIntent(this))*/
+                //i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: about"))
+                startActivity(SKAboutActivity.getIntent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)

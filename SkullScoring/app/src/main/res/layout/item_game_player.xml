@@ -21,8 +21,8 @@
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="@dimen/marginS"
-            android:layout_marginBottom="@dimen/marginS"
+            android:layout_marginTop="@dimen/marginXS"
+            android:layout_marginBottom="@dimen/marginXS"
             android:layout_marginStart="@dimen/marginS"
             android:layout_marginEnd="@dimen/marginM"
             android:orientation="horizontal">

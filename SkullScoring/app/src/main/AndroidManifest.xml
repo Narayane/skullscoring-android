@@ -141,6 +141,12 @@
             android:theme="@style/SKAppTheme.NoActionBar"
             android:label="@string/settings"
             tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".ui.settings.SKAboutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SKAppTheme.NoActionBar"
+            android:label="@string/about"
+            tools:ignore="LockedOrientationActivity" />
     </application>
 
 </manifest>
