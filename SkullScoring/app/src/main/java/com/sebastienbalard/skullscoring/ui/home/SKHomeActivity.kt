@@ -18,8 +18,10 @@ package com.sebastienbalard.skullscoring.ui.home
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,8 +37,8 @@ import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKAboutActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
-import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.item_game.view.*
@@ -111,7 +113,6 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
     }
 
     private fun performSelection(position: Int) {
-        //FIXME: ripple but not selection
         gameListAdapter.toggleSelection(position)
         if (gameListAdapter.getSelectedItemsCount() == 0) {
             actionMode?.finish()
@@ -227,12 +228,24 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
             )
         }
 
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            super.onBindViewHolder(viewHolder, position)
+            if (getSelectedItemsPositions().contains(position)) {
+                viewHolder.itemView.background = ContextCompat.getDrawable(
+                    this@GameListAdapter.context, R.color.colorSecondary
+                )
+            } else {
+                viewHolder.itemView.background =
+                    ContextCompat.getDrawable(this@GameListAdapter.context, R.drawable.ripple)
+            }
+        }
+
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKGame>(itemView) {
 
-            override fun bind(context: Context, element: SKGame) {
-                itemView.textViewGameDate.text = element.startDate.formatDateTime(context)
+            override fun bind(context: Context, item: SKGame) {
+                itemView.textViewGameDate.text = item.startDate.formatDateTime(context)
                 itemView.textViewGameState.text =
-                    if (element.isEnded) "Terminé" else "Tour ${element.currentTurnNumber}"
+                    if (item.isEnded) "Terminé" else "Tour ${item.currentTurnNumber}"
             }
         }
     }

@@ -21,7 +21,7 @@ import android.util.SparseBooleanArray
 import androidx.core.util.forEach
 
 abstract class SBRecyclerViewMultipleSelectionAdapter<T, VH : SBRecyclerViewAdapter.ViewHolder<T>>(
-    context: Context, items: List<T>
+    protected val context: Context, items: List<T>
 ) : SBRecyclerViewAdapter<T, VH>(context, items) {
 
     protected val selectedPositions = SparseBooleanArray()

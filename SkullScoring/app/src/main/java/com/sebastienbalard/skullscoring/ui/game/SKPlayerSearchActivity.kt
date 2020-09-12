@@ -95,7 +95,13 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                 true
             }
             R.id.menu_player_search_item_validate -> {
-                showSortPlayerScene()
+                if (playerListAdapter.getSelectedItemsCount() < 2) {
+                    toolbar.showSnackBarError(
+                        getString(R.string.error_players_not_enough_selected)
+                    )
+                } else {
+                    showSortPlayerScene()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)

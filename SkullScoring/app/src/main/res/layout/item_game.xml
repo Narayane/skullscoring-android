@@ -3,11 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:layout_marginTop="@dimen/marginS"
     android:layout_marginBottom="@dimen/marginS"
-    android:background="?android:attr/selectableItemBackground"
-    tools:background="@color/colorPrimaryDark">
+    android:paddingStart="@dimen/marginM"
+    android:paddingEnd="@dimen/marginM"
+    android:background="@drawable/ripple"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/textViewGameDate"
@@ -23,5 +26,4 @@
         android:layout_height="40dp"
         android:gravity="center_vertical|end"
         tools:text="Terminé" />
-
 </LinearLayout>
