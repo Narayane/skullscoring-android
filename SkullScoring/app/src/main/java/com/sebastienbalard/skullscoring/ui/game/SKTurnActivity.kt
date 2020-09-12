@@ -101,7 +101,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                         Timber.d("turn number: ${turn.number}")
                         toolbar.title = "Résultats"
                         toolbar.subtitle = "Tour ${turn.number}"
-                        turnDeclarationListAdapter.setAllItems(turn.results)
+                        turnResultListAdapter.setAllItems(turn.results)
                     }
                     else -> {
                     }

@@ -15,7 +15,7 @@
 
     <!-- data permission screen -->
     <string name="data_permission_title">Traitement de vos données</string>
-    <string name="data_permission_processing">%1$s ne collecte aucune de vos données personnelles (nom, email, âge, position, …)</string>
+    <string name="data_permission_processing">Skull Scoring ne collecte aucune de vos données personnelles (nom, email, âge, position, …)</string>
     <string name="data_permission_warning">Vous pourrez, à tout moment, modifier vos choix ci-dessus dans l\'écran de réglages de l\'application.</string>
     <string name="data_permission_crash_description">Il se peut, en de rares occasions, que l\'application s\'arrête pour une raison inexpliquée. %1$s peut alors envoyer des données sur son état au développeur qui l\'aideront à comprendre cette raison et à corriger le problème.</string>
     <string name="data_permission_crash_label">Autoriser l\'envoi de données sur l\'état de l\'application en cas de problème</string>

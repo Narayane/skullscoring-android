@@ -5,6 +5,9 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
+def signinConfigProperties = new Properties()
+signinConfigProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -27,12 +30,29 @@ android {
         buildConfigField("String", "ROOM_DB_NAME", "\"sk_database\"")
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        signingConfigs {
+            release {
+                storeFile file(signinConfigProperties['signing.config.keystore.path'])
+                storePassword signinConfigProperties['signing.config.keystore.password']
+                keyAlias signinConfigProperties['signing.config.keyalias']
+                keyPassword signinConfigProperties['signing.config.keyalias.password']
+            }
+        }
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled false
+        }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            debuggable false
+            signingConfig signingConfigs.release
+
+            shrinkResources true
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            zipAlignEnabled true
         }
     }
 
@@ -57,17 +77,17 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$androidx_lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version"
     kapt "androidx.lifecycle:lifecycle-compiler:2.2.0"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.preference:preference-ktx:1.1.1"
-    testImplementation 'androidx.test.ext:junit:1.1.1'
-    testImplementation "androidx.test.ext:junit-ktx:1.1.1"
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation "androidx.test.ext:junit-ktx:1.1.2"
     testImplementation "androidx.test:core:$androidx_core_version"
     testImplementation "androidx.test:runner:$androidx_core_version"
     testImplementation "androidx.test:rules:$androidx_core_version"
     testImplementation "androidx.arch.core:core-testing:$androidx_arch_version"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // tools
     implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'

@@ -87,7 +87,7 @@ class SBDataPermissionActivity : SBActivity(R.layout.activity_data_sending_permi
         toolbar.title = getString(R.string.first_game)
 
         textViewDataSendingProcessing.text =
-            getString(R.string.data_permission_processing, getString(R.string.app_name))
+            getString(R.string.data_permission_processing)
         textViewDataSendingCrashDescription.text =
             getString(R.string.data_permission_crash_description, getString(R.string.app_name))
         textViewDataSendingUseDescription.text =
