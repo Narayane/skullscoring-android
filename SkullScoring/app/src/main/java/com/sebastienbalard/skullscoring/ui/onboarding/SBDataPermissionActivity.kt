@@ -97,9 +97,6 @@ class SBDataPermissionActivity : SBActivity(R.layout.activity_data_sending_permi
             val message =
                 "set initial data sending permissions: crash (${switchAllowCrashDataSending.isChecked}), use (${switchAllowUseDataSending.isChecked})"
             Timber.i(message)
-            crashReport.logInfo(
-                SBDataPermissionActivity::class.java.simpleName, message
-            )
             viewModel.saveDataSendingPermissions(
                 switchAllowCrashDataSending.isChecked, switchAllowUseDataSending.isChecked
             )

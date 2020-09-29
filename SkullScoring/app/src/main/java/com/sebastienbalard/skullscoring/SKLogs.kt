@@ -18,6 +18,8 @@ package com.sebastienbalard.skullscoring
 
 import android.util.Log
 import org.jetbrains.annotations.NotNull
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import timber.log.Timber
 
 class SKDebugTree : Timber.DebugTree() {
@@ -28,10 +30,22 @@ class SKDebugTree : Timber.DebugTree() {
     }
 }
 
-class ReleaseTree : @NotNull Timber.Tree() {
+class ReleaseTree : @NotNull Timber.Tree(), KoinComponent {
+
+    private val crashReport: SBCrashReport by inject()
+
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        if (priority > Log.DEBUG) {
-            //TODO: send to crashlytics
+        if (priority == Log.DEBUG || priority == Log.VERBOSE) {
+            return
+        }
+        when (priority) {
+            Log.INFO -> crashReport.logInfo(tag ?: "no tag", message)
+            Log.WARN -> crashReport.logWarning(tag ?: "no tag", message)
+            Log.ERROR -> {
+                t?.let {
+                    crashReport.catchException(tag ?: "no tag", message, it)
+                } ?: crashReport.logError(tag ?: "no tag", message)
+            }
         }
     }
 

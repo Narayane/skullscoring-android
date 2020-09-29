@@ -20,10 +20,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -119,7 +120,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     }
 
     private fun initObservers() {
-        playerSearchViewModel.events.observe(this, Observer { event ->
+        playerSearchViewModel.events.observe(this, { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
@@ -298,8 +299,8 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-            override fun bind(context: Context, element: SKPlayer) {
-                itemView.textViewPlayerSearchName.text = element.name
+            override fun bind(context: Context, item: SKPlayer) {
+                itemView.textViewPlayerSearchName.text = item.name
             }
 
             fun isChecked(value: Boolean) {
@@ -345,10 +346,10 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         inner class ViewHolder(itemView: View) :
             SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-            override fun bind(context: Context, element: SKPlayer) {
+            override fun bind(context: Context, item: SKPlayer) {
                 itemView.imageViewDealer.visibility =
-                    if (items.indexOf(element) == 0) View.VISIBLE else View.INVISIBLE
-                itemView.textViewPlayerName.text = element.name
+                    if (items.indexOf(item) == 0) VISIBLE else INVISIBLE
+                itemView.textViewPlayerName.text = item.name
             }
         }
     }
@@ -387,8 +388,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         ) {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
                 if (viewHolder is SortPlayerListAdapter.ViewHolder) {
-                    val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder?
-                    adapter.onRowSelected(myViewHolder)
+                    adapter.onRowSelected(viewHolder)
                 }
             }
             super.onSelectedChanged(viewHolder, actionState)
@@ -399,15 +399,14 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         ) {
             super.clearView(recyclerView, viewHolder)
             if (viewHolder is SortPlayerListAdapter.ViewHolder) {
-                val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder
-                adapter.onRowClear(myViewHolder)
+                adapter.onRowClear(viewHolder)
             }
         }
 
         interface PlayerTouchListener {
             fun onRowMoved(fromPosition: Int, toPosition: Int)
-            fun onRowSelected(myViewHolder: SortPlayerListAdapter.ViewHolder?)
-            fun onRowClear(myViewHolder: SortPlayerListAdapter.ViewHolder?)
+            fun onRowSelected(viewHolder: SortPlayerListAdapter.ViewHolder?)
+            fun onRowClear(viewHolder: SortPlayerListAdapter.ViewHolder?)
         }
     }
 }

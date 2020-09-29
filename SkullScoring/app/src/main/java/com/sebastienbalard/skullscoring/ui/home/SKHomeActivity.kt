@@ -71,12 +71,12 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_home_item_settings -> {
-                //Timber.i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: settings"))
+                Timber.i("click on menu item: settings")
                 startActivity(SKSettingsActivity.getIntent(this))
                 true
             }
             R.id.menu_home_item_about -> {
-                //i(crashReport.logInfo(BICHomeActivity::class.java.simpleName, "click on menu item: about"))
+                Timber.i("click on menu item: about")
                 startActivity(SKAboutActivity.getIntent(this))
                 true
             }
@@ -141,7 +141,7 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
                             performSelection(position)
                         } ?: run {
                             val clickedGame = gameListAdapter.getElements()[position]
-                            Timber.d("open game of ${clickedGame.startDate.formatDateTime(this@SKHomeActivity)}")
+                            Timber.i("open game of ${clickedGame.startDate.formatDateTime(this@SKHomeActivity)}")
                             startActivity(
                                 SKGameActivity.getIntent(
                                     this@SKHomeActivity, clickedGame.id

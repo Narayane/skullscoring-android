@@ -54,6 +54,7 @@ open class SKTurnViewModel(
 
     open fun saveTurnResults(results: List<SKTurnPlayerJoin>, gameId: Long) = viewModelScope.launch {
         val currentTurnNumber = turnDao.findById(results[0].turnId).number
+        results.map { if (it.result == null) it.result = it.declaration }
         val turnResultSum = results.filter { it.result != null }.map { it.result!! }.reduce { acc, value -> acc + value }
         Timber.d("turn results sum : $turnResultSum")
         if (turnResultSum == currentTurnNumber) {

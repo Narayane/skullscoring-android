@@ -54,11 +54,11 @@ open class SKOnboardingViewModel(
             EventSplashRequestDataPermissions(preferenceRepository.requestDataSendingPermissions)
     }
 
-    open fun createGame() = viewModelScope.launch {
-        if (players.value!!.count() < 2) {
+    open fun createGame(players: List<SKPlayer>) = viewModelScope.launch {
+        if (players.count() < 2) {
             _events.value = EventError(R.string.error_players_not_enough_selected)
         } else {
-            val game = gameRepository.createGame(players.value!!)
+            val game = gameRepository.createGame(players)
             _events.value = EventGameCreated(game.id)
         }
     }
@@ -92,18 +92,20 @@ open class SKOnboardingViewModel(
     open fun saveDataSendingPermissions(
         allowCrashDataSending: Boolean, allowUseDataSending: Boolean
     ) {
-        preferenceRepository.isCrashDataSendingAllowed = allowCrashDataSending
-        preferenceRepository.isUseDataSendingAllowed = allowUseDataSending
-        preferenceRepository.requestDataSendingPermissions = false
+
         var bundle = Bundle()
         bundle.putInt("allowed", if (allowCrashDataSending) 1 else 0)
         bundle.putInt("is_onboarding", 1)
         analytics.sendEvent("crash_data_sending", bundle)
-        bundle = Bundle()
 
+        bundle = Bundle()
         bundle.putInt("allowed", if (allowUseDataSending) 1 else 0)
         bundle.putInt("is_onboarding", 1)
         analytics.sendEvent("use_data_sending", bundle)
+
+        preferenceRepository.isCrashDataSendingAllowed = allowCrashDataSending
+        preferenceRepository.isUseDataSendingAllowed = allowUseDataSending
+        preferenceRepository.requestDataSendingPermissions = false
 
         load()
     }

@@ -26,7 +26,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,7 +76,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
     }
 
     private fun initObservers() {
-        onboardingViewModel.events.observe(this, Observer { event ->
+        onboardingViewModel.events.observe(this, { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
@@ -132,7 +131,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
             val buttonValidateOrder =
                 scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingValidateOrder)
             buttonValidateOrder.setOnClickListener {
-                onboardingViewModel.createGame()
+                onboardingViewModel.createGame(sortPlayerListAdapter.getElements())
             }
         }
     }
@@ -178,7 +177,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
             recyclerViewPlayers.adapter = playerListAdapter
 
             buttonAddPlayer =
-                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingAddPlayer)
+                scenePlayerList.sceneRoot.findViewById(R.id.buttonOnboardingAddPlayer)
             buttonAddPlayer?.setOnClickListener {
                 if (hasAtLeastOneGame) {
                     startActivity(
@@ -238,8 +237,8 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
 
         class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-            override fun bind(context: Context, element: SKPlayer) {
-                itemView.textViewPlayerName.text = element.name
+            override fun bind(context: Context, item: SKPlayer) {
+                itemView.textViewPlayerName.text = item.name
             }
         }
     }
@@ -281,10 +280,10 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         inner class ViewHolder(itemView: View) :
             SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-            override fun bind(context: Context, element: SKPlayer) {
+            override fun bind(context: Context, item: SKPlayer) {
                 itemView.imageViewDealer.visibility =
-                    if (items.indexOf(element) == 0) VISIBLE else INVISIBLE
-                itemView.textViewPlayerName.text = element.name
+                    if (items.indexOf(item) == 0) VISIBLE else INVISIBLE
+                itemView.textViewPlayerName.text = item.name
             }
         }
     }
@@ -323,8 +322,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         ) {
             if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
                 if (viewHolder is SortPlayerListAdapter.ViewHolder) {
-                    val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder?
-                    adapter.onRowSelected(myViewHolder)
+                    adapter.onRowSelected(viewHolder)
                 }
             }
             super.onSelectedChanged(viewHolder, actionState)
@@ -335,15 +333,14 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         ) {
             super.clearView(recyclerView, viewHolder)
             if (viewHolder is SortPlayerListAdapter.ViewHolder) {
-                val myViewHolder = viewHolder as SortPlayerListAdapter.ViewHolder
-                adapter.onRowClear(myViewHolder)
+                adapter.onRowClear(viewHolder)
             }
         }
 
         interface PlayerTouchListener {
             fun onRowMoved(fromPosition: Int, toPosition: Int)
-            fun onRowSelected(myViewHolder: SortPlayerListAdapter.ViewHolder?)
-            fun onRowClear(myViewHolder: SortPlayerListAdapter.ViewHolder?)
+            fun onRowSelected(viewHolder: SortPlayerListAdapter.ViewHolder?)
+            fun onRowClear(viewHolder: SortPlayerListAdapter.ViewHolder?)
         }
     }
 }

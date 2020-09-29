@@ -224,15 +224,6 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                         }
                     }
                 }
-                /*itemView.editTextTurnPirateCount.setOnClickListener {
-                    setOnEditorActionListener { _, actionId, _ ->
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            element.pirateCount = text.toString().toInt()
-                            resetFocus()
-                        }
-                        true
-                    }
-                }*/
                 itemView.checkboxTurnHasMarmaid.setOnCheckedChangeListener { _, isChecked ->
                     element.hasMermaid = isChecked
                 }
