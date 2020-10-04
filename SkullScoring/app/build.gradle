@@ -91,8 +91,8 @@ dependencies {
 
     // tools
     implementation 'com.google.firebase:firebase-analytics-ktx:17.5.0'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.1'
-    implementation 'com.google.firebase:firebase-perf:19.0.8'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx:17.2.2'
+    implementation 'com.google.firebase:firebase-perf:19.0.9'
 
     // Support
     implementation "com.google.android.material:material:$androidx_legacy_version"
@@ -119,6 +119,7 @@ dependencies {
     implementation "com.jakewharton.timber:timber:4.7.1"
     implementation "com.leinardi.android:speed-dial:3.1.1"
     implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
+    implementation 'com.github.florent37:expansionpanel:1.2.4'
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.robolectric:robolectric:$robolectric_version"

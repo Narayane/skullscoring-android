@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginStart="@dimen/marginM"
     android:layout_marginTop="@dimen/marginS"
@@ -24,7 +24,7 @@
     <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
         android:id="@+id/buttonStepperTurnDeclaration"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backGroundColor="@color/colorPrimaryDark"/>
+        android:layout_height="40dp"
+        app:backGroundColor="@color/colorSecondary"/>
 
 </LinearLayout>

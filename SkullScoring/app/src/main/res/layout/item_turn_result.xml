@@ -27,9 +27,9 @@
 
     <com.cepheuen.elegantnumberbutton.view.ElegantNumberButton
         android:id="@+id/buttonStepperTurnResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:backGroundColor="@color/colorPrimaryDark"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        app:backGroundColor="@color/colorSecondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,25 +37,25 @@
         android:id="@+id/checkboxTurnHasSkullKing"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Le Skull King prend des pirates"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/checkboxTurnHasMarmaid"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonStepperTurnResult"
-        android:text="Le Skull King prend des pirates" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonStepperTurnResult" />
 
     <EditText
         android:id="@+id/editTextTurnPirateCount"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:inputType="number"
         android:enabled="false"
         android:focusableInTouchMode="true"
+        android:gravity="center"
         android:imeOptions="actionDone"
-        android:textColorHint="@android:color/white"
+        android:inputType="number"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColorHint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/checkboxTurnHasSkullKing"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/checkboxTurnHasSkullKing"
         tools:text="0" />
 
@@ -63,10 +63,10 @@
         android:id="@+id/checkboxTurnHasMarmaid"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="La Marmaid prend le Skull King"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:useMaterialThemeColors="false"
-        android:text="La Marmaid prend le Skull King" />
+        app:useMaterialThemeColors="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
