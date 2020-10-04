@@ -56,8 +56,11 @@ data class SKTurnPlayerJoin(
     @Ignore
     lateinit var player: SKPlayer
 
-    @delegate:Ignore
+    /*@delegate:Ignore
     val hasBonus: Boolean by lazy {
-        hasSkullKing != null || hasMermaid != null
-    }
+        hasSkullKing != null && hasSkullKing!! || hasMermaid != null && hasMermaid!!
+    }*/
+
+    val hasBonus: Boolean
+        get() = hasSkullKing != null && hasSkullKing!! || hasMermaid != null && hasMermaid!!
 }

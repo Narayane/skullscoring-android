@@ -33,7 +33,7 @@ import com.sebastienbalard.skullscoring.ui.widgets.SBEditTextMinMaxTextWatcher
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_turn.*
 import kotlinx.android.synthetic.main.item_turn_declaration.view.*
-import kotlinx.android.synthetic.main.item_turn_result_expandable.view.*
+import kotlinx.android.synthetic.main.item_turn_result.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -157,7 +157,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
         }
     }
 
-    private class TurnResultListAdapter(context: Context, players: List<SKTurnPlayerJoin>) :
+    private class TurnResultListAdapter(val context: Context, players: List<SKTurnPlayerJoin>) :
         SBRecyclerViewAdapter<SKTurnPlayerJoin, TurnResultListAdapter.ViewHolder>(
             context, players
         ) {
@@ -171,7 +171,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_turn_result_expandable, parent, false
+                    R.layout.item_turn_result, parent, false
                 )
             )
         }
@@ -226,7 +226,19 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             }
         }
 
-        class ViewHolder(itemView: View) :
+        fun removeBonusExcept(item: SKTurnPlayerJoin) {
+            getElements().apply {
+                val protectedIndex = indexOf(item)
+                withIndex().filter { it.value.hasBonus && it.index != protectedIndex }.mapIndexed { index, item ->
+                    item.value.hasSkullKing = false
+                    item.value.pirateCount = null
+                    item.value.hasMermaid = false
+                    notifyItemChanged(index)
+                }
+            }
+        }
+
+        inner class ViewHolder(itemView: View) :
             SBRecyclerViewAdapter.ViewHolder<SKTurnPlayerJoin>(itemView) {
 
             override fun bind(context: Context, item: SKTurnPlayerJoin) {
@@ -251,30 +263,45 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 }
                 itemView.checkboxTurnHasSkullKing.setOnCheckedChangeListener { _, isChecked ->
                     item.hasSkullKing = isChecked
-                    itemView.editTextTurnPirateCount show isChecked
-                    itemView.editTextTurnPirateCount.apply {
-                        post {
-                            isEnabled = isChecked
-                            if (isChecked) {
-                                append("")
-                                setFocus(context)
-                                setOnEditorActionListener { _, actionId, _ ->
-                                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                                        item.pirateCount = text.toString().toInt()
-                                        resetFocus()
-                                    }
-                                    true
-                                }
-                            } else {
-                                setText("")
-                                item.pirateCount = null
-                                resetFocus()
-                            }
-                        }
+                    refreshTurnPirateCount(isChecked, context, item)
+                    if (isChecked) {
+                        itemView.checkboxTurnHasMarmaid check false
+                        this@TurnResultListAdapter.removeBonusExcept(item)
                     }
                 }
                 itemView.checkboxTurnHasMarmaid.setOnCheckedChangeListener { _, isChecked ->
                     item.hasMermaid = isChecked
+                    if (isChecked) {
+                        itemView.checkboxTurnHasSkullKing check false
+                        refreshTurnPirateCount(false, context, item)
+                        this@TurnResultListAdapter.removeBonusExcept(item)
+                    }
+                }
+            }
+
+            private fun refreshTurnPirateCount(
+                isChecked: Boolean, context: Context, item: SKTurnPlayerJoin
+            ) {
+                itemView.editTextTurnPirateCount show isChecked
+                itemView.editTextTurnPirateCount.apply {
+                    post {
+                        isEnabled = isChecked
+                        if (isChecked) {
+                            append("")
+                            setFocus(context)
+                            setOnEditorActionListener { _, actionId, _ ->
+                                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                                    item.pirateCount = text.toString().toInt()
+                                    resetFocus()
+                                }
+                                true
+                            }
+                        } else {
+                            setText("")
+                            item.pirateCount = null
+                            resetFocus()
+                        }
+                    }
                 }
             }
 
@@ -289,7 +316,6 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             }
 
             private fun setBonus(item: SKTurnPlayerJoin) {
-                expandIfBonus(item)
                 item.hasSkullKing?.let { hasSkullKing ->
                     itemView.checkboxTurnHasSkullKing check hasSkullKing
                     if (hasSkullKing) {
@@ -304,6 +330,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 item.hasMermaid?.apply {
                     itemView.checkboxTurnHasMarmaid check this
                 }
+                expandIfBonus(item)
             }
 
             private fun setResult(item: SKTurnPlayerJoin) {
