@@ -39,6 +39,7 @@ open class SBRecyclerViewOnItemTouchListener(
 
     init {
         gestureDetector = GestureDetector(context, object : SimpleOnGestureListener() {
+
             override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
                 recyclerView.findChildViewUnder(motionEvent.x, motionEvent.y)?.let {
                     itemTouchListener.onClick(

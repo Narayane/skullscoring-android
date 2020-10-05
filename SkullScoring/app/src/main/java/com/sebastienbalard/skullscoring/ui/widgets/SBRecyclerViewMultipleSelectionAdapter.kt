@@ -19,6 +19,8 @@ package com.sebastienbalard.skullscoring.ui.widgets
 import android.content.Context
 import android.util.SparseBooleanArray
 import androidx.core.util.forEach
+import androidx.core.util.keyIterator
+import timber.log.Timber
 
 abstract class SBRecyclerViewMultipleSelectionAdapter<T, VH : SBRecyclerViewAdapter.ViewHolder<T>>(
     protected val context: Context, items: List<T>
@@ -41,6 +43,14 @@ abstract class SBRecyclerViewMultipleSelectionAdapter<T, VH : SBRecyclerViewAdap
         } else {
             selectedPositions.put(position, true)
         }
+        var label = ""
+        selectedPositions.keyIterator().forEach {
+            if (label.isNotEmpty()) {
+                label += ", "
+            }
+            label += it.toString()
+        }
+        Timber.v("selected positions: $label")
         notifyItemChanged(position)
     }
 
@@ -61,9 +71,15 @@ abstract class SBRecyclerViewMultipleSelectionAdapter<T, VH : SBRecyclerViewAdap
 
     internal fun getSelectedItemsPositions(): List<Int> {
         val positions: MutableList<Int> = ArrayList(selectedPositions.size())
-        selectedPositions.forEach { key, _ ->
-            positions.add(key)
+        var label = ""
+        selectedPositions.keyIterator().forEach {
+            if (label.isNotEmpty()) {
+                label += ", "
+            }
+            label += it.toString()
+            positions.add(it)
         }
+        Timber.v("selected items positions: $label")
         return positions
     }
 }

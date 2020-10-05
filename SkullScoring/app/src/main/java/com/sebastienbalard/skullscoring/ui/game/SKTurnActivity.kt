@@ -180,7 +180,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             super.onBindViewHolder(viewHolder, position)
             expansionsCollection.add(viewHolder.itemView.expansionLayout)
             viewHolder.itemView.editTextTurnPirateCount.apply {
-                addTextChangedListener(object : SBEditTextMinMaxTextWatcher(1, 6) {
+                addTextChangedListener(object : SBEditTextMinMaxTextWatcher(1, 5) {
 
                     override fun beforeTextChanged(
                         s: CharSequence?, start: Int, count: Int, after: Int
