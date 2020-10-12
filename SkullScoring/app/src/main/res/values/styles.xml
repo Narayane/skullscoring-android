@@ -1,5 +1,9 @@
 <resources>
 
+    <style name="SKAppTheme.Widget.Snackbar" parent="@style/Widget.MaterialComponents.Snackbar">
+        <item name="android:layout_margin">@dimen/marginM</item>
+    </style>
+
     <style name="SKAppTheme.Widget.Button" parent="@style/Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/selector_button_background</item>
         <item name="rippleColor">#ff6659</item>

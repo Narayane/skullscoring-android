@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.sebastienbalard.skullscoring.ui.home.SKHomeActivity">
+    tools:context="com.sebastienbalard.skullscoring.ui.SKPlayersActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <include layout="@layout/widget_appbar" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycleViewHome"
+            android:id="@+id/recycleViewPlayers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/marginS"
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/marginM"
-            android:text="Nouvelle partie"
+            android:text="Nouveau joueur"
             app:icon="@drawable/ic_add_24dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

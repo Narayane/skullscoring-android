@@ -119,6 +119,12 @@
             android:theme="@style/SKAppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
         <activity
+            android:name=".ui.SKPlayersActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/app_name"
+            android:theme="@style/SKAppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
             android:name=".ui.game.SKGameActivity"
             android:label=""
             android:screenOrientation="portrait"

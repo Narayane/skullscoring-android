@@ -33,6 +33,7 @@ import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.ui.EventErrorPluralWithArg
 import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBActivity
+import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKAboutActivity
@@ -46,7 +47,7 @@ import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class SKHomeActivity : SBActivity(R.layout.activity_home) {
+class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
 
     internal val homeViewModel: SKHomeViewModel by viewModel()
 
@@ -62,33 +63,15 @@ class SKHomeActivity : SBActivity(R.layout.activity_home) {
         initObservers()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        Timber.v("onCreateOptionsMenu")
-        menuInflater.inflate(R.menu.menu_home, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_home_item_settings -> {
-                Timber.i("click on menu item: settings")
-                startActivity(SKSettingsActivity.getIntent(this))
-                true
-            }
-            R.id.menu_home_item_about -> {
-                Timber.i("click on menu item: about")
-                startActivity(SKAboutActivity.getIntent(this))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         Timber.v("onResume")
 
         homeViewModel.loadGames()
+    }
+
+    override fun getBottomNavigationMenuItemId(): Int {
+        return R.id.menu_bottom_navigation_item_games
     }
 
     private fun initObservers() {

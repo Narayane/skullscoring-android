@@ -31,6 +31,7 @@
         <item name="actionModeStyle">@style/SKAppTheme.Widget.ActionMode</item>
         <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
         <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
+        <item name="snackbarStyle">@style/SKAppTheme.Widget.Snackbar</item>
         <!--<item name="popupMenuStyle">@style/SKAppTheme.Popup</item>
         <item name="actionOverflowMenuStyle">@style/SKAppTheme.Popup.Overflow</item>-->
     </style>

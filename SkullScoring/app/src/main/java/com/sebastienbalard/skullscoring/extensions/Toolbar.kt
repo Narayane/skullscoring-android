@@ -20,12 +20,26 @@ import android.graphics.Color
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
+import com.sebastienbalard.skullscoring.R
 
 fun Toolbar.showSnackBarError(
     message: String, duration: Int = Snackbar.LENGTH_SHORT
 ) {
     Snackbar.make(this, message, duration).apply {
         view.setBackgroundColor(Color.RED)
+        view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).apply {
+            maxLines = 3
+            setTextColor(Color.WHITE)
+        }
+        show()
+    }
+}
+
+fun Toolbar.showSnackBarWarning(
+    message: String, duration: Int = Snackbar.LENGTH_SHORT
+) {
+    Snackbar.make(this, message, duration).apply {
+        view.setBackgroundColor(resources.getColor(R.color.orange, null))
         view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).apply {
             maxLines = 3
             setTextColor(Color.WHITE)

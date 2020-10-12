@@ -30,4 +30,5 @@
     <string name="error_turn_results_not_updated">%1$s resultats n\'ont pas été mis à jour</string>
     <string name="error_turn_results_sum_is_invalid">La somme des résultats doit être égale à %1$s</string>
     <string name="error_game_not_deleted">%1$s parties n\'ont pas été supprimées</string>
+    <string name="warning_not_implemented">Bientôt disponible</string>
 </resources>
