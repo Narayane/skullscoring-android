@@ -25,6 +25,7 @@ import com.sebastienbalard.skullscoring.SBAnalytics
 import com.sebastienbalard.skullscoring.SBCrashReport
 import com.sebastienbalard.skullscoring.SKApplication
 import com.sebastienbalard.skullscoring.data.SKDatabase
+import com.sebastienbalard.skullscoring.data.SKDatabase.Companion.MIGRATION_1_2
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
 import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
@@ -43,7 +44,7 @@ import org.koin.experimental.builder.single
 val dataModule = module {
     single {
         Room.databaseBuilder(androidContext(), SKDatabase::class.java, BuildConfig.ROOM_DB_NAME)
-            .build()
+            .addMigrations(MIGRATION_1_2).build()
     }
     single { get<SKDatabase>().getGameDao() }
     single { get<SKDatabase>().getPlayerDao() }
