@@ -34,6 +34,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:896114900327:android:b5895f04ea7db479b003c2",
+        "android_client_info": {
+          "package_name": "com.sebastienbalard.skullscoring.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "896114900327-e7ccifpdqt9g611cn3l54rv7pqv364a3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh9JjvQTV67Pz0i3VhHODJi5_UxuB5PgU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "896114900327-e7ccifpdqt9g611cn3l54rv7pqv364a3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
