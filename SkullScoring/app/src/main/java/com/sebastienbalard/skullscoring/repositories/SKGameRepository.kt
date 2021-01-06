@@ -68,6 +68,8 @@ open class SKGameRepository(
 
     open suspend fun loadCurrentTurn(gameId: Long): SKTurn = turnRepository.getCurrentTurn(gameId)
 
+    open suspend fun loadTurn(gameId: Long, number: Int): SKTurn = turnRepository.getTurnByNumber(gameId, number)
+
     open suspend fun startNextTurn(gameId: Long) {
         val game = gameDao.findById(gameId)
         game.currentTurnNumber++

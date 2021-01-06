@@ -51,6 +51,7 @@ data class EventSplashRequestDataPermissions(val needed: Boolean) : SBEvent()
 data class EventDataSendingPermissionsLoaded(
     val allowCrashDataSending: Boolean, val allowUseDataSending: Boolean
 ) : SBEvent()
+data class EventTurn(val turn: SKTurn) : SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 

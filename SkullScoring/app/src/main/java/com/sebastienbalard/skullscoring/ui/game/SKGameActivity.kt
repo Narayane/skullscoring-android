@@ -20,10 +20,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
 import android.view.View.*
-import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
@@ -48,6 +46,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     internal val gameViewModel: SKGameViewModel by viewModel()
 
     private lateinit var playerListAdapter: PlayerListAdapter
+    private lateinit var menuItemHistory: MenuItem
     private var gameId: Long? = null
     protected var currentTurn: Int? = null
 
@@ -60,6 +59,24 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         initObservers()
 
         gameId = intent.extras?.getLong(EXTRA_GAME_ID)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        Timber.v("onCreateOptionsMenu")
+        menuInflater.inflate(R.menu.menu_game_history, menu)
+        menuItemHistory = menu.findItem(R.id.menu_game_item_history)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_game_item_history -> {
+                Timber.i("click on menu item: game history")
+                startActivity(SKGameHistoryActivity.getIntent(this, gameId!!))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onResume() {
@@ -141,6 +158,7 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
     private fun refreshToolbar(game: SKGame) {
         toolbar.title = "Partie du ${game.startDate.formatDateTime(this@SKGameActivity)}"
         toolbar.subtitle = if (game.isEnded) "Terminé" else "Tour ${game.currentTurnNumber}"
+        menuItemHistory.isVisible = game.currentTurnNumber > 1
     }
 
     @SuppressLint("ResourceType")
@@ -218,18 +236,18 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         inner class ViewHolder(itemView: View) :
             SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
-            override fun bind(context: Context, element: SKPlayer) {
+            override fun bind(context: Context, item: SKPlayer) {
                 itemView.imageViewGameDealer.visibility = currentTurn?.run {
                     val modulo = (this - 1).rem(items.size)
-                    if (items.isNotEmpty() && element.position == modulo) VISIBLE else INVISIBLE
+                    if (items.isNotEmpty() && item.position == modulo) VISIBLE else INVISIBLE
                 } ?: INVISIBLE
-                itemView.textViewGamePlayerName.text = element.name
-                element.currentTurnDeclaration?.apply {
+                itemView.textViewGamePlayerName.text = item.name
+                item.currentTurnDeclaration?.apply {
                     itemView.textViewGamePlayerDeclaration.visibility = VISIBLE
                     itemView.textViewGamePlayerDeclaration.text = "$this"
                 } ?: run { itemView.textViewGamePlayerDeclaration.visibility = GONE }
                 itemView.textViewGamePlayerDeclaration.visibility
-                itemView.textViewGamePlayerScore.text = element.score.toString()
+                itemView.textViewGamePlayerScore.text = item.score.toString()
             }
         }
     }

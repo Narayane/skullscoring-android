@@ -55,7 +55,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
 
         intent.extras?.getLong(EXTRA_GAME_ID)?.let { gameId ->
             intent.extras?.getBoolean(EXTRA_IS_GAME_RESULTS)?.let {
-                if (!it) turnViewModel.loadTurnDeclarations(gameId) else turnViewModel.loadTurnResults(
+                if (!it) turnViewModel.loadCurrentTurnDeclarations(gameId) else turnViewModel.loadCurrentTurnResults(
                     gameId
                 )
             } ?: finish()
@@ -157,7 +157,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
         }
     }
 
-    private class TurnResultListAdapter(val context: Context, players: List<SKTurnPlayerJoin>) :
+    private class TurnResultListAdapter(context: Context, players: List<SKTurnPlayerJoin>) :
         SBRecyclerViewAdapter<SKTurnPlayerJoin, TurnResultListAdapter.ViewHolder>(
             context, players
         ) {

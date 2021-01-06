@@ -30,14 +30,19 @@ open class SKTurnViewModel(
     private val gameRepository: SKGameRepository, private val turnDao: SKTurnDao, private val turnPlayerJoinDao: SKTurnPlayerJoinDao
 ) : SBViewModel() {
 
-    open fun loadTurnDeclarations(gameId: Long) = viewModelScope.launch {
+    open fun loadCurrentTurnDeclarations(gameId: Long) = viewModelScope.launch {
         val turn = gameRepository.loadCurrentTurn(gameId)
         _states.value = StateTurnDeclarations(turn)
     }
 
-    open fun loadTurnResults(gameId: Long) = viewModelScope.launch {
+    open fun loadCurrentTurnResults(gameId: Long) = viewModelScope.launch {
         val turn = gameRepository.loadCurrentTurn(gameId)
         _states.value = StateTurnResults(turn)
+    }
+
+    open fun loadTurnResults(gameId: Long, number: Int) = viewModelScope.launch {
+        val turn = gameRepository.loadTurn(gameId, number)
+        _events.value = EventTurn(turn)
     }
 
     open fun saveTurnDeclarations(declarations: List<SKTurnPlayerJoin>) = viewModelScope.launch {

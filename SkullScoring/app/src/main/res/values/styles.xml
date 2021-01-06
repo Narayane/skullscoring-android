@@ -24,6 +24,13 @@
         <item name="hintTextColor">@android:color/white</item>
     </style>
 
+    <style name="SKAppTheme.Widget.TextInput.ExposedDropdownMenu" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="boxStrokeColor">@color/selector_text_input</item>
+        <item name="android:textColorHint">@android:color/white</item>
+        <item name="hintTextColor">@android:color/white</item>
+        <item name="endIconTint">@android:color/white</item>
+    </style>
+
     <style name="SKAppTheme.Widget.CheckBox" parent="@style/Widget.MaterialComponents.CompoundButton.CheckBox">
         <item name="android:buttonTint">@android:color/white</item>
     </style>

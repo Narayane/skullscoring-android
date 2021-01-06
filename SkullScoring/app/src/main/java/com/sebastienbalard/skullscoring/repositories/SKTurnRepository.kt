@@ -35,6 +35,9 @@ open class SKTurnRepository(
         val turn = turnDao.findByNumber(gameId, number)
         val results = turnPlayerJoinDao.findResultByTurn(turn.id)
         turn.results = results
+        turn.results.forEach {
+            it.player = playerDao.findById(it.playerId)
+        }
         return turn
     }
 
