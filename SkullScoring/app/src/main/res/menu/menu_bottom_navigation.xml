@@ -13,10 +13,10 @@
         android:icon="@drawable/ic_players_24dp"
         android:title="Joueurs"
         app:showAsAction="ifRoom" />
-    <item
+    <!--<item
         android:id="@+id/menu_bottom_navigation_item_statistics"
         android:enabled="true"
         android:icon="@drawable/ic_statistics_24dp"
         android:title="Statistiques"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 </menu>
