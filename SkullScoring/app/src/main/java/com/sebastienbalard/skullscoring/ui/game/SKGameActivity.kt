@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
+import com.sebastienbalard.skullscoring.extensions.show
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventGame
@@ -120,37 +121,42 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
 
     @SuppressLint("ResourceType")
     private fun refreshSpeedDial(game: SKGame) {
-        speedDialGame.visibility = if (game.isEnded) GONE else VISIBLE
-        if (speedDialGame.actionItems.size > 1) {
-            speedDialGame.actionItems.withIndex().filter { it.index > 0 }.forEach {
-                speedDialGame.removeActionItem(it.value)
+        fabDeclarations show !game.areCurrentTurnDeclarationsSet
+        if (game.isEnded || !game.areCurrentTurnDeclarationsSet) {
+            speedDialGame show false
+        } else if (game.areCurrentTurnDeclarationsSet) {
+            speedDialGame show true
+            if (speedDialGame.actionItems.size > 1) {
+                speedDialGame.actionItems.withIndex().filter { it.index > 0 }.forEach {
+                    speedDialGame.removeActionItem(it.value)
+                }
             }
-        }
-        if (speedDialGame.isVisible) {
-            if (game.areCurrentTurnDeclarationsSet) {
-                speedDialGame.addActionItem(
-                    SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
-                        .create()
-                )
-            }
-            if (game.areCurrentTurnResultsSet) {
-                speedDialGame.addActionItem(
-                    SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24dp)
-                        .setLabel("Tour suivant").setFabBackgroundColor(
+            if (speedDialGame.isVisible) {
+                if (game.areCurrentTurnDeclarationsSet) {
+                    speedDialGame.addActionItem(
+                        SpeedDialActionItem.Builder(2, R.drawable.ic_result_24dp).setLabel("Résultats")
+                            .create()
+                    )
+                }
+                if (game.areCurrentTurnResultsSet) {
+                    speedDialGame.addActionItem(
+                        SpeedDialActionItem.Builder(3, R.drawable.ic_skip_next_24dp)
+                            .setLabel("Tour suivant").setFabBackgroundColor(
+                                ResourcesCompat.getColor(
+                                    resources, R.color.colorSecondary, theme
+                                )
+                            ).create()
+                    )
+                }
+                if (speedDialGame.actionItems.size == 3 && game.currentTurnNumber == 10) {
+                    val itemEndGame = SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24dp)
+                        .setLabel("Fin de partie").setFabBackgroundColor(
                             ResourcesCompat.getColor(
                                 resources, R.color.colorSecondary, theme
                             )
                         ).create()
-                )
-            }
-            if (speedDialGame.actionItems.size == 3 && game.currentTurnNumber == 10) {
-                val itemEndGame = SpeedDialActionItem.Builder(4, R.drawable.ic_stop_24dp)
-                    .setLabel("Fin de partie").setFabBackgroundColor(
-                        ResourcesCompat.getColor(
-                            resources, R.color.colorSecondary, theme
-                        )
-                    ).create()
-                speedDialGame.replaceActionItem(itemEndGame, 2)
+                    speedDialGame.replaceActionItem(itemEndGame, 2)
+                }
             }
         }
     }
@@ -169,6 +175,10 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         recyclerViewGame.itemAnimator = DefaultItemAnimator()
         recyclerViewGame.adapter = playerListAdapter
 
+        fabDeclarations.setOnClickListener {
+            openTurnDeclarationsScreen()
+        }
+
         speedDialGame.apply {
             addActionItem(
                 SpeedDialActionItem.Builder(1, R.drawable.ic_bet_24dp).setLabel("Annonces").create()
@@ -176,39 +186,55 @@ open class SKGameActivity : SBActivity(R.layout.activity_game) {
         }.setOnActionSelectedListener {
             return@setOnActionSelectedListener when (it.id) {
                 1 -> {
-                    gameId?.let { gameId ->
-                        startActivity(
-                            SKTurnActivity.getIntentForDeclarations(
-                                this@SKGameActivity, gameId
-                            )
-                        )
-                    }
+                    openTurnDeclarationsScreen()
                     false
                 }
                 2 -> {
-                    gameId?.let { gameId ->
-                        startActivity(
-                            SKTurnActivity.getIntentForResults(
-                                this@SKGameActivity, gameId
-                            )
-                        )
-                    }
+                    openTurnResultsScreen()
                     false
                 }
                 3 -> {
-                    gameId?.let { gameId ->
-                        gameViewModel.startNextTurn(gameId)
-                    }
+                    startNextTurn()
                     false
                 }
                 4 -> {
-                    gameId?.let { gameId ->
-                        gameViewModel.endGame(gameId)
-                    }
+                    endGame()
                     false
                 }
                 else -> true
             }
+        }
+    }
+
+    private fun endGame() {
+        gameId?.let { gameId ->
+            gameViewModel.endGame(gameId)
+        }
+    }
+
+    private fun startNextTurn() {
+        gameId?.let { gameId ->
+            gameViewModel.startNextTurn(gameId)
+        }
+    }
+
+    private fun openTurnResultsScreen() {
+        gameId?.let { gameId ->
+            startActivity(
+                SKTurnActivity.getIntentForResults(
+                    this@SKGameActivity, gameId
+                )
+            )
+        }
+    }
+
+    private fun openTurnDeclarationsScreen() {
+        gameId?.let { gameId ->
+            startActivity(
+                SKTurnActivity.getIntentForDeclarations(
+                    this@SKGameActivity, gameId
+                )
+            )
         }
     }
 

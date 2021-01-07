@@ -17,6 +17,15 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constrainedHeight="true" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fabDeclarations"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/marginM"
+        android:text="Annonces"
+        app:icon="@drawable/ic_bet_24dp" />
+
     <com.leinardi.android.speeddial.SpeedDialView
         android:id="@+id/speedDialGame"
         android:layout_width="wrap_content"
@@ -24,9 +33,10 @@
         android:layout_gravity="bottom|end"
         app:sdMainFabClosedBackgroundColor="@color/colorSecondary"
         app:sdMainFabClosedIconColor="@android:color/white"
-        app:sdMainFabClosedSrc="@drawable/ic_add_24dp"
+        app:sdMainFabClosedSrc="@drawable/ic_open_dial_24dp"
         app:sdMainFabOpenedBackgroundColor="@color/colorSecondary"
         app:sdMainFabOpenedIconColor="@android:color/white"
-        app:sdMainFabOpenedSrc="@drawable/ic_close_24dp" />
+        app:sdMainFabOpenedSrc="@drawable/ic_close_dial_24dp"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
