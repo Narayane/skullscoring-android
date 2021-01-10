@@ -41,4 +41,7 @@ data class SKPlayer(
 
     @Ignore
     var position: Int = 0
+
+    @Ignore
+    lateinit var groups: List<SKGroup>
 }

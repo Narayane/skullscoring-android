@@ -18,6 +18,7 @@ package com.sebastienbalard.skullscoring.repositories
 
 import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
 import com.sebastienbalard.skullscoring.data.SKPlayerDao
+import com.sebastienbalard.skullscoring.data.SKPlayerGroupJoinDao
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKGamePlayerJoin
 import com.sebastienbalard.skullscoring.models.SKPlayer
@@ -27,7 +28,8 @@ import kotlin.math.abs
 open class SKPlayerRepository(
     private val turnRepository: SKTurnRepository,
     private val playerDao: SKPlayerDao,
-    private val gamePlayerJoinDao: SKGamePlayerJoinDao
+    private val gamePlayerJoinDao: SKGamePlayerJoinDao,
+    private val playerGroupJoinDao: SKPlayerGroupJoinDao
 ) {
 
     open suspend fun createPlayer(name: String): SKPlayer {
@@ -48,7 +50,11 @@ open class SKPlayerRepository(
     }
 
     open suspend fun findAll(): List<SKPlayer> {
-        return playerDao.getAll().sortedBy { it.name }
+        val players = playerDao.getAll().sortedBy { it.name }
+        players.forEach { player ->
+            player.groups = playerGroupJoinDao.findGroupByPlayer(player.id)
+        }
+        return players
     }
 
     open suspend fun createPlayersForGame(players: List<SKPlayer>, gameId: Long) {

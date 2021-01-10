@@ -16,6 +16,10 @@
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/textSizeBody</item>
+
+        <item name="md_background_color">@color/colorPrimary</item>
+        <item name="md_color_title">@android:color/white</item>
+        <item name="md_color_button_text">@android:color/white</item>
     </style>
 
     <style name="SKAppTheme.NoActionBar">

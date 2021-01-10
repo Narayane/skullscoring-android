@@ -26,15 +26,13 @@ import com.sebastienbalard.skullscoring.SBCrashReport
 import com.sebastienbalard.skullscoring.SKApplication
 import com.sebastienbalard.skullscoring.data.SKDatabase
 import com.sebastienbalard.skullscoring.data.SKDatabase.Companion.MIGRATION_1_2
-import com.sebastienbalard.skullscoring.repositories.SKGameRepository
-import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
-import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
-import com.sebastienbalard.skullscoring.repositories.SKTurnRepository
+import com.sebastienbalard.skullscoring.repositories.*
 import com.sebastienbalard.skullscoring.ui.game.SKGameViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
 import com.sebastienbalard.skullscoring.ui.game.SKTurnViewModel
 import com.sebastienbalard.skullscoring.ui.home.SKHomeViewModel
 import com.sebastienbalard.skullscoring.ui.onboarding.SKOnboardingViewModel
+import com.sebastienbalard.skullscoring.ui.players.SKPlayerViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.experimental.dsl.viewModel
@@ -51,6 +49,8 @@ val dataModule = module {
     single { get<SKDatabase>().getTurnDao() }
     single { get<SKDatabase>().getGamePlayerJoinDao() }
     single { get<SKDatabase>().getTurnPlayerJoinDao() }
+    single { get<SKDatabase>().getGroupDao() }
+    single { get<SKDatabase>().getPlayerGroupJoinDao() }
 }
 
 val commonModule = module {
@@ -67,6 +67,7 @@ val commonModule = module {
     single<SKPlayerRepository>()
     single<SKTurnRepository>()
     single<SKPreferenceRepository>()
+    single<SKGroupRepository>()
 }
 
 val appModule = module {
@@ -75,6 +76,7 @@ val appModule = module {
     viewModel<SKHomeViewModel>()
     viewModel<SKGameViewModel>()
     viewModel<SKTurnViewModel>()
+    viewModel<SKPlayerViewModel>()
 }
 
 val skullScoringApp = listOf(appModule, commonModule, dataModule)

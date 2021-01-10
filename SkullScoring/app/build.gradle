@@ -121,6 +121,7 @@ dependencies {
     implementation "com.leinardi.android:speed-dial:3.1.1"
     implementation 'com.cepheuen.elegant-number-button:lib:1.0.2'
     implementation 'com.github.florent37:expansionpanel:1.2.4'
+    implementation 'com.afollestad.material-dialogs:bottomsheets:3.3.0'
 
     testImplementation "junit:junit:4.12"
     testImplementation "org.robolectric:robolectric:$robolectric_version"

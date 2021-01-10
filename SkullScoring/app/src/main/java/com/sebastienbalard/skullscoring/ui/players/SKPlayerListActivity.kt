@@ -14,28 +14,28 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.ui
+package com.sebastienbalard.skullscoring.ui.players
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.ui.EventPlayerList
+import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
-import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
-import kotlinx.android.synthetic.main.activity_players.*
-import kotlinx.android.synthetic.main.activity_turn.*
-import kotlinx.android.synthetic.main.item_player.view.*
+import kotlinx.android.synthetic.main.activity_player_list.*
+import kotlinx.android.synthetic.main.item_player_group.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class SKPlayersActivity : SBBottomNavigationViewActivity(R.layout.activity_players) {
+class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_player_list) {
 
     internal val playerSearchViewModel: SKPlayerSearchViewModel by viewModel()
 
@@ -48,6 +48,10 @@ class SKPlayersActivity : SBBottomNavigationViewActivity(R.layout.activity_playe
         initToolbar(false)
         initUI()
         initObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         playerSearchViewModel.loadPlayers()
     }
@@ -77,31 +81,48 @@ class SKPlayersActivity : SBBottomNavigationViewActivity(R.layout.activity_playe
         recycleViewPlayers.layoutManager = LinearLayoutManager(this)
         recycleViewPlayers.itemAnimator = DefaultItemAnimator()
         recycleViewPlayers.adapter = playerListAdapter
+
+        fabNewPlayer.setOnClickListener {
+            startActivity(SKPlayerActivity.getIntent(this))
+        }
     }
 
     companion object {
         fun getIntent(context: Context): Intent {
             return Intent(
-                context, SKPlayersActivity::class.java
+                context, SKPlayerListActivity::class.java
             ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
 
-    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
+    private inner class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
         SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_player, parent, false
+                    R.layout.item_player_group, parent, false
                 )
             )
         }
 
-        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+        inner class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, item: SKPlayer) {
-                itemView.textViewPlayerName.text = item.name
+                itemView.textViewPlayerGroupName.text = item.name
+                itemView.layoutPlayerGroupChipGroup.removeAllViews()
+                if (item.groups.isNotEmpty()) {
+                    item.groups.forEach { group ->
+                        val chip = Chip(this@SKPlayerListActivity).apply {
+                            id = ViewCompat.generateViewId()
+                            text = group.name
+                            setChipBackgroundColorResource(R.color.colorPrimary)
+                            isCloseIconVisible = false
+                            setTextColor(getColor(R.color.white))
+                        }
+                        itemView.layoutPlayerGroupChipGroup.addView(chip)
+                    }
+                }
             }
         }
     }

@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_player_search_item_add"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_person_add"
+        android:icon="@drawable/ic_new_person_24dp"
         app:showAsAction="ifRoom"
         android:title="Ajouter un joueur" />
 

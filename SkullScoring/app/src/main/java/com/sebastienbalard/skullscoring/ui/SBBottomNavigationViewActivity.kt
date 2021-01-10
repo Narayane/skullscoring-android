@@ -22,6 +22,7 @@ import android.view.MenuItem
 import androidx.annotation.LayoutRes
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.ui.home.SKHomeActivity
+import com.sebastienbalard.skullscoring.ui.players.SKPlayerListActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKAboutActivity
 import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
 import kotlinx.android.synthetic.main.widget_bottomnavigationview.*
@@ -80,7 +81,7 @@ abstract class SBBottomNavigationViewActivity(@LayoutRes contentLayoutId: Int) :
                         finish()
                     }
                     R.id.menu_bottom_navigation_item_players -> {
-                        startActivity(SKPlayersActivity.getIntent(this))
+                        startActivity(SKPlayerListActivity.getIntent(this))
                         finish()
                     }
                     /*R.id.menu_bottom_navigation_item_statistics -> {

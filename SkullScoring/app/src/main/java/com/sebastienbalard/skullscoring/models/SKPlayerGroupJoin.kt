@@ -41,5 +41,5 @@ data class SKPlayerGroupJoin(
     @ColumnInfo(name = "fk_player_id")
     val playerId: Long,
     @ColumnInfo(name = "fk_group_id")
-    var gameId: Long
+    var groupId: Long
 )

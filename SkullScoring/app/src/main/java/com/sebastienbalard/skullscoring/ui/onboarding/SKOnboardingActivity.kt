@@ -43,7 +43,7 @@ import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBVerticalSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_onboarding.*
-import kotlinx.android.synthetic.main.item_player.view.textViewPlayerName
+import kotlinx.android.synthetic.main.item_onboarding_player.view.textViewPlayerName
 import kotlinx.android.synthetic.main.item_sort_player.view.*
 import kotlinx.android.synthetic.main.scene_onboarding_start.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -230,7 +230,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_player, parent, false
+                    R.layout.item_onboarding_player, parent, false
                 )
             )
         }
