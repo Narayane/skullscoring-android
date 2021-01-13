@@ -21,6 +21,7 @@ import com.sebastienbalard.skullscoring.data.SKPlayerGroupJoinDao
 import com.sebastienbalard.skullscoring.models.SKPlayerGroupJoin
 import com.sebastienbalard.skullscoring.repositories.SKGroupRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
+import com.sebastienbalard.skullscoring.ui.EventPlayer
 import com.sebastienbalard.skullscoring.ui.SBViewModel
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,11 @@ open class SKPlayerViewModel(
     private val playerRepository: SKPlayerRepository,
     private val playerGroupJoinDao: SKPlayerGroupJoinDao
 ) : SBViewModel() {
+
+    fun getPlayer(playerId: Long) = viewModelScope.launch {
+        val player = playerRepository.getPlayer(playerId)
+        _events.value = EventPlayer(player)
+    }
 
     fun createGroup(name: String, playerId: Long) = viewModelScope.launch {
         val group = groupRepository.createGroup(name)
@@ -42,5 +48,26 @@ open class SKPlayerViewModel(
                 createGroup(groupName, player.id)
             }
         }
+    }
+
+    fun updatePlayer(playerId: Long, name: String, groupNames: List<String>) = viewModelScope.launch {
+        val player = playerRepository.getPlayer(playerId)
+        if (name != player.name) {
+            player.name = name
+            playerRepository.updatePlayer(player)
+        }
+        val currentGroupsNames = player.groups.map { it.name }
+        groupNames.forEach { future ->
+            if (!currentGroupsNames.contains(future)) {
+                createGroup(future, player.id) // create the new ones
+            }
+        }
+        val currentGroups = player.groups
+        currentGroups.forEach { current ->
+            if (!groupNames.contains(current.name)) {
+                playerGroupJoinDao.delete(SKPlayerGroupJoin(playerId, current.id)) // delete the removed ones
+            }
+        }
+        groupRepository.deleteOrphanGroups()
     }
 }

@@ -102,4 +102,14 @@ open class SKPlayerRepository(
             players.sortedWith(compareByDescending<SKPlayer> { it.score }.thenBy { it.name })
         }
     }
+
+    open suspend fun getPlayer(playerId: Long): SKPlayer {
+        val player = playerDao.findById(playerId)
+        player.groups = playerGroupJoinDao.findGroupByPlayer(playerId)
+        return player
+    }
+
+    open suspend fun updatePlayer(player: SKPlayer) {
+        playerDao.update(player)
+    }
 }

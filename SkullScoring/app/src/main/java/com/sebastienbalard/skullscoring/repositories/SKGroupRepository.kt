@@ -16,16 +16,32 @@
 
 package com.sebastienbalard.skullscoring.repositories
 
+import android.database.sqlite.SQLiteConstraintException
 import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
 import com.sebastienbalard.skullscoring.data.SKGroupDao
+import com.sebastienbalard.skullscoring.data.SKPlayerGroupJoinDao
 import com.sebastienbalard.skullscoring.models.SKGroup
+import timber.log.Timber
 
 open class SKGroupRepository(
-    private val groupDao: SKGroupDao, private val gamePlayerJoinDao: SKGamePlayerJoinDao
+    private val groupDao: SKGroupDao, private val playerGroupJoinDao: SKPlayerGroupJoinDao
 ) {
 
     open suspend fun createGroup(name: String): SKGroup {
-        groupDao.insert(SKGroup(name))
-        return groupDao.findByName(name)
+        try {
+            groupDao.insert(SKGroup(name))
+        } catch (e: SQLiteConstraintException) {
+        } finally {
+            return groupDao.findByName(name)
+        }
+    }
+
+    open suspend fun deleteOrphanGroups() {
+        groupDao.getAll().forEach { group ->
+            if (playerGroupJoinDao.findPlayerByGroup(group.id).isEmpty()) {
+                Timber.d("delete orphan group: ${group.name}")
+                groupDao.delete(group)
+            }
+        }
     }
 }

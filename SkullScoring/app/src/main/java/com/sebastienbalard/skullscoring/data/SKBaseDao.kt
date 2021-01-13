@@ -21,7 +21,7 @@ import androidx.room.*
 @Dao
 interface SKBaseDao<T> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     suspend fun insert(vararg type: T): LongArray
 
     @Update

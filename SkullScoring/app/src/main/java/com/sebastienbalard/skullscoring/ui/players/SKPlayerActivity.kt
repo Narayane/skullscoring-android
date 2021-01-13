@@ -20,9 +20,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
+import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -31,10 +31,9 @@ import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.android.material.chip.Chip
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.resetFocus
-import com.sebastienbalard.skullscoring.models.SKPlayer
+import com.sebastienbalard.skullscoring.ui.EventPlayer
 import com.sebastienbalard.skullscoring.ui.SBActivity
 import kotlinx.android.synthetic.main.activity_player.*
-import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -43,14 +42,25 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
 
     internal val playerViewModel: SKPlayerViewModel by viewModel()
 
+    private var playerId: Long? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = "Nouveau joueur"
+
+        playerId = intent.extras?.getLong(EXTRA_PLAYER_ID)
 
         initToolbar(true)
         initUI()
         initObservers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        playerId?.let { playerId ->
+            playerViewModel.getPlayer(playerId)
+        }
     }
 
     private fun openCreateGroupBottomsheet() {
@@ -58,7 +68,8 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
             title(null, "Nouveau groupe")
             customView(R.layout.widget_bottomsheet_create_group)
             positiveButton(null, "Créer") { dialog ->
-                val editTextGroupName: EditText = dialog.getCustomView().findViewById(R.id.editTextGroupName)
+                val editTextGroupName: EditText =
+                    dialog.getCustomView().findViewById(R.id.editTextGroupName)
                 createChip(editTextGroupName.text.toString().trim())
             }
             negativeButton(null, "Annuler")
@@ -73,30 +84,79 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
             isCloseIconVisible = true
             setCloseIconTintResource(R.color.white)
             setTextColor(getColor(R.color.white))
+            setOnCloseIconClickListener {
+                layoutChipGroup.removeView(it)
+            }
         }
         layoutChipGroup.addView(chip)
     }
 
     private fun initObservers() {
+        playerViewModel.events.observe(this, Observer { event ->
+            event?.apply {
+                Timber.v("event -> ${this::class.java.simpleName}")
+                when (this) {
+                    is EventPlayer -> {
+                        editTextNewPlayer.setText(player.name)
+                        player.groups.forEach { group ->
+                            createChip(group.name)
+                        }
+                    }
+                    else -> {
+                    }
+                }
+            }
+        })
+    }
+
+    private fun updatePlayer(playerId: Long) {
+        val groupNames = layoutChipGroup.children.map { (it as Chip).text.toString() }
+        playerViewModel.updatePlayer(
+            playerId, editTextNewPlayer.text.toString().trim(), groupNames.toList()
+        )
+        finish()
+    }
+
+    private fun createPlayer() {
+        val groupNames = layoutChipGroup.children.map { (it as Chip).text.toString() }
+        playerViewModel.createPlayer(
+            editTextNewPlayer.text.toString().trim(), groupNames.toList()
+        )
+        finish()
+    }
+
+    private fun initUI() {
+
+        supportActionBar?.title = if (playerId != null) "Modifier un joueur" else "Nouveau joueur"
+
+        buttonCreatePlayer.setOnClickListener {
+            editTextNewPlayer.resetFocus()
+            playerId?.let { playerId ->
+                updatePlayer(playerId)
+            } ?: run {
+                createPlayer()
+            }
+        }
+
         buttonCreateGroup.setOnClickListener {
             openCreateGroupBottomsheet()
         }
     }
 
-    private fun initUI() {
-        buttonCreatePlayer.setOnClickListener {
-            editTextNewPlayer.resetFocus()
-            val groupNames = layoutChipGroup.children.map { (it as Chip).text.toString() }
-            playerViewModel.createPlayer(editTextNewPlayer.text.toString().trim(), groupNames.toList())
-            finish()
-        }
-    }
-
     companion object {
+
+        const val EXTRA_PLAYER_ID = "EXTRA_PLAYER_ID"
+
         fun getIntent(context: Context): Intent {
             return Intent(
                 context, SKPlayerActivity::class.java
-            ).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            )
+        }
+
+        fun getIntentToEdit(context: Context, playerId: Long): Intent {
+            return Intent(
+                context, SKPlayerActivity::class.java
+            ).putExtra(EXTRA_PLAYER_ID, playerId)
         }
     }
 }

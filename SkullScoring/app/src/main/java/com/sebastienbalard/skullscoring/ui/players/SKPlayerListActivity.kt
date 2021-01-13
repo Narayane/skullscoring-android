@@ -23,13 +23,18 @@ import android.view.*
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventPlayerList
 import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
+import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_player_list.*
 import kotlinx.android.synthetic.main.item_player_group.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -81,6 +86,26 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
         recycleViewPlayers.layoutManager = LinearLayoutManager(this)
         recycleViewPlayers.itemAnimator = DefaultItemAnimator()
         recycleViewPlayers.adapter = playerListAdapter
+        recycleViewPlayers.addOnItemTouchListener(
+            SBRecyclerViewOnItemTouchListener(this,
+                recycleViewPlayers,
+                object : SBRecyclerViewOnItemTouchListener.OnItemTouchListener {
+
+                    override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                        Timber.v("onClick")
+                        val selectedPlayer = playerListAdapter.getElements()[position]
+                        startActivity(SKPlayerActivity.getIntentToEdit(this@SKPlayerListActivity, selectedPlayer.id))
+                    }
+
+                    override fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
+                        Timber.v("onLongClick")
+                    }
+
+                    override fun isEnabled(position: Int): Boolean {
+                        return true
+                    }
+                })
+        )
 
         fabNewPlayer.setOnClickListener {
             startActivity(SKPlayerActivity.getIntent(this))

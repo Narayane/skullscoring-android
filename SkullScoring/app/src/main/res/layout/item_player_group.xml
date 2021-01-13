@@ -6,6 +6,9 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/marginS"
     android:layout_marginBottom="@dimen/marginS"
+    android:background="@drawable/ripple"
+    android:clickable="true"
+    android:focusable="true"
     android:gravity="center_vertical"
     android:paddingStart="@dimen/marginM"
     android:paddingEnd="@dimen/marginM"
@@ -28,6 +31,6 @@
         android:layout_marginStart="@dimen/marginM"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
