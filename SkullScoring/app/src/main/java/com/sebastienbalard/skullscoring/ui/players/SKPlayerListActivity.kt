@@ -137,7 +137,7 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
                 itemView.textViewPlayerGroupName.text = item.name
                 itemView.layoutPlayerGroupChipGroup.removeAllViews()
                 if (item.groups.isNotEmpty()) {
-                    item.groups.forEach { group ->
+                    item.groups.sortedBy { it.name }.forEach { group ->
                         val chip = Chip(this@SKPlayerListActivity).apply {
                             id = ViewCompat.generateViewId()
                             text = group.name

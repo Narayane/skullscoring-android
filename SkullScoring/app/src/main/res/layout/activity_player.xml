@@ -11,68 +11,70 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:padding="@dimen/marginM">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutNewPlayer"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:hint="@string/onboarding_new_player"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="@dimen/marginL"
-            app:layout_constraintBottom_toTopOf="@+id/layoutSearchViewGroup">
+            android:hint="@string/onboarding_new_player"
+            app:layout_constraintBottom_toTopOf="@+id/layoutSearchViewGroup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextNewPlayer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords|textPersonName|textNoSuggestions"
                 android:imeOptions="actionDone"
+                android:inputType="textCapWords|textPersonName|textNoSuggestions"
                 android:textColor="@android:color/white" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layoutSearchViewGroup"
-            style="@style/SKAppTheme.Widget.TextInput"
+            style="@style/SKAppTheme.Widget.TextInput.ExposedDropdownMenu"
             android:layout_width="194dp"
-            android:layout_height="50dp"
+            android:layout_height="56dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/buttonCreateGroup"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <AutoCompleteTextView
                 android:id="@+id/searchViewGroup"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingStart="@dimen/marginS"
-                android:paddingEnd="@dimen/marginS"
-                android:imeOptions="actionDone"
-                android:inputType="text"
-                android:textColor="@color/white"
                 android:drawableStart="@drawable/ic_search_24dp"
                 android:drawablePadding="@dimen/marginXS"
-                android:hint="Chercher un groupe"/>
+                android:hint="Chercher un groupe"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:paddingStart="@dimen/marginS"
+                android:paddingEnd="@dimen/marginS"
+                android:textColor="@color/white" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/buttonCreateGroup"
             android:layout_width="48dp"
-            android:layout_height="50dp"
+            android:layout_height="64dp"
             android:layout_marginStart="@dimen/marginS"
             android:layout_marginTop="@dimen/marginM"
+            android:layout_marginBottom="@dimen/marginS"
             app:icon="@drawable/ic_new_group_24dp"
             app:iconGravity="textStart"
             app:iconPadding="0dp"
-            android:layout_marginBottom="@dimen/marginS"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toEndOf="@+id/layoutSearchViewGroup"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/layoutChipGroup"
@@ -81,7 +83,7 @@
             android:layout_marginTop="@dimen/marginS"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layoutSearchViewGroup"/>
+            app:layout_constraintTop_toBottomOf="@+id/layoutSearchViewGroup" />
 
         <Button
             android:id="@+id/buttonCreatePlayer"
@@ -89,9 +91,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/marginM"
             android:text="@string/validate"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

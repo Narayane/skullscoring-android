@@ -44,4 +44,8 @@ open class SKGroupRepository(
             }
         }
     }
+
+    open suspend fun loadAll(): List<SKGroup> {
+        return groupDao.getAll()
+    }
 }

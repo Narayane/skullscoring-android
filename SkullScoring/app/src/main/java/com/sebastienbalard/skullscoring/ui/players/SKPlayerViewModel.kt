@@ -18,9 +18,11 @@ package com.sebastienbalard.skullscoring.ui.players
 
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.data.SKPlayerGroupJoinDao
+import com.sebastienbalard.skullscoring.models.SKGroup
 import com.sebastienbalard.skullscoring.models.SKPlayerGroupJoin
 import com.sebastienbalard.skullscoring.repositories.SKGroupRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
+import com.sebastienbalard.skullscoring.ui.EventGroupList
 import com.sebastienbalard.skullscoring.ui.EventPlayer
 import com.sebastienbalard.skullscoring.ui.SBViewModel
 import kotlinx.coroutines.launch
@@ -41,33 +43,40 @@ open class SKPlayerViewModel(
         playerGroupJoinDao.insert(SKPlayerGroupJoin(playerId, group.id))
     }
 
-    fun createPlayer(name: String, groupNames: List<String>) = viewModelScope.launch {
+    fun createPlayer(name: String, groups: List<SKGroup>) = viewModelScope.launch {
         val player = playerRepository.createPlayer(name)
-        if (groupNames.isNotEmpty()) {
-            groupNames.forEach { groupName ->
-                createGroup(groupName, player.id)
+        if (groups.isNotEmpty()) {
+            groups.forEach {
+                createGroup(it.name, player.id)
             }
         }
     }
 
-    fun updatePlayer(playerId: Long, name: String, groupNames: List<String>) = viewModelScope.launch {
+    fun updatePlayer(playerId: Long, name: String, groups: List<SKGroup>) = viewModelScope.launch {
         val player = playerRepository.getPlayer(playerId)
         if (name != player.name) {
             player.name = name
             playerRepository.updatePlayer(player)
         }
-        val currentGroupsNames = player.groups.map { it.name }
-        groupNames.forEach { future ->
-            if (!currentGroupsNames.contains(future)) {
-                createGroup(future, player.id) // create the new ones
-            }
-        }
-        val currentGroups = player.groups
-        currentGroups.forEach { current ->
-            if (!groupNames.contains(current.name)) {
+        groups.filter { it.id == 0L }.map { createGroup(it.name, player.id) } // create the new ones
+
+        val playerGroups = player.groups.filter { it.id != 0L }
+        val updatedGroups = groups.filter { it.id != 0L }
+        playerGroups.forEach { current ->
+            if (!updatedGroups.contains(current)) {
                 playerGroupJoinDao.delete(SKPlayerGroupJoin(playerId, current.id)) // delete the removed ones
             }
         }
+        updatedGroups.forEach { updated ->
+            if (!playerGroups.contains(updated)) {
+                playerGroupJoinDao.insert(SKPlayerGroupJoin(playerId, updated.id)) // insert the added ones
+            }
+        }
         groupRepository.deleteOrphanGroups()
+    }
+
+    fun getGroups() = viewModelScope.launch {
+        val groups = groupRepository.loadAll()
+        _events.value = EventGroupList(groups)
     }
 }

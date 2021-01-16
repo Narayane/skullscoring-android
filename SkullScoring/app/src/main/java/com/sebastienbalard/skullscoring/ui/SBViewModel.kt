@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.models.SKGroup
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.models.SKTurn
 
@@ -52,6 +53,7 @@ data class EventDataSendingPermissionsLoaded(
     val allowCrashDataSending: Boolean, val allowUseDataSending: Boolean
 ) : SBEvent()
 data class EventTurn(val turn: SKTurn) : SBEvent()
+data class EventGroupList(val groups: List<SKGroup>) : SBEvent()
 
 abstract class SBViewModel : ViewModel() {
 
