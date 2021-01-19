@@ -37,6 +37,7 @@ import com.sebastienbalard.skullscoring.ui.EventGameList
 import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
+import com.sebastienbalard.skullscoring.ui.game.SKPlayerSortingActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
@@ -191,10 +192,9 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
                 R.id.menu_home_contextual_copy -> {
                     MaterialAlertDialogBuilder(this@SKHomeActivity).setTitle("Alerte")
                         .setMessage("Souhaitez-vous créer une nouvelle partie avec les mêmes joueurs que celle sélectionnée ?")
-                        .setPositiveButton("Créer") { dialog, _ ->
-                            homeViewModel.createGameWithPlayers(
-                                gameListAdapter.getSelectedItems().first().id
-                            )
+                        .setPositiveButton("Continuer") { dialog, _ ->
+                            val playerIds = gameListAdapter.getSelectedItems().first().players.map { it.id }
+                            startActivity(SKPlayerSortingActivity.getIntent(this@SKHomeActivity, playerIds))
                             dialog.dismiss()
                             actionMode?.finish()
                         }.setNegativeButton(

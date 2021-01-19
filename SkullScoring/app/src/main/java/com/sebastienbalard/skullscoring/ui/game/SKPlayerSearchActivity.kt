@@ -42,7 +42,6 @@ import com.sebastienbalard.skullscoring.ui.*
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
-import com.sebastienbalard.skullscoring.ui.widgets.SBVerticalSpacingItemDecoration
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.activity_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.*
@@ -59,8 +58,6 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
 
     private lateinit var scenePlayerList: Scene
     private lateinit var sceneNewPlayer: Scene
-    private lateinit var sceneSortPlayerList: Scene
-    private lateinit var sortPlayerListAdapter: SortPlayerListAdapter
     private lateinit var playerListAdapter: PlayerListAdapter
 
     private lateinit var menuItemAdd: MenuItem
@@ -105,7 +102,12 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                         getString(R.string.error_players_not_enough_selected)
                     )
                 } else {
-                    showSortPlayerScene()
+                    val selectedPlayersId = playerListAdapter.getSelectedItems().map { it.id }
+                    startActivity(
+                        SKPlayerSortingActivity.getIntent(
+                            this, selectedPlayersId
+                        )
+                    )
                 }
                 true
             }
@@ -156,13 +158,6 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         })
     }
 
-    private fun showSortPlayerScene() {
-        toolbar.subtitle = "Ordonner les joueurs"
-        menuItemAdd.isVisible = false
-        menuItemValidate.isVisible = false
-        TransitionManager.go(sceneSortPlayerList)
-    }
-
     private fun showPlayerListScene() {
         toolbar.subtitle = "Sélectionner les joueurs"
         menuItemAdd.isVisible = true
@@ -175,34 +170,6 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         menuItemAdd.isVisible = false
         menuItemValidate.isVisible = false
         TransitionManager.go(sceneNewPlayer)
-    }
-
-    private fun initSceneSortPlayer() {
-        sortPlayerListAdapter = SortPlayerListAdapter(
-            this, listOf()
-        )
-
-        sceneSortPlayerList = Scene.getSceneForLayout(
-            layoutPlayerSearch, R.layout.scene_onboarding_sort_player, this
-        )
-        sceneSortPlayerList.setEnterAction {
-            val recycleViewSortPlayer =
-                sceneSortPlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recyclerViewSortPlayer)
-            recycleViewSortPlayer.layoutManager = LinearLayoutManager(this)
-            recycleViewSortPlayer.itemAnimator = DefaultItemAnimator()
-            recycleViewSortPlayer.addItemDecoration(SBVerticalSpacingItemDecoration(32))
-            val callback: ItemTouchHelper.Callback = PlayerMoveCallback(sortPlayerListAdapter)
-            val touchHelper = ItemTouchHelper(callback)
-            touchHelper.attachToRecyclerView(recycleViewSortPlayer)
-            sortPlayerListAdapter.setAllItems(playerListAdapter.getSelectedItems())
-            recycleViewSortPlayer.adapter = sortPlayerListAdapter
-
-            val buttonValidateOrder =
-                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingValidateOrder)
-            buttonValidateOrder.setOnClickListener {
-                playerSearchViewModel.createGame(sortPlayerListAdapter.getElements())
-            }
-        }
     }
 
     private fun initSceneNewPlayer() {
@@ -270,7 +237,6 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     private fun initUI() {
         initScenePlayerList()
         initSceneNewPlayer()
-        initSceneSortPlayer()
 
         TransitionManager.go(scenePlayerList)
     }

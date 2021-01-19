@@ -14,205 +14,122 @@
  * limitations under the License.
  */
 
-package com.sebastienbalard.skullscoring.ui.onboarding
+package com.sebastienbalard.skullscoring.ui.game
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.View.*
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import android.widget.EditText
+import android.view.*
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Scene
-import androidx.transition.TransitionManager
 import com.sebastienbalard.skullscoring.R
-import com.sebastienbalard.skullscoring.extensions.resetFocus
-import com.sebastienbalard.skullscoring.extensions.setFocus
 import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.*
-import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
-import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
-import com.sebastienbalard.skullscoring.ui.game.SKPlayerSortingActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBVerticalSpacingItemDecoration
-import kotlinx.android.synthetic.main.activity_onboarding.*
-import kotlinx.android.synthetic.main.item_onboarding_player.view.textViewPlayerName
+import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.activity_player_search.*
+import kotlinx.android.synthetic.main.activity_player_sorting.*
+import kotlinx.android.synthetic.main.item_player_search.*
+import kotlinx.android.synthetic.main.item_player_search.view.*
 import kotlinx.android.synthetic.main.item_sort_player.view.*
-import kotlinx.android.synthetic.main.scene_onboarding_start.*
 import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.*
 
+class SKPlayerSortingActivity : SBActivity(R.layout.activity_player_sorting) {
 
-open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
+    internal val playerSearchViewModel: SKPlayerSearchViewModel by viewModel()
 
-    internal val onboardingViewModel: SKOnboardingViewModel by viewModel()
-
-    private lateinit var sceneNewPlayer: Scene
-    private lateinit var scenePlayerList: Scene
-    private lateinit var playerListAdapter: PlayerListAdapter
     private lateinit var sortPlayerListAdapter: SortPlayerListAdapter
-    private var buttonAddPlayer: Button? = null
-    private var hasAtLeastOneGame = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = getString(R.string.first_game)
+        intent.extras?.getLongArray(EXTRA_IS_ONBOARDING)?.let {
+            toolbar.title = getString(R.string.first_game)
+        } ?: run {
+            toolbar.title = "Nouvelle partie"
+        }
+        toolbar.subtitle = "Ordonner les joueurs"
 
+        initToolbar(true)
         initUI()
         initObservers()
 
-        onboardingViewModel.loadOnboarding()
+        intent.extras?.getLongArray(EXTRA_PLAYERS_IDS)?.let {
+            playerSearchViewModel.loadPlayers(it.toList())
+        }
     }
 
     private fun initObservers() {
-        onboardingViewModel.events.observe(this, { event ->
+        playerSearchViewModel.events.observe(this, { event ->
             event?.apply {
                 Timber.v("event -> ${this::class.java.simpleName}")
                 when (this) {
-                    is EventGameAtLeastOne -> {
-                        this@SKOnboardingActivity.hasAtLeastOneGame = hasAtLeastOneGame
-                    }
-                    is EventPlayerCreated -> {
-                        TransitionManager.go(scenePlayerList)
+                    is EventPlayerList -> {
+                        Timber.d("players count: ${players.size}")
+                        sortPlayerListAdapter.setAllItems(players)
                     }
                     is EventGameCreated -> {
                         startActivity(
                             SKGameActivity.getIntent(
-                                this@SKOnboardingActivity, gameId
+                                this@SKPlayerSortingActivity, gameId
                             )
                         )
                     }
                     is EventError -> toolbar.showSnackBarError(
                         getString(messageResId)
                     )
+                    is EventErrorWithArg -> toolbar.showSnackBarError(
+                        getString(messageResId, arg)
+                    )
                     else -> {
                     }
                 }
             }
         })
-
-        onboardingViewModel.players.observe(this, { players ->
-            playerListAdapter.setAllItems(players)
-            buttonAddPlayer?.visibility = if (players.size < 6) VISIBLE else GONE
-            sortPlayerListAdapter.setAllItems(players)
-        })
-    }
-
-    private fun initSceneNewPlayer() {
-        sceneNewPlayer =
-            Scene.getSceneForLayout(layoutOnboarding, R.layout.scene_onboarding_new_user, this)
-
-        sceneNewPlayer.setEnterAction {
-            val editTextNewPlayer =
-                sceneNewPlayer.sceneRoot.findViewById<EditText>(R.id.editTextOnboardingNewPlayer)
-            editTextNewPlayer.setFocus(this)
-            editTextNewPlayer.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    editTextNewPlayer.resetFocus()
-                    onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
-                }
-                true
-            }
-
-            val buttonCreatePlayer =
-                sceneNewPlayer.sceneRoot.findViewById<Button>(R.id.buttonOnboardingCreatePlayer)
-            buttonCreatePlayer.setOnClickListener {
-                editTextNewPlayer.resetFocus()
-                onboardingViewModel.createPlayer(editTextNewPlayer.text.toString().trim())
-            }
-        }
-    }
-
-    private fun initScenePlayerList() {
-        playerListAdapter = PlayerListAdapter(
-            this, listOf()
-        )
-        scenePlayerList = Scene.getSceneForLayout(
-            layoutOnboarding, R.layout.scene_onboarding_player_list, this
-        )
-        scenePlayerList.setEnterAction {
-            val recyclerViewPlayers =
-                scenePlayerList.sceneRoot.findViewById<RecyclerView>(R.id.recyclerViewOnboarding)
-            recyclerViewPlayers.layoutManager = LinearLayoutManager(this)
-            recyclerViewPlayers.itemAnimator = DefaultItemAnimator()
-            recyclerViewPlayers.addItemDecoration(SBVerticalSpacingItemDecoration(32))
-            recyclerViewPlayers.adapter = playerListAdapter
-
-            buttonAddPlayer =
-                scenePlayerList.sceneRoot.findViewById(R.id.buttonOnboardingAddPlayer)
-            buttonAddPlayer?.setOnClickListener {
-                if (hasAtLeastOneGame) {
-                    startActivity(
-                        SKPlayerSearchActivity.getIntent(
-                            this@SKOnboardingActivity
-                        )
-                    )
-                } else {
-                    TransitionManager.go(sceneNewPlayer)
-                }
-            }
-
-            val buttonPlayGame =
-                scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingPlayGame)
-            buttonPlayGame.setOnClickListener {
-                val playerIds = playerListAdapter.getElements().map { it.id }
-                SKPlayerSortingActivity.getIntentForOnboarding(this, playerIds)
-            }
-        }
     }
 
     private fun initUI() {
-        initSceneNewPlayer()
-        initScenePlayerList()
 
-        buttonOnboardingStart.setOnClickListener {
-            if (hasAtLeastOneGame) {
-                startActivity(
-                    SKPlayerSearchActivity.getIntent(
-                        this@SKOnboardingActivity
-                    )
-                )
-            } else {
-                TransitionManager.go(sceneNewPlayer)
-            }
+        recyclerViewSortPlayer.layoutManager = LinearLayoutManager(this)
+        recyclerViewSortPlayer.itemAnimator = DefaultItemAnimator()
+        recyclerViewSortPlayer.addItemDecoration(SBVerticalSpacingItemDecoration(32))
+        sortPlayerListAdapter = SortPlayerListAdapter(this, listOf())
+        val callback: ItemTouchHelper.Callback = PlayerMoveCallback(sortPlayerListAdapter)
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(recyclerViewSortPlayer)
+        recyclerViewSortPlayer.adapter = sortPlayerListAdapter
+
+        buttonOnboardingValidateOrder.setOnClickListener {
+            playerSearchViewModel.createGame(sortPlayerListAdapter.getElements())
         }
     }
 
     companion object {
-        fun getIntent(context: Context): Intent {
+
+        private const val EXTRA_PLAYERS_IDS = "EXTRA_PLAYERS_IDS"
+        private const val EXTRA_IS_ONBOARDING = "EXTRA_IS_ONBOARDING"
+
+        fun getIntent(context: Context, playerIds: List<Long>): Intent {
             return Intent(
-                context, SKOnboardingActivity::class.java
-            ).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-        }
-    }
-
-    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
-        SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.item_onboarding_player, parent, false
-                )
-            )
+                context, SKPlayerSortingActivity::class.java
+            ).putExtra(EXTRA_PLAYERS_IDS, playerIds.toLongArray())
+                .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         }
 
-        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
-
-            override fun bind(context: Context, item: SKPlayer) {
-                itemView.textViewPlayerName.text = item.name
-            }
+        fun getIntentForOnboarding(context: Context, playerIds: List<Long>): Intent {
+            return Intent(
+                context, SKPlayerSortingActivity::class.java
+            ).putExtra(EXTRA_PLAYERS_IDS, playerIds.toLongArray())
+                .putExtra(EXTRA_IS_ONBOARDING, true).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
         }
     }
 

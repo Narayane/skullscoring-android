@@ -53,4 +53,9 @@ open class SKPlayerSearchViewModel(
             _events.value = EventGameCreated(game.id)
         }
     }
+
+    open fun loadPlayers(playerIds: List<Long>) = viewModelScope.launch {
+        val players = playerRepository.getPlayers(*playerIds.toLongArray())
+        _events.value = EventPlayerList(players)
+    }
 }

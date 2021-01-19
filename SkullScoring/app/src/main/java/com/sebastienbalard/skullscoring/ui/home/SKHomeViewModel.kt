@@ -35,7 +35,11 @@ open class SKHomeViewModel(
     }*/
 
     open fun loadGames() = viewModelScope.launch {
-        _events.postValue(EventGameList(gameRepository.loadGames()))
+        val games = gameRepository.loadGames()
+        games.forEach {
+            it.players = playerRepository.findPlayerByGame(it.id)
+        }
+        _events.postValue(EventGameList(games))
     }
 
     open fun deleteGame(vararg games: SKGame) = viewModelScope.launch {

@@ -112,4 +112,12 @@ open class SKPlayerRepository(
     open suspend fun updatePlayer(player: SKPlayer) {
         playerDao.update(player)
     }
+
+    open suspend fun getPlayers(vararg playerId: Long): List<SKPlayer> {
+        return playerId.map { id ->
+            playerDao.findById(id).apply {
+                groups = playerGroupJoinDao.findGroupByPlayer(id)
+            }
+        }
+    }
 }
