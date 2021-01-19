@@ -19,12 +19,15 @@ package com.sebastienbalard.skullscoring.ui.home
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.models.SKGame
+import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
+import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
 import com.sebastienbalard.skullscoring.ui.*
 import kotlinx.coroutines.launch
 
 open class SKHomeViewModel(
-    private val gameRepository: SKGameRepository
+    private val gameRepository: SKGameRepository,
+    private val playerRepository: SKPlayerRepository
 ) : SBViewModel() {
 
     /*open fun loadGame(game: SKGame) = viewModelScope.launch {
@@ -44,5 +47,11 @@ open class SKHomeViewModel(
         } else {
             _events.postValue(EventGameList(gameRepository.loadGames()))
         }
+    }
+
+    open fun createGameWithPlayers(gameId: Long) = viewModelScope.launch {
+        val players = playerRepository.findPlayerByGame(gameId)
+        val game = gameRepository.createGame(players)
+        _events.value = EventGameCreated(game.id)
     }
 }

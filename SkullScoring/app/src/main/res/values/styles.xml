@@ -1,5 +1,23 @@
 <resources>
 
+    <style name="SKAppTheme.AlertDialog.TitleTextStyle" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/textSizeSubhead</item>
+    </style>
+    <style name="SKAppTheme.AlertDialog.BodyTextStyle" parent="MaterialAlertDialog.MaterialComponents.Body.Text">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/textSizeBody</item>
+    </style>
+    <style name="SKAppTheme.AlertDialog.PositiveButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">@color/white</item>
+    </style>
+    <style name="SKAppTheme.AlertDialog.NegativeButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">@color/white</item>
+    </style>
+
     <style name="SKAppTheme.Widget.Snackbar" parent="@style/Widget.MaterialComponents.Snackbar">
         <item name="android:layout_margin">@dimen/marginM</item>
     </style>

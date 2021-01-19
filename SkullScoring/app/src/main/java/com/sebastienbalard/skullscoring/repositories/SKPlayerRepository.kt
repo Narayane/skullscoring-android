@@ -45,8 +45,8 @@ open class SKPlayerRepository(
         return playerDao.findByName(name)
     }
 
-    open suspend fun findPlayerByGame(game: SKGame): List<SKPlayer> {
-        return gamePlayerJoinDao.findPlayerByGame(game.id)
+    open suspend fun findPlayerByGame(gameId: Long): List<SKPlayer> {
+        return gamePlayerJoinDao.findPlayerByGame(gameId)
     }
 
     open suspend fun findAll(): List<SKPlayer> {
@@ -57,7 +57,7 @@ open class SKPlayerRepository(
         return players
     }
 
-    open suspend fun createPlayersForGame(players: List<SKPlayer>, gameId: Long) {
+    open suspend fun addPlayersToGame(players: List<SKPlayer>, gameId: Long) {
         gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(gameId, it.id, players.indexOf(it)) }
             .toTypedArray())
     }

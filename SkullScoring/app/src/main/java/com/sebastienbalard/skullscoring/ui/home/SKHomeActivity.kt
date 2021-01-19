@@ -18,26 +18,25 @@ package com.sebastienbalard.skullscoring.ui.home
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
 import com.sebastienbalard.skullscoring.extensions.showSnackBarError
 import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.ui.EventErrorPluralWithArg
+import com.sebastienbalard.skullscoring.ui.EventGameCreated
 import com.sebastienbalard.skullscoring.ui.EventGameList
-import com.sebastienbalard.skullscoring.ui.SBActivity
 import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchActivity
-import com.sebastienbalard.skullscoring.ui.settings.SKAboutActivity
-import com.sebastienbalard.skullscoring.ui.settings.SKSettingsActivity
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
@@ -88,6 +87,13 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
                             pluralMessageResId, arg as Int, arg
                         )
                     )
+                    is EventGameCreated -> {
+                        startActivity(
+                            SKGameActivity.getIntent(
+                                this@SKHomeActivity, gameId
+                            )
+                        )
+                    }
                     else -> {
                     }
                 }
@@ -182,6 +188,21 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
             mode: ActionMode?, item: MenuItem?
         ): Boolean {
             when (item?.itemId) {
+                R.id.menu_home_contextual_copy -> {
+                    MaterialAlertDialogBuilder(this@SKHomeActivity).setTitle("Alerte")
+                        .setMessage("Souhaitez-vous créer une nouvelle partie avec les mêmes joueurs que celle sélectionnée ?")
+                        .setPositiveButton("Créer") { dialog, _ ->
+                            homeViewModel.createGameWithPlayers(
+                                gameListAdapter.getSelectedItems().first().id
+                            )
+                            dialog.dismiss()
+                            actionMode?.finish()
+                        }.setNegativeButton(
+                            "Annuler"
+                        ) { dialog, _ ->
+                            dialog.dismiss()
+                        }.show()
+                }
                 R.id.menu_home_contextual_delete -> {
                     homeViewModel.deleteGame(
                         *(gameListAdapter.getSelectedItems().toTypedArray())

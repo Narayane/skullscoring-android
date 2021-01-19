@@ -54,7 +54,7 @@ open class SKGameRepository(
         val newGame = SKGame()
         gameDao.insert(newGame)
         val savedGame = gameDao.findByDate(newGame.startDate)
-        playerRepository.createPlayersForGame(players, savedGame.id)
+        playerRepository.addPlayersToGame(players, savedGame.id)
         turnRepository.createTurnsForGame(savedGame.id, players)
         return savedGame
     }

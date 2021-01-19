@@ -36,6 +36,7 @@
         <item name="actionModeCloseDrawable">@drawable/ic_close_24dp</item>
         <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="snackbarStyle">@style/SKAppTheme.Widget.Snackbar</item>
+        <item name="materialAlertDialogTheme">@style/SKAppTheme.AlertDialog</item>
         <!--<item name="popupMenuStyle">@style/SKAppTheme.Popup</item>
         <item name="actionOverflowMenuStyle">@style/SKAppTheme.Popup.Overflow</item>-->
     </style>
@@ -47,11 +48,11 @@
         <item name="actionMenuTextColor">@android:color/white</item>
     </style>
 
-    <!--<style name="SKAppTheme.Popup" parent="@style/Widget.MaterialComponents.PopupMenu">
-        <item name="android:popupBackground">@color/colorPrimary</item>
+    <style name="SKAppTheme.AlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/colorPrimary</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/SKAppTheme.AlertDialog.TitleTextStyle</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/SKAppTheme.AlertDialog.BodyTextStyle</item>
+        <item name="buttonBarPositiveButtonStyle">@style/SKAppTheme.AlertDialog.PositiveButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/SKAppTheme.AlertDialog.NegativeButtonStyle</item>
     </style>
-
-    <style name="SKAppTheme.Popup.Overflow" parent="@style/Widget.MaterialComponents.PopupMenu.Overflow">
-        <item name="android:popupBackground">@color/colorPrimary</item>
-    </style>-->
 </resources>

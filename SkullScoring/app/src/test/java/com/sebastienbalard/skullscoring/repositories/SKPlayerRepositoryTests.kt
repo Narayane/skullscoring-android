@@ -69,7 +69,7 @@ class SKPlayerRepositoryTests : KoinTest {
             listOf(repository.createPlayer("Sébastien"), repository.createPlayer("Arnaud"))
         val savedGame = gameRepository.createGame(savedPlayers)
 
-        val players = repository.findPlayerByGame(savedGame)
+        val players = repository.findPlayerByGame(savedGame.id)
         players shouldBeEqualTo savedPlayers
 
         gameRepository.deleteGame(savedGame)

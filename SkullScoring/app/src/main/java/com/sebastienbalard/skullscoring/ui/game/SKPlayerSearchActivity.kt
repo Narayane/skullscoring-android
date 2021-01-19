@@ -25,12 +25,14 @@ import android.view.View.VISIBLE
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.Scene
 import androidx.transition.TransitionManager
+import com.google.android.material.chip.Chip
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.resetFocus
 import com.sebastienbalard.skullscoring.extensions.setFocus
@@ -41,7 +43,9 @@ import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import com.sebastienbalard.skullscoring.ui.widgets.SBVerticalSpacingItemDecoration
+import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.activity_player_search.*
+import kotlinx.android.synthetic.main.item_player_search.*
 import kotlinx.android.synthetic.main.item_player_search.view.*
 import kotlinx.android.synthetic.main.item_sort_player.view.*
 import kotlinx.android.synthetic.main.widget_appbar.*
@@ -279,7 +283,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
         }
     }
 
-    private class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
+    private inner class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
         SBRecyclerViewMultipleSelectionAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(
             context, players
         ) {
@@ -297,10 +301,22 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
             viewHolder.isChecked(selectedPositions.get(position, false))
         }
 
-        class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+        inner class ViewHolder(itemView: View) :
+            SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, item: SKPlayer) {
                 itemView.textViewPlayerSearchName.text = item.name
+                itemView.layoutPlayerSearchChipGroup.removeAllViews()
+                item.groups.forEach {
+                    val chip = Chip(this@SKPlayerSearchActivity).apply {
+                        id = ViewCompat.generateViewId()
+                        text = it.name
+                        setChipBackgroundColorResource(R.color.colorPrimary)
+                        isCloseIconVisible = false
+                        setTextColor(getColor(R.color.white))
+                    }
+                    itemView.layoutPlayerSearchChipGroup.addView(chip)
+                }
             }
 
             fun isChecked(value: Boolean) {

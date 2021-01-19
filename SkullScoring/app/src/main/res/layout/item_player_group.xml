@@ -9,26 +9,28 @@
     android:background="@drawable/ripple"
     android:clickable="true"
     android:focusable="true"
-    android:gravity="center_vertical"
     android:paddingStart="@dimen/marginM"
     android:paddingEnd="@dimen/marginM"
+    android:gravity="center_vertical"
     tools:background="@color/colorPrimaryDark">
 
     <TextView
         android:id="@+id/textViewPlayerGroupName"
-        android:layout_width="100dp"
+        android:layout_width="80dp"
         android:layout_height="48dp"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="sans-serif-medium"
         tools:text="Sébastien" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/layoutPlayerGroupChipGroup"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/marginM"
+        android:layout_marginStart="@dimen/marginS"
+        app:layout_constraintStart_toEndOf="@id/textViewPlayerGroupName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
