@@ -53,6 +53,7 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
 
     private lateinit var gameListAdapter: GameListAdapter
     private var actionMode: ActionMode? = null
+    private var menuItemCopy: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +114,7 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
                 gameListAdapter.getSelectedItemsCount()
             )
         }
+        menuItemCopy?.isVisible = gameListAdapter.getSelectedItemsCount() < 2
     }
 
     private fun initUI() {
@@ -175,6 +177,7 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
             mode: ActionMode?, menu: Menu?
         ): Boolean {
             mode?.menuInflater?.inflate(R.menu.menu_home_contextual, menu)
+            menuItemCopy = menu?.findItem(R.id.menu_home_contextual_copy)
             actionMode = mode
             return true
         }
@@ -217,6 +220,7 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
 
         override fun onDestroyActionMode(mode: ActionMode?) {
             gameListAdapter.clearSelection()
+            menuItemCopy = null
             actionMode = null
         }
     }
