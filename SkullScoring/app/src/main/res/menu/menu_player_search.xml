@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
+    <!--<item
         android:id="@+id/menu_player_search_item_add"
         android:orderInCategory="100"
         android:icon="@drawable/ic_new_person_24dp"
         app:showAsAction="ifRoom"
-        android:title="Ajouter un joueur" />
+        android:title="Ajouter un joueur" />-->
+
+    <!--<item
+        android:id="@+id/menu_player_search_item_search"
+        android:icon="@drawable/ic_search_24dp"
+        android:title="Filtrer par groupe"
+        app:actionViewClass="androidx.appcompat.widget.SearchView"
+        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/menu_player_search_item_validate"

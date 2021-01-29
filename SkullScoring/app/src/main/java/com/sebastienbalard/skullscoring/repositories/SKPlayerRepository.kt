@@ -19,10 +19,12 @@ package com.sebastienbalard.skullscoring.repositories
 import com.sebastienbalard.skullscoring.data.SKGamePlayerJoinDao
 import com.sebastienbalard.skullscoring.data.SKPlayerDao
 import com.sebastienbalard.skullscoring.data.SKPlayerGroupJoinDao
-import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKGamePlayerJoin
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import timber.log.Timber
+import java.text.Collator
+import java.util.*
+import kotlin.Comparator
 import kotlin.math.abs
 
 open class SKPlayerRepository(
@@ -50,7 +52,9 @@ open class SKPlayerRepository(
     }
 
     open suspend fun findAll(): List<SKPlayer> {
-        val players = playerDao.getAll().sortedBy { it.name }
+        val players = playerDao.getAll().sortedWith(compareBy({ s1, s2 ->
+            Collator.getInstance(Locale.getDefault()).compare(s1, s2)
+        }) { it.name })
         players.forEach { player ->
             player.groups = playerGroupJoinDao.findGroupByPlayer(player.id)
         }
@@ -58,8 +62,11 @@ open class SKPlayerRepository(
     }
 
     open suspend fun addPlayersToGame(players: List<SKPlayer>, gameId: Long) {
-        gamePlayerJoinDao.insert(*players.map { SKGamePlayerJoin(gameId, it.id, players.indexOf(it)) }
-            .toTypedArray())
+        gamePlayerJoinDao.insert(*players.map {
+            SKGamePlayerJoin(
+                gameId, it.id, players.indexOf(it)
+            )
+        }.toTypedArray())
     }
 
     open suspend fun getPlayersWithScore(

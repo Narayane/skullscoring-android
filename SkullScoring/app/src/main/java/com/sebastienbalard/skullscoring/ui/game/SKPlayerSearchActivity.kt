@@ -79,14 +79,14 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         Timber.v("onCreateOptionsMenu")
         menuInflater.inflate(R.menu.menu_player_search, menu)
-        menuItemAdd = menu.findItem(R.id.menu_player_search_item_add)
+        //menuItemAdd = menu.findItem(R.id.menu_player_search_item_add)
         menuItemValidate = menu.findItem(R.id.menu_player_search_item_validate)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_player_search_item_add -> {
+            /*R.id.menu_player_search_item_add -> {
                 if (playerListAdapter.getSelectedItemsCount() < 6) {
                     showNewPlayerScene()
                 } else {
@@ -95,7 +95,7 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
                     )
                 }
                 true
-            }
+            }*/
             R.id.menu_player_search_item_validate -> {
                 if (playerListAdapter.getSelectedItemsCount() < 2) {
                     toolbar.showSnackBarError(
