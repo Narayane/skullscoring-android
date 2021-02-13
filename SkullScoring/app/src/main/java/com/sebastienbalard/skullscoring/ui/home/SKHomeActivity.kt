@@ -240,11 +240,11 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
             super.onBindViewHolder(viewHolder, position)
             if (getSelectedItemsPositions().contains(position)) {
                 viewHolder.itemView.background = ContextCompat.getDrawable(
-                    this@GameListAdapter.context, R.color.colorSecondary
+                    context, R.color.colorSecondary
                 )
             } else {
                 viewHolder.itemView.background =
-                    ContextCompat.getDrawable(this@GameListAdapter.context, R.drawable.ripple)
+                    ContextCompat.getDrawable(context, R.drawable.ripple)
             }
         }
 

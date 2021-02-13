@@ -42,11 +42,11 @@ open class SKHomeViewModel(
         _events.postValue(EventGameList(games))
     }
 
-    open fun deleteGame(vararg games: SKGame) = viewModelScope.launch {
-        val count = gameRepository.deleteGame(*games)
+    open fun deleteGame(vararg game: SKGame) = viewModelScope.launch {
+        val count = gameRepository.deleteGame(*game)
 
-        if (count != games.size) {
-            val delta = games.size - count
+        if (count != game.size) {
+            val delta = game.size - count
             _events.postValue(EventErrorPluralWithArg(R.plurals.plural_error_game_not_deleted, delta))
         } else {
             _events.postValue(EventGameList(gameRepository.loadGames()))

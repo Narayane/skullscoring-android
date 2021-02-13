@@ -44,4 +44,7 @@ data class SKPlayer(
 
     @Ignore
     lateinit var groups: List<SKGroup>
+
+    @Ignore
+    var isDeletable: Boolean = false
 }

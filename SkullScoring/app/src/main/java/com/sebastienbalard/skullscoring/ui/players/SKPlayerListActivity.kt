@@ -20,6 +20,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,16 +28,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.chip.Chip
 import com.sebastienbalard.skullscoring.R
 import com.sebastienbalard.skullscoring.extensions.formatDateTime
+import com.sebastienbalard.skullscoring.extensions.showSnackBarError
+import com.sebastienbalard.skullscoring.extensions.showSnackBarWarning
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.ui.EventPlayerList
 import com.sebastienbalard.skullscoring.ui.SBBottomNavigationViewActivity
 import com.sebastienbalard.skullscoring.ui.game.SKGameActivity
 import com.sebastienbalard.skullscoring.ui.game.SKPlayerSearchViewModel
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewAdapter
+import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewMultipleSelectionAdapter
 import com.sebastienbalard.skullscoring.ui.widgets.SBRecyclerViewOnItemTouchListener
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.activity_player_list.*
 import kotlinx.android.synthetic.main.item_player_group.view.*
+import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -45,6 +50,7 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
     internal val playerSearchViewModel: SKPlayerSearchViewModel by viewModel()
 
     private lateinit var playerListAdapter: PlayerListAdapter
+    private var actionMode: ActionMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +87,19 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
         })
     }
 
+    private fun performSelection(position: Int) {
+        playerListAdapter.toggleSelection(position)
+        if (playerListAdapter.getSelectedItemsCount() == 0) {
+            actionMode?.finish()
+        } else {
+            actionMode?.title = resources.getQuantityString(
+                R.plurals.plural_player_selected,
+                playerListAdapter.getSelectedItemsCount(),
+                playerListAdapter.getSelectedItemsCount()
+            )
+        }
+    }
+
     private fun initUI() {
         playerListAdapter = PlayerListAdapter(this, listOf())
         recycleViewPlayers.layoutManager = LinearLayoutManager(this)
@@ -94,11 +113,32 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
                     override fun onClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
                         Timber.v("onClick")
                         val selectedPlayer = playerListAdapter.getElements()[position]
-                        startActivity(SKPlayerActivity.getIntentToEdit(this@SKPlayerListActivity, selectedPlayer.id))
+                        actionMode?.let {
+                            if (selectedPlayer.isDeletable) {
+                                performSelection(position)
+                            } else {
+                                toolbar.showSnackBarWarning(getString(R.string.warning_player_not_deletable))
+                            }
+                        } ?: run {
+                            startActivity(
+                                SKPlayerActivity.getIntentToEdit(
+                                    this@SKPlayerListActivity, selectedPlayer.id
+                                )
+                            )
+                        }
                     }
 
                     override fun onLongClick(viewHolder: RecyclerView.ViewHolder, position: Int) {
                         Timber.v("onLongClick")
+                        val selectedPlayer = playerListAdapter.getElements()[position]
+                        if (selectedPlayer.isDeletable) {
+                            if (actionMode == null) {
+                                startActionMode(actionModeCallback)
+                            }
+                            performSelection(position)
+                        } else {
+                            toolbar.showSnackBarWarning(getString(R.string.warning_player_not_deletable))
+                        }
                     }
 
                     override fun isEnabled(position: Int): Boolean {
@@ -120,8 +160,48 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
         }
     }
 
+    private val actionModeCallback = object : ActionMode.Callback {
+
+        override fun onCreateActionMode(
+            mode: ActionMode?, menu: Menu?
+        ): Boolean {
+            mode?.menuInflater?.inflate(R.menu.menu_player_list_contextual, menu)
+            actionMode = mode
+            return true
+        }
+
+        override fun onPrepareActionMode(
+            mode: ActionMode?, menu: Menu?
+        ): Boolean {
+            return false
+        }
+
+        override fun onActionItemClicked(
+            mode: ActionMode?, item: MenuItem?
+        ): Boolean {
+            when (item?.itemId) {
+                R.id.menu_player_list_contextual_delete -> {
+                    playerSearchViewModel.deletePlayer(
+                        *(playerListAdapter.getSelectedItems().toTypedArray())
+                    )
+                    actionMode?.finish()
+                }
+                else -> {
+                }
+            }
+            return true
+        }
+
+        override fun onDestroyActionMode(mode: ActionMode?) {
+            playerListAdapter.clearSelection()
+            actionMode = null
+        }
+    }
+
     private inner class PlayerListAdapter(context: Context, players: List<SKPlayer>) :
-        SBRecyclerViewAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(context, players) {
+        SBRecyclerViewMultipleSelectionAdapter<SKPlayer, PlayerListAdapter.ViewHolder>(
+            context, players
+        ) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -131,7 +211,20 @@ class SKPlayerListActivity : SBBottomNavigationViewActivity(R.layout.activity_pl
             )
         }
 
-        inner class ViewHolder(itemView: View) : SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
+        override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            super.onBindViewHolder(viewHolder, position)
+            if (getSelectedItemsPositions().contains(position)) {
+                viewHolder.itemView.background = ContextCompat.getDrawable(
+                    context, R.color.colorSecondary
+                )
+            } else {
+                viewHolder.itemView.background =
+                    ContextCompat.getDrawable(context, R.drawable.ripple)
+            }
+        }
+
+        inner class ViewHolder(itemView: View) :
+            SBRecyclerViewAdapter.ViewHolder<SKPlayer>(itemView) {
 
             override fun bind(context: Context, item: SKPlayer) {
                 itemView.textViewPlayerGroupName.text = item.name

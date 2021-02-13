@@ -60,7 +60,6 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
     private lateinit var sceneNewPlayer: Scene
     private lateinit var scenePlayerList: Scene
     private lateinit var playerListAdapter: PlayerListAdapter
-    private lateinit var sortPlayerListAdapter: SortPlayerListAdapter
     private var buttonAddPlayer: Button? = null
     private var hasAtLeastOneGame = false
 
@@ -105,7 +104,6 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
         onboardingViewModel.players.observe(this, { players ->
             playerListAdapter.setAllItems(players)
             buttonAddPlayer?.visibility = if (players.size < 6) VISIBLE else GONE
-            sortPlayerListAdapter.setAllItems(players)
         })
     }
 
@@ -167,7 +165,7 @@ open class SKOnboardingActivity : SBActivity(R.layout.activity_onboarding) {
                 scenePlayerList.sceneRoot.findViewById<Button>(R.id.buttonOnboardingPlayGame)
             buttonPlayGame.setOnClickListener {
                 val playerIds = playerListAdapter.getElements().map { it.id }
-                SKPlayerSortingActivity.getIntentForOnboarding(this, playerIds)
+                startActivity(SKPlayerSortingActivity.getIntentForOnboarding(this, playerIds))
             }
         }
     }

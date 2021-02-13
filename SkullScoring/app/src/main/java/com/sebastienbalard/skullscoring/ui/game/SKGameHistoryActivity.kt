@@ -77,7 +77,11 @@ open class SKGameHistoryActivity : SBActivity(R.layout.activity_game_history) {
                 when (this) {
                     is EventGame -> {
                         refreshToolbar(game)
-                        selectedTurn = (game.currentTurnNumber - 1)
+                        selectedTurn = if (game.isEnded) {
+                            game.currentTurnNumber
+                        } else {
+                            game.currentTurnNumber - 1
+                        }
                         turns = (selectedTurn!! downTo 1).toList().toIntArray()
                         val adapter = ArrayAdapter(this@SKGameHistoryActivity,
                             android.R.layout.simple_spinner_dropdown_item,

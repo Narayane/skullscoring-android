@@ -18,6 +18,7 @@ package com.sebastienbalard.skullscoring.ui.game
 
 import androidx.lifecycle.viewModelScope
 import com.sebastienbalard.skullscoring.R
+import com.sebastienbalard.skullscoring.models.SKGame
 import com.sebastienbalard.skullscoring.models.SKPlayer
 import com.sebastienbalard.skullscoring.repositories.SKGameRepository
 import com.sebastienbalard.skullscoring.repositories.SKPlayerRepository
@@ -57,5 +58,16 @@ open class SKPlayerSearchViewModel(
     open fun loadPlayers(playerIds: List<Long>) = viewModelScope.launch {
         val players = playerRepository.getPlayers(*playerIds.toLongArray())
         _events.value = EventPlayerList(players)
+    }
+
+    open fun deletePlayer(vararg player: SKPlayer) = viewModelScope.launch {
+        val count = playerRepository.deletePlayer(*player)
+
+        if (count != player.size) {
+            val delta = player.size - count
+            _events.postValue(EventErrorPluralWithArg(R.plurals.plural_error_player_not_deleted, delta))
+        } else {
+            _events.postValue(EventPlayerList(playerRepository.findAll()))
+        }
     }
 }

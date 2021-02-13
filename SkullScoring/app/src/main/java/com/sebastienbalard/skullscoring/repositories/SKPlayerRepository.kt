@@ -39,8 +39,8 @@ open class SKPlayerRepository(
         return playerDao.findByName(name)!!
     }
 
-    open suspend fun deletePlayer(vararg player: SKPlayer) {
-        playerDao.delete(*player)
+    open suspend fun deletePlayer(vararg player: SKPlayer): Int {
+        return playerDao.delete(*player)
     }
 
     open suspend fun findPlayerByName(name: String): SKPlayer? {
@@ -57,6 +57,7 @@ open class SKPlayerRepository(
         }) { it.name })
         players.forEach { player ->
             player.groups = playerGroupJoinDao.findGroupByPlayer(player.id)
+            player.isDeletable = gamePlayerJoinDao.findGameByPlayer(player.id).isEmpty()
         }
         return players
     }
