@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/marginM"
-            android:text="Nouvelle partie"
+            android:text="@string/new_game"
             app:icon="@drawable/ic_add_24dp" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

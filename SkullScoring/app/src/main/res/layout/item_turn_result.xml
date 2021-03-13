@@ -49,7 +49,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/marginM"
-                app:srcCompat="@drawable/ic_arrow_24dp" />
+                app:srcCompat="@drawable/ic_arrow_24dp"
+                android:contentDescription="@null" />
         </LinearLayout>
 
 
@@ -71,7 +72,7 @@
                 android:id="@+id/checkboxTurnHasSkullKing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Le Skull King prend des pirates"
+                android:text="@string/item_turn_result_skull_king"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toTopOf="@+id/checkboxTurnHasMarmaid"
                 app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +99,7 @@
                 android:id="@+id/checkboxTurnHasMarmaid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="La Mermaid prend le Skull King"
+                android:text="@string/item_turn_result_mermaid"
                 android:textColor="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

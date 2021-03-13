@@ -76,9 +76,9 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
 
     private fun openCreateGroupBottomsheet() {
         MaterialDialog(this, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-            title(null, "Nouveau groupe")
+            title(null, getString(R.string.new_group))
             customView(R.layout.widget_bottomsheet_create_group)
-            positiveButton(null, "Créer") { dialog ->
+            positiveButton(null, getString(R.string.create)) { dialog ->
                 val editTextGroupName: EditText =
                     dialog.getCustomView().findViewById(R.id.editTextGroupName)
                 displayedGroupStream.value?.let { displayedGroups ->
@@ -92,7 +92,7 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
                     }
                 }
             }
-            negativeButton(null, "Annuler")
+            negativeButton(null, getString(R.string.cancel))
         }
     }
 
@@ -246,7 +246,8 @@ class SKPlayerActivity : SBActivity(R.layout.activity_player) {
         }
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            val view: TextView = convertView as TextView? ?: LayoutInflater.from(context).inflate(android.R.layout.simple_spinner_dropdown_item, parent, false) as TextView
+            val view: TextView = convertView as TextView? ?: LayoutInflater.from(context)
+                .inflate(android.R.layout.simple_spinner_dropdown_item, parent, false) as TextView
             view.text = filteredItems[position].name
             return view
         }

@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/marginM"
-        android:text="Annonces"
+        android:text="@string/declarations"
         app:icon="@drawable/ic_bet_24dp" />
 
     <com.leinardi.android.speeddial.SpeedDialView

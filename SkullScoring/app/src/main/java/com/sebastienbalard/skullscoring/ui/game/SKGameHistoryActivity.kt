@@ -86,7 +86,11 @@ open class SKGameHistoryActivity : SBActivity(R.layout.activity_game_history) {
                         val adapter = ArrayAdapter(this@SKGameHistoryActivity,
                             android.R.layout.simple_spinner_dropdown_item,
                             arrayListOf<String>().apply {
-                                addAll(turns.map { "Tour $it" })
+                                addAll(turns.map {
+                                    getString(
+                                        R.string.turn, it
+                                    )
+                                })
                             })
                         spinnerTurn.setAdapter(adapter)
                         spinnerTurn.setText(spinnerTurn.adapter.getItem(0).toString(), false)
@@ -112,8 +116,9 @@ open class SKGameHistoryActivity : SBActivity(R.layout.activity_game_history) {
     }
 
     private fun refreshToolbar(game: SKGame) {
-        toolbar.title = "Partie du ${game.startDate.formatDateTime(this@SKGameHistoryActivity)}"
-        toolbar.subtitle = "Historique des tours"
+        toolbar.title =
+            getString(R.string.game, game.startDate.formatDateTime(this@SKGameHistoryActivity))
+        toolbar.subtitle = getString(R.string.turn_history)
     }
 
     private fun initUI() {
@@ -163,8 +168,9 @@ open class SKGameHistoryActivity : SBActivity(R.layout.activity_game_history) {
 
             override fun bind(context: Context, item: SKTurnPlayerJoin) {
                 itemView.textViewTurnHistoryPlayerName.text = item.player.name
-                itemView.textViewTurnHistoryDeclaration.text = "Annonce : ${item.declaration ?: 0}"
-                var resultLabel = "Resultat : ${item.result ?: 0}"
+                itemView.textViewTurnHistoryDeclaration.text =
+                    getString(R.string.declaration_value, item.declaration ?: 0)
+                var resultLabel = getString(R.string.result_value, item.result ?: 0)
                 var turnScore = 0
                 this@SKGameHistoryActivity.selectedTurn?.let { turnNumber ->
                     item.declaration?.let { declaration ->

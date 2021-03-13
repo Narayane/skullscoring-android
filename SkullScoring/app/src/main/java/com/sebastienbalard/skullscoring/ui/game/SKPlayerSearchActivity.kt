@@ -66,8 +66,8 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Timber.v("onCreate")
-        toolbar.title = "Nouvelle partie"
-        toolbar.subtitle = "Sélectionner les joueurs"
+        toolbar.title = getString(R.string.new_game)
+        toolbar.subtitle = getString(R.string.select_players)
 
         initToolbar(true)
         initUI()
@@ -159,14 +159,14 @@ class SKPlayerSearchActivity : SBActivity(R.layout.activity_player_search) {
     }
 
     private fun showPlayerListScene() {
-        toolbar.subtitle = "Sélectionner les joueurs"
+        toolbar.subtitle = getString(R.string.select_players)
         menuItemAdd.isVisible = true
         menuItemValidate.isVisible = true
         TransitionManager.go(scenePlayerList)
     }
 
     private fun showNewPlayerScene() {
-        toolbar.subtitle = "Ajouter un joueur"
+        toolbar.subtitle = getString(R.string.add_player)
         menuItemAdd.isVisible = false
         menuItemValidate.isVisible = false
         TransitionManager.go(sceneNewPlayer)

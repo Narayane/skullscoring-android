@@ -41,7 +41,7 @@ open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
 
     private fun openDataPermissionScreen() {
         startActivity(
-            SBDataPermissionActivity.getIntent(this@SKSplashActivity)
+            SBDataPermissionActivity.getIntent(this)
         )
     }
 
@@ -50,7 +50,7 @@ open class SKSplashActivity : SBActivity(R.layout.activity_splash) {
             state?.let {
                 Timber.v("state -> ${it::class.java.simpleName}")
                 when (it) {
-                    is StateSplashConfig -> textViewTitle.text = "Configuration"
+                    is StateSplashConfig -> textViewTitle.text = getString(R.string.configuration)
                     else -> {
                     }
                 }

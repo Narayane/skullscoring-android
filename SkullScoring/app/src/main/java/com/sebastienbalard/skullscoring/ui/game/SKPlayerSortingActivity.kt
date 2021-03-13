@@ -55,9 +55,9 @@ class SKPlayerSortingActivity : SBActivity(R.layout.activity_player_sorting) {
         intent.extras?.getLongArray(EXTRA_IS_ONBOARDING)?.let {
             toolbar.title = getString(R.string.first_game)
         } ?: run {
-            toolbar.title = "Nouvelle partie"
+            toolbar.title = getString(R.string.new_game)
         }
-        toolbar.subtitle = "Ordonner les joueurs"
+        toolbar.subtitle = getString(R.string.sort_players)
 
         initToolbar(true)
         initUI()
@@ -98,7 +98,6 @@ class SKPlayerSortingActivity : SBActivity(R.layout.activity_player_sorting) {
     }
 
     private fun initUI() {
-
         recyclerViewSortPlayer.layoutManager = LinearLayoutManager(this)
         recyclerViewSortPlayer.itemAnimator = DefaultItemAnimator()
         recyclerViewSortPlayer.addItemDecoration(SBVerticalSpacingItemDecoration(32))

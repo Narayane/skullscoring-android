@@ -20,5 +20,5 @@
         android:orderInCategory="100"
         android:icon="@drawable/ic_done_24dp"
         app:showAsAction="always"
-        android:title="Valider" />
+        android:title="@string/validate" />
 </menu>

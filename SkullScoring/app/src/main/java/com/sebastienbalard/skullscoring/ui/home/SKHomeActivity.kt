@@ -20,7 +20,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -193,15 +192,20 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
         ): Boolean {
             when (item?.itemId) {
                 R.id.menu_home_contextual_copy -> {
-                    MaterialAlertDialogBuilder(this@SKHomeActivity).setTitle("Alerte")
-                        .setMessage("Souhaitez-vous créer une nouvelle partie avec les mêmes joueurs que celle sélectionnée ?")
-                        .setPositiveButton("Continuer") { dialog, _ ->
-                            val playerIds = gameListAdapter.getSelectedItems().first().players.map { it.id }
-                            startActivity(SKPlayerSortingActivity.getIntent(this@SKHomeActivity, playerIds))
+                    MaterialAlertDialogBuilder(this@SKHomeActivity).setTitle(getString(R.string.alert_warning))
+                        .setMessage(getString(R.string.alert_message_duplicate_game))
+                        .setPositiveButton(getString(R.string.resume)) { dialog, _ ->
+                            val playerIds =
+                                gameListAdapter.getSelectedItems().first().players.map { it.id }
+                            startActivity(
+                                SKPlayerSortingActivity.getIntent(
+                                    this@SKHomeActivity, playerIds
+                                )
+                            )
                             dialog.dismiss()
                             actionMode?.finish()
                         }.setNegativeButton(
-                            "Annuler"
+                            getString(R.string.cancel)
                         ) { dialog, _ ->
                             dialog.dismiss()
                         }.show()
@@ -253,7 +257,8 @@ class SKHomeActivity : SBBottomNavigationViewActivity(R.layout.activity_home) {
             override fun bind(context: Context, item: SKGame) {
                 itemView.textViewGameDate.text = item.startDate.formatDateTime(context)
                 itemView.textViewGameState.text =
-                    if (item.isEnded) "Terminé" else "Tour ${item.currentTurnNumber}"
+                    if (item.isEnded) context.getString(R.string.game_ended) else context.getString(
+                        R.string.turn, item.currentTurnNumber)
             }
         }
     }

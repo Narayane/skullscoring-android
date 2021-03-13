@@ -7,5 +7,5 @@
         android:orderInCategory="101"
         app:showAsAction="ifRoom|withText"
         android:icon="@drawable/ic_history_24dp"
-        android:title="Historique des tours"/>
+        android:title="@string/turn_history"/>
 </menu>

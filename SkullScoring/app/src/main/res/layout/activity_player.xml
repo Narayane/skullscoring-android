@@ -51,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:drawableStart="@drawable/ic_search_24dp"
                 android:drawablePadding="@dimen/marginXS"
-                android:hint="Chercher un groupe"
+                android:hint="@string/search_for_group"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:paddingStart="@dimen/marginS"

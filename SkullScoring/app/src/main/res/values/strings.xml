@@ -12,6 +12,7 @@
     <string name="onboarding_start">On se la fait cette première partie ?</string>
     <string name="onboarding_new_player">Comment s\'appelle le joueur ?</string>
     <string name="onboarding_player_list">Qui joue ?</string>
+    <string name="resume">Continuer</string>
 
     <!-- data permission screen -->
     <string name="data_permission_title">Traitement de vos données</string>
@@ -32,4 +33,34 @@
     <string name="error_game_not_deleted">%1$s parties n\'ont pas été supprimées</string>
     <string name="warning_not_implemented">Bientôt disponible</string>
     <string name="warning_player_not_deletable">Ce joueur participe à au moins une partie. Il n\'est donc pas supprimable !</string>
+    <string name="cancel">Annuler</string>
+    <string name="alert_message_duplicate_game">Souhaitez-vous créer une nouvelle partie avec les mêmes joueurs que celle sélectionnée ?</string>
+    <string name="alert_warning">Alerte</string>
+    <string name="game_ended">Terminé</string>
+    <string name="turn">Tour %1$d</string>
+    <string name="turn_history">Historique des tours</string>
+    <string name="game">Partie du %1$s</string>
+    <string name="declaration_value">Annonce : %1$d</string>
+    <string name="result_value">Résultat : %1$d</string>
+    <string name="new_game">Nouvelle partie</string>
+    <string name="select_players">Sélectionner les joueurs</string>
+    <string name="add_player">Ajouter un joueur</string>
+    <string name="sort_players">Ordonner les joueurs</string>
+    <string name="declarations">Annonces</string>
+    <string name="results">Résultats</string>
+    <string name="item_turn_result">%1$s (annonce : %2$d)</string>
+    <string name="configuration">Configuration</string>
+    <string name="new_group">Nouveau groupe</string>
+    <string name="create">Créer</string>
+    <string name="search_for_group">Chercher un groupe</string>
+    <string name="new_player">Nouveau joueur</string>
+    <string name="activity_player_sorting_label">Est-ce que les joueurs sont bien dans l\'ordre de distribution des cartes, le premier joueur étant bien le premier à distribuer les cartes ?</string>
+    <string name="item_turn_result_skull_king">Le Skull King prend des pirates</string>
+    <string name="item_turn_result_mermaid">La Mermaid prend le Skull King</string>
+    <string name="lets_go">C\'est parti</string>
+    <string name="bottomsheet_create_group_label">Quel est le nom du groupe ?</string>
+    <string name="games">Parties</string>
+    <string name="players">Joueurs</string>
+    <string name="copy">Copier</string>
+    <string name="remove">Supprimer</string>
 </resources>

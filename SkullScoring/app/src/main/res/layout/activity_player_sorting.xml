@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/marginM"
             android:gravity="center"
-            android:text="Est-ce que les joueurs sont bien dans l'ordre de distribution des cartes, le premier joueur étant bien le premier à distribuer les cartes ?"
+            android:text="@string/activity_player_sorting_label"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/recyclerViewSortPlayer"
             app:layout_constraintLeft_toLeftOf="parent"

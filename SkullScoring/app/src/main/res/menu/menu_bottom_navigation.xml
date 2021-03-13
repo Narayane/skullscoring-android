@@ -5,13 +5,13 @@
         android:id="@+id/menu_bottom_navigation_item_games"
         android:enabled="true"
         android:icon="@drawable/ic_dealer_24dp"
-        android:title="Parties"
+        android:title="@string/games"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_bottom_navigation_item_players"
         android:enabled="true"
         android:icon="@drawable/ic_players_24dp"
-        android:title="Joueurs"
+        android:title="@string/players"
         app:showAsAction="ifRoom" />
     <!--<item
         android:id="@+id/menu_bottom_navigation_item_statistics"

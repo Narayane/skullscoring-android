@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.widget_appbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-
 class SKTurnActivity : SBActivity(R.layout.activity_turn) {
 
     internal val turnViewModel: SKTurnViewModel by viewModel()
@@ -93,14 +92,14 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 when (this) {
                     is StateTurnDeclarations -> {
                         Timber.d("turn number: ${turn.number}")
-                        toolbar.title = "Annonces"
-                        toolbar.subtitle = "Tour ${turn.number}"
+                        toolbar.title = getString(R.string.declarations)
+                        toolbar.subtitle = getString(R.string.turn, turn.number)
                         turnDeclarationListAdapter.setAllItems(turn.results)
                     }
                     is StateTurnResults -> {
                         Timber.d("turn number: ${turn.number}")
-                        toolbar.title = "Résultats"
-                        toolbar.subtitle = "Tour ${turn.number}"
+                        toolbar.title = getString(R.string.results)
+                        toolbar.subtitle = getString(R.string.turn, turn.number)
                         turnResultListAdapter.setAllItems(turn.results)
                     }
                     else -> {
@@ -229,12 +228,13 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
         fun removeBonusExcept(item: SKTurnPlayerJoin) {
             getElements().apply {
                 val protectedIndex = indexOf(item)
-                withIndex().filter { it.value.hasBonus && it.index != protectedIndex }.mapIndexed { index, item ->
-                    item.value.hasSkullKing = false
-                    item.value.pirateCount = null
-                    item.value.hasMermaid = false
-                    notifyItemChanged(index)
-                }
+                withIndex().filter { it.value.hasBonus && it.index != protectedIndex }
+                    .mapIndexed { index, item ->
+                        item.value.hasSkullKing = false
+                        item.value.pirateCount = null
+                        item.value.hasMermaid = false
+                        notifyItemChanged(index)
+                    }
             }
         }
 
@@ -242,15 +242,16 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
             SBRecyclerViewAdapter.ViewHolder<SKTurnPlayerJoin>(itemView) {
 
             override fun bind(context: Context, item: SKTurnPlayerJoin) {
-                itemView.textViewTurnResultPlayerName.text =
-                    "${item.player.name} (annonce : ${item.declaration ?: 0})"
+                itemView.textViewTurnResultPlayerName.text = context.getString(
+                    R.string.item_turn_result, item.player.name, item.declaration ?: 0
+                )
                 setResult(item)
                 setBonus(item)
                 itemView.buttonStepperTurnResult.setOnValueChangeListener { _, _, newValue ->
                     item.result = newValue
                     itemView.headerIndicator.apply {
                         post {
-                            hide (item.result == 0)
+                            hide(item.result == 0)
                         }
                     }
                     itemView.expansionLayout.apply {
@@ -342,7 +343,7 @@ class SKTurnActivity : SBActivity(R.layout.activity_turn) {
                 }
                 itemView.headerIndicator.apply {
                     post {
-                        hide (item.result == 0)
+                        hide(item.result == 0)
                     }
                 }
             }

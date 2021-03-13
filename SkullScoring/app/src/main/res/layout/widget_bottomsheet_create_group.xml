@@ -9,7 +9,7 @@
         android:id="@+id/layoutGroupName"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:hint="Quel est le nom du groupe ?"
+        android:hint="@string/bottomsheet_create_group_label"
         android:inputType="textCapWords|textPersonName|textNoSuggestions"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
