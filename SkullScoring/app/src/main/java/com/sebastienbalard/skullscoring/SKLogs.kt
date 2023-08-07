@@ -1,5 +1,5 @@
 /**
- * Copyright © 2020 Skull Scoring (Sébastien BALARD)
+ * Copyright © 2021 Skull Scoring (Sébastien BALARD)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,15 +18,17 @@ package com.sebastienbalard.skullscoring
 
 import android.util.Log
 import org.jetbrains.annotations.NotNull
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
 
 class SKDebugTree : Timber.DebugTree() {
 
     override fun createStackElementTag(element: StackTraceElement): String? {
-        return String.format("### - %s",
-            super.createStackElementTag(element))
+        return String.format(
+            "### - %s",
+            super.createStackElementTag(element)
+        )
     }
 }
 
@@ -48,5 +50,4 @@ class ReleaseTree : @NotNull Timber.Tree(), KoinComponent {
             }
         }
     }
-
 }

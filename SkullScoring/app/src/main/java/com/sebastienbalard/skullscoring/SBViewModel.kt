@@ -16,24 +16,8 @@
 
 package com.sebastienbalard.skullscoring
 
-import android.app.Application
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
-import timber.log.Timber
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 
-open class SKApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        if (BuildConfig.DEBUG) {
-            Timber.plant(SKDebugTree())
-        } else {
-            Timber.plant(ReleaseTree())
-        }
-        Timber.v("onCreate")
-        startKoin {
-            androidContext(this@SKApplication)
-            modules(skullScoringApp)
-        }
-    }
+open class SBViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel() {
 }

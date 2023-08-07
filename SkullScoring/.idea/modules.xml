@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Skull_Scoring.iml" filepath="$PROJECT_DIR$/.idea/modules/Skull_Scoring.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Skull_Scoring.app.unitTest.iml" />
     </modules>
   </component>
 </project>

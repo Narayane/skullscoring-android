@@ -17,7 +17,6 @@
 package com.sebastienbalard.skullscoring
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
 
 open class SBCrashReport(
     private val preferenceRepository: SKPreferenceRepository,

@@ -18,7 +18,6 @@ package com.sebastienbalard.skullscoring
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.sebastienbalard.skullscoring.repositories.SKPreferenceRepository
 import timber.log.Timber
 
 open class SBAnalytics(
@@ -32,4 +31,15 @@ open class SBAnalytics(
             analytics.logEvent(name, bundle)
         }
     }
+
+    /*open fun sendEvent(name: String, vararg ) {
+        Timber.d("send analytics event: $name")
+        if (BuildConfig.BUILD_TYPE == "release" && preferenceRepository.isUseDataSendingAllowed) {
+            Bundle().apply {
+                putInt("allowed", if (isCrashDataSendingAllowed) 1 else 0)
+                putInt("is_onboarding", 1)
+            })
+            analytics.logEvent(name, bundle)
+        }
+    }*/
 }
